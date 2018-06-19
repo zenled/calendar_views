@@ -1,2 +1,5 @@
 # calendar_views
-Calendar Views for Flutter
+
+Highly customisable Calendar Views for Flutter.
+
+This package is in active development.
