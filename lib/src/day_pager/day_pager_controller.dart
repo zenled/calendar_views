@@ -38,6 +38,15 @@ class DayPagerController {
     _numberOfPages = _minimumDate.daysBetween(_maximumDate) + 1;
   }
 
+  /// Creates a controller used for controlling a [DayPager].
+  ///
+  /// If [initialDate] is not provided, today will be set as initialDate.
+  ///
+  /// If [minimumDate] is not provided, the controlled [DayPager]
+  /// will be virtually infinite in direction before [initialDate].
+  ///
+  /// If [maximumDate] is not provided, the controlled [DayPager]
+  /// will be virtually infinite in direction after [initialDate].
   factory DayPagerController({
     DateTime initialDate,
     DateTime minimumDate,
@@ -118,7 +127,7 @@ class DayPagerController {
     if (d.isAfter(_maximumDate)) {
       return numberOfPages - 1;
     }
-    return _maximumDate.daysBetween(d);
+    return _minimumDate.daysBetween(d);
   }
 
   /// Returns date that should be displayed on specified [page] (page index) in the controlled [DayPager].

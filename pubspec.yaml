@@ -7,6 +7,7 @@ homepage:
 dependencies:
   flutter:
     sdk: flutter
+  meta: "^1.1.5"
 
 dev_dependencies:
   flutter_test:

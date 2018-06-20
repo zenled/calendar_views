@@ -29,6 +29,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
+  calendar_views:
+    dependency: "direct main"
+    description:
+      path: ".."
+      relative: true
+    source: path
+    version: "0.0.1"
   charcode:
     dependency: transitive
     description:
@@ -159,7 +166,7 @@ packages:
     source: hosted
     version: "0.12.2+1"
   meta:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: meta
       url: "https://pub.dartlang.org"
