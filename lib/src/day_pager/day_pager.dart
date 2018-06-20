@@ -79,6 +79,8 @@ class _DayPagerState extends State<DayPager> {
   void didUpdateWidget(DayPager oldWidget) {
     super.didUpdateWidget(oldWidget);
 
+    bool recreatePageView = false;
+
     if (oldWidget.controller != widget.controller) {
       DateTime dateOnOldWidget = oldWidget.controller.displayedDate;
       int initialIndexOnNewWidget = widget.controller.pageOf(dateOnOldWidget);
@@ -94,6 +96,16 @@ class _DayPagerState extends State<DayPager> {
 
       widget.onPageChanged(widget.controller.dateOf(initialIndexOnNewWidget));
 
+      recreatePageView = true;
+    }
+    if (oldWidget.scrollDirection != widget.scrollDirection) {
+      recreatePageView = true;
+    }
+    if (oldWidget.pageBuilder != widget.pageBuilder) {
+      recreatePageView = true;
+    }
+
+    if (recreatePageView) {
       setState(() {
         _pageView = _createPageView();
       });

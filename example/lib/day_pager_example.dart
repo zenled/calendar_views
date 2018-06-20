@@ -106,6 +106,8 @@ class _DayPagerExampleState extends State<DayPagerExample> {
   }
 
   Widget _pageBuilder(BuildContext context, DateTime date) {
+    print("Building: ${date.year}.${date.month}.${date.day}");
+
     return new Container(
       constraints: new BoxConstraints.expand(),
       color: Colors.green.shade200,
