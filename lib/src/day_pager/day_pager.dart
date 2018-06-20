@@ -1,0 +1,108 @@
+import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
+
+import 'package:calendar_views/src/internal_date_items/all.dart';
+
+import 'day_pager_controller.dart';
+import 'day_pager_position.dart';
+
+/// Signature for a function that builds a widget for a given [date].
+///
+/// Values of [date] except for year and month and day are set to their default values.
+typedef Widget DayPagerPageBuilder(BuildContext context, DateTime date);
+
+class DayViewPager extends StatefulWidget {
+  DayViewPager._internal({
+    @required this.controller,
+    @required this.pageBuilder,
+    this.onPageChanged,
+  })  : assert(controller != null),
+        assert(pageBuilder != null);
+
+  factory DayViewPager({
+    DayPagerController controller,
+    @required DayPagerPageBuilder pageBuilder,
+    ValueChanged<DateTime> onPageChanged,
+  }) {
+    controller ??= new DayPagerController();
+
+    return new DayViewPager._internal(
+      controller: controller,
+      pageBuilder: pageBuilder,
+      onPageChanged: onPageChanged,
+    );
+  }
+
+  /// Object that is used to control this DayViewPager.
+  final DayPagerController controller;
+
+  /// Function that builds the widgets displayed inside this DayViewPager.
+  final DayPagerPageBuilder pageBuilder;
+
+  /// Called whenever the displayed page changes.
+  final ValueChanged<DateTime> onPageChanged;
+
+  @override
+  State createState() => new _DayViewPagerState();
+}
+
+class _DayViewPagerState extends State<DayViewPager> {
+  /// PageView that this widget wraps around.
+  PageView _pageView;
+
+  /// Controller for the internal pageView.
+  PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _pageController = _createPageController();
+    widget.controller.attach(_createDayPagerPosition());
+  }
+
+  @override
+  void didUpdateWidget(DayViewPager oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.controller != widget.controller) {
+      _pageController = _createPageController();
+
+      oldWidget.controller.detach();
+      widget.controller.attach(_createDayPagerPosition());
+    }
+  }
+
+  PageController _createPageController() {
+    return new PageController(
+      initialPage: widget.controller.initialPage,
+    );
+  }
+
+  DayPagerPosition _createDayPagerPosition() {
+    return new DayPagerPosition(
+      jumpToPage: _pageController.jumpToPage,
+      animateToPage: _pageController.animateToPage,
+    );
+  }
+
+  @override
+  void dispose() {
+    widget.controller.detach();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new PageView.builder(
+      controller: _pageController,
+      itemCount: widget.controller.numberOfPages,
+      itemBuilder: (BuildContext context, int index) {
+        DateTime date = widget.controller.dateOf(index);
+
+        return widget.pageBuilder(context, date);
+      },
+    );
+  }
+}
