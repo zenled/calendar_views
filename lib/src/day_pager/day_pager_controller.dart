@@ -35,7 +35,7 @@ class DayPagerController {
 
     // sets other properties
     _initialPage = _minimumDate.daysBetween(_initialDate);
-    _numberOfPages = _minimumDate.daysBetween(_maximumDate);
+    _numberOfPages = _minimumDate.daysBetween(_maximumDate) + 1;
   }
 
   factory DayPagerController({
@@ -94,6 +94,17 @@ class DayPagerController {
 
   int get numberOfPages => _numberOfPages;
 
+  /// Returns displayed date (page) in the attached [DayPager].
+  ///
+  /// If no [DayPager] is attached it returns the [initialDate].
+  DateTime get displayedDate {
+    if (_pagerPosition == null) {
+      return initialDate;
+    } else {
+      return dateOf(_pagerPosition.getDisplayedPageCallback());
+    }
+  }
+
   /// Returns page (page index) that represents a specifies [date] in the controlled [DayPager].
   ///
   /// If [date] if before [minimumDate], first page is returned.
@@ -112,7 +123,7 @@ class DayPagerController {
 
   /// Returns date that should be displayed on specified [page] (page index) in the controlled [DayPager].
   DateTime dateOf(int page) {
-    int deltaFromInitialPage = initialPage - page;
+    int deltaFromInitialPage = page - initialPage;
 
     return _initialDate
         .add(

@@ -11,22 +11,22 @@ import 'day_pager_position.dart';
 /// Values of [date] except for year and month and day are set to their default values.
 typedef Widget DayPagerPageBuilder(BuildContext context, DateTime date);
 
-class DayViewPager extends StatefulWidget {
-  DayViewPager._internal({
+class DayPager extends StatefulWidget {
+  DayPager._internal({
     @required this.controller,
     @required this.pageBuilder,
     this.onPageChanged,
   })  : assert(controller != null),
         assert(pageBuilder != null);
 
-  factory DayViewPager({
+  factory DayPager({
     DayPagerController controller,
     @required DayPagerPageBuilder pageBuilder,
     ValueChanged<DateTime> onPageChanged,
   }) {
     controller ??= new DayPagerController();
 
-    return new DayViewPager._internal(
+    return new DayPager._internal(
       controller: controller,
       pageBuilder: pageBuilder,
       onPageChanged: onPageChanged,
@@ -43,13 +43,10 @@ class DayViewPager extends StatefulWidget {
   final ValueChanged<DateTime> onPageChanged;
 
   @override
-  State createState() => new _DayViewPagerState();
+  State createState() => new _DayPagerState();
 }
 
-class _DayViewPagerState extends State<DayViewPager> {
-  /// PageView that this widget wraps around.
-  PageView _pageView;
-
+class _DayPagerState extends State<DayPager> {
   /// Controller for the internal pageView.
   PageController _pageController;
 
@@ -62,7 +59,7 @@ class _DayViewPagerState extends State<DayViewPager> {
   }
 
   @override
-  void didUpdateWidget(DayViewPager oldWidget) {
+  void didUpdateWidget(DayPager oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.controller != widget.controller) {
@@ -83,6 +80,9 @@ class _DayViewPagerState extends State<DayViewPager> {
     return new DayPagerPosition(
       jumpToPage: _pageController.jumpToPage,
       animateToPage: _pageController.animateToPage,
+      getDisplayedPageCallback: () {
+        return _pageController.page.round();
+      },
     );
   }
 
@@ -95,14 +95,28 @@ class _DayViewPagerState extends State<DayViewPager> {
 
   @override
   Widget build(BuildContext context) {
-    return new PageView.builder(
-      controller: _pageController,
-      itemCount: widget.controller.numberOfPages,
-      itemBuilder: (BuildContext context, int index) {
-        DateTime date = widget.controller.dateOf(index);
+    return new NotificationListener<ScrollNotification>(
+      onNotification: (ScrollNotification scrollNotification) {
+        if (scrollNotification is ScrollEndNotification) {
+          if (widget.onPageChanged != null) {
+            int displayedPage = _pageController.page.round();
 
-        return widget.pageBuilder(context, date);
+            DateTime dateOfDisplayedPage =
+                widget.controller.dateOf(displayedPage);
+
+            widget.onPageChanged(dateOfDisplayedPage);
+          }
+        }
       },
+      child: new PageView.builder(
+        controller: _pageController,
+        itemCount: widget.controller.numberOfPages,
+        itemBuilder: (BuildContext context, int index) {
+          DateTime date = widget.controller.dateOf(index);
+
+          return widget.pageBuilder(context, date);
+        },
+      ),
     );
   }
 }
