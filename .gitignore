@@ -3,6 +3,10 @@
 
 .packages
 .pub/
+pubspec.lock
+
+# Directory created by dartdoc
+doc/api/
 
 build/
 ios/.generated/
