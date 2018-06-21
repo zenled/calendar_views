@@ -4,6 +4,9 @@ description: Calendar Views example.
 dependencies:
   flutter:
     sdk: flutter
+  meta: "^1.1.5"
+  calendar_views:
+    path: ../
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
