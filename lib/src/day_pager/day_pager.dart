@@ -20,6 +20,7 @@ class DayPager extends StatefulWidget {
         assert(pageBuilder != null),
         assert(scrollDirection != null);
 
+  /// Creates a scrollable list, that gives each item a date.
   factory DayPager({
     DayPagerController controller,
     @required DayPagerPageBuilder pageBuilder,
@@ -36,19 +37,19 @@ class DayPager extends StatefulWidget {
     );
   }
 
-  /// Object that is used to control this DayViewPager.
+  /// Object that is used to control this [DayPager].
   ///
   /// If controller is changed during runtime (eg. new controller with different minimumDate),
   /// all pages will be rebuilt and the widget will try to stay on the same date.
   final DayPagerController controller;
 
-  /// Function that builds the widgets displayed inside this DayViewPager.
+  /// Function that builds the widgets displayed inside this [DayPager].
   final DayPagerPageBuilder pageBuilder;
 
   /// Called whenever the displayed page changes.
   final ValueChanged<DateTime> onPageChanged;
 
-  /// The axis along which the day pager scrolls.
+  /// The axis along which this [DayPager] scrolls.
   final Axis scrollDirection;
 
   @override
@@ -56,6 +57,7 @@ class DayPager extends StatefulWidget {
 }
 
 class _DayPagerState extends State<DayPager> {
+  /// For displaying the contents for each day.
   PageView _pageView;
 
   /// Controller for the internal [_pageView].
@@ -124,7 +126,7 @@ class _DayPagerState extends State<DayPager> {
     return new DayPagerPosition(
       jumpToPage: _pageController.jumpToPage,
       animateToPage: _pageController.animateToPage,
-      getDisplayedPageCallback: () {
+      getDisplayedPage: () {
         return _pageController.page.round();
       },
     );
@@ -135,8 +137,8 @@ class _DayPagerState extends State<DayPager> {
       controller: _pageController,
       scrollDirection: widget.scrollDirection,
       itemCount: widget.controller.numberOfPages,
-      itemBuilder: (BuildContext context, int index) {
-        DateTime date = widget.controller.dateOf(index);
+      itemBuilder: (BuildContext context, int page) {
+        DateTime date = widget.controller.dateOf(page);
 
         return widget.pageBuilder(context, date);
       },
@@ -146,7 +148,7 @@ class _DayPagerState extends State<DayPager> {
 
   @override
   void dispose() {
-    widget.controller.detach();
+    widget.controller?.detach();
 
     super.dispose();
   }

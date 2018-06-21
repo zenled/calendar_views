@@ -134,11 +134,11 @@ class Date {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is Date &&
-              runtimeType == other.runtimeType &&
-              year == other.year &&
-              month == other.month &&
-              day == other.day;
+      other is Date &&
+          runtimeType == other.runtimeType &&
+          year == other.year &&
+          month == other.month &&
+          day == other.day;
 
   @override
   String toString() {

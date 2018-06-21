@@ -8,7 +8,7 @@ class DayPagerExample extends StatefulWidget {
 }
 
 class _DayPagerExampleState extends State<DayPagerExample> {
-  bool _useInfiniteDayPager;
+  bool _useInfiniteDayPagerController;
 
   DayPagerController _finiteDayPagerController;
 
@@ -20,17 +20,18 @@ class _DayPagerExampleState extends State<DayPagerExample> {
 
     DateTime initialDate = new DateTime.now();
 
-    _useInfiniteDayPager = false;
+    _useInfiniteDayPagerController = false;
 
     _finiteDayPagerController = new DayPagerController(
-        initialDate: initialDate,
-        minimumDate: initialDate.add(new Duration(days: -2)),
-        maximumDate: initialDate.add(new Duration(days: 2)));
+      initialDate: initialDate,
+      minimumDate: initialDate.add(new Duration(days: -2)),
+      maximumDate: initialDate.add(new Duration(days: 2)),
+    );
 
     _infiniteDayPagerController = new DayPagerController();
   }
 
-  DayPagerController get _dayPagerController => _useInfiniteDayPager
+  DayPagerController get _dayPagerController => _useInfiniteDayPagerController
       ? _infiniteDayPagerController
       : _finiteDayPagerController;
 
@@ -38,7 +39,7 @@ class _DayPagerExampleState extends State<DayPagerExample> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text("Day Pager Example"),
+        title: new Text("DayPager Example"),
       ),
       body: new Builder(builder: (BuildContext context) {
         return new Column(
@@ -71,10 +72,11 @@ class _DayPagerExampleState extends State<DayPagerExample> {
                       "If true DayPager will be infinite.\n"
                           "If false it will be restricted to two days from today.",
                     ),
-                    value: _useInfiniteDayPager,
+                    value: _useInfiniteDayPagerController,
                     onChanged: (_) {
                       setState(() {
-                        _useInfiniteDayPager = !_useInfiniteDayPager;
+                        _useInfiniteDayPagerController =
+                            !_useInfiniteDayPagerController;
                       });
                     },
                   )

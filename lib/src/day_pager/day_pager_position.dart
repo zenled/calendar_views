@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-typedef void JumpToPageCallback(int page);
+typedef void JumpToPage(int page);
 
-typedef void AnimateToPageCallback(
+typedef void AnimateToPage(
   int page, {
   @required Duration duration,
   @required Curve curve,
 });
-
-typedef int GetDisplayedPageCallback();
 
 /// Communicator between [DayPager] and [DayPagerController].
 @immutable
@@ -17,16 +15,17 @@ class DayPagerPosition {
   DayPagerPosition({
     @required this.jumpToPage,
     @required this.animateToPage,
-    @required this.getDisplayedPageCallback,
+    @required this.getDisplayedPage,
   })  : assert(jumpToPage != null),
         assert(animateToPage != null),
-        assert(getDisplayedPageCallback != null);
+        assert(getDisplayedPage != null);
 
-  /// Tells [SmallCalendarPager] to jump to a specified page.
-  final JumpToPageCallback jumpToPage;
+  /// Tells [DayPager] to jump to a specified page.
+  final JumpToPage jumpToPage;
 
-  /// Tells [SmallCalendarPager] to animate to a specified page.
-  final AnimateToPageCallback animateToPage;
+  /// Tells [DayPager] to animate to a specified page.
+  final AnimateToPage animateToPage;
 
-  final GetDisplayedPageCallback getDisplayedPageCallback;
+  /// Requests the current displayed page index from the [DayPager].
+  final ValueGetter<int> getDisplayedPage;
 }

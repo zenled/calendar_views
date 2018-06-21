@@ -5,9 +5,11 @@ import 'package:calendar_views/src/internal_date_items/all.dart';
 
 import 'day_pager_position.dart';
 
+/// Controller for [DayPager].
 class DayPagerController {
   static const _default_daysDelta_from_initialDate = 10000;
 
+  /// Creates a controller for [DayPager], with all values required.
   DayPagerController.raw({
     @required DateTime initialDate,
     @required DateTime minimumDate,
@@ -38,15 +40,17 @@ class DayPagerController {
     _numberOfPages = _minimumDate.daysBetween(_maximumDate) + 1;
   }
 
-  /// Creates a controller used for controlling a [DayPager].
+  /// Creates a controller for [DayPager].
   ///
-  /// If [initialDate] is not provided, today will be set as initialDate.
+  /// Both [minimumDate] and [maximumDate] are inclusive.
+  ///
+  /// If [initialDate] is not provided, it will be set to today's date.
   ///
   /// If [minimumDate] is not provided, the controlled [DayPager]
-  /// will be virtually infinite in direction before [initialDate].
+  /// will be virtually infinite in the direction before [initialDate].
   ///
   /// If [maximumDate] is not provided, the controlled [DayPager]
-  /// will be virtually infinite in direction after [initialDate].
+  /// will be virtually infinite in the direction after [initialDate].
   factory DayPagerController({
     DateTime initialDate,
     DateTime minimumDate,
@@ -73,48 +77,46 @@ class DayPagerController {
     );
   }
 
-  /// Minimum date that the controlled pager will display (inclusive).
   final Date _minimumDate;
 
-  /// Maximum date that the controlled pager will display (inclusive).
   final Date _maximumDate;
 
-  /// Date on which the controlled pager will start when first built.
-  ///
-  /// It defaults to today.
   final Date _initialDate;
 
-  /// Index of the initial page that the controlled [DayPager] should display.
   int _initialPage;
 
-  /// Number of pages that the controlled [DayPager] should be able to display.
   int _numberOfPages;
 
-  /// Pager position for controlling the attached [DayPager].
+  /// Connector for controlling the attached pager.
   DayPagerPosition _pagerPosition;
 
+  /// Minimum date that the attached pager should display (inclusive).
   DateTime get minimumDate => _maximumDate.toDateTime();
 
+  /// Maximum date that the attached pager should display (inclusive).
   DateTime get maximumDate => _maximumDate.toDateTime();
 
+  /// Date which the attached pager should display when first built.
   DateTime get initialDate => _initialDate.toDateTime();
 
+  /// Index of the initial page that the attached pager should display.
   int get initialPage => _initialPage;
 
+  /// Number of pages that the attached pager should be able to display.
   int get numberOfPages => _numberOfPages;
 
   /// Returns displayed date (page) in the attached [DayPager].
   ///
-  /// If no [DayPager] is attached it returns the [initialDate].
+  /// If no [DayPager] is attached it returns null.
   DateTime get displayedDate {
     if (_pagerPosition == null) {
-      return initialDate;
+      return null;
     } else {
-      return dateOf(_pagerPosition.getDisplayedPageCallback());
+      return dateOf(_pagerPosition.getDisplayedPage());
     }
   }
 
-  /// Returns page (page index) that represents a specifies [date] in the controlled [DayPager].
+  /// Returns page (page index) that represents a [date] in the attached [DayPager].
   ///
   /// If [date] if before [minimumDate], first page is returned.
   /// If [date] is after [maximumDate], last page is returned.
@@ -130,7 +132,7 @@ class DayPagerController {
     return _minimumDate.daysBetween(d);
   }
 
-  /// Returns date that should be displayed on specified [page] (page index) in the controlled [DayPager].
+  /// Returns date that should be displayed on specified [page] (page index) in the attached [DayPager].
   DateTime dateOf(int page) {
     int deltaFromInitialPage = page - initialPage;
 
@@ -165,7 +167,7 @@ class DayPagerController {
     );
   }
 
-  /// Forces the attached [DayPager] to animate to specified [date]
+  /// Forces the attached [DayPager] to animate to specified [date].
   void animateTo(
     DateTime date, {
     @required Duration duration,
