@@ -1,5 +1,5 @@
-export 'single_day_events/single_day_event_builder.dart';
-export 'single_day_events/single_day_events_component.dart';
+export 'events/event_builder.dart';
+export 'events/single_day_events_component.dart';
 
 export 'support_lines/interval_support_lines_component.dart';
 export 'support_lines/support_line_builder.dart';

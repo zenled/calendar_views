@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
 
+/// Sizes of key DayView components.
 @immutable
 class DayViewDimensions {
   const DayViewDimensions({
@@ -22,7 +23,7 @@ class DayViewDimensions {
         assert(eventsAreaStartMargin != null && eventsAreaStartMargin >= 0),
         assert(eventsAreaEndMargin != null && eventsAreaEndMargin >= 0);
 
-  /// Height taken by every minute in DayView.
+  /// Height taken by every minute inside a DayView.
   final double heightPerMinute;
 
   // padding
@@ -41,16 +42,18 @@ class DayViewDimensions {
 
   // areas from start to end
 
-  /// Width of timeIndicationArea.
+  /// Width of TimeIndicationArea.
   final double timeIndicationAreaWidth;
 
-  /// Width of separation between the end of [timeIndicationAreaWidth] and start of [eventsAreaStartMargin].
+  /// Width of SeparationArea.
+  ///
+  /// SeparationArea is area between the end of TimeIndicationArea and start of ContentArea.
   final double separationAreaWidth;
 
-  /// Width of margin at start of EventsArea.
+  /// Width of margin at start (left) of EventsArea.
   final double eventsAreaStartMargin;
 
-  /// Width of margin at end of EventsArea.
+  /// Width of margin at end (right) of EventsArea.
   final double eventsAreaEndMargin;
 
   @override

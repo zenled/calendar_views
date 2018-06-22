@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'day_view_dimensions.dart';
 
+/// Widget that propagates key positions and sizing properties placed upon child DayViews.
 class DayViewPositions extends InheritedWidget {
   DayViewPositions({
     @required this.minimumMinuteOfDay,
@@ -19,10 +20,10 @@ class DayViewPositions extends InheritedWidget {
 
   final int maximumMinuteOfDay;
 
-  /// Width of child dayViews.
+  /// Width that child DayViews should occupy.
   final double dayViewWidth;
 
-  /// Dimensions used for calculating other dimensions_positions.
+  /// Dimensions of key DayView components.
   final DayViewDimensions dimensions;
 
   /// With that the DayView should take.
@@ -34,17 +35,18 @@ class DayViewPositions extends InheritedWidget {
       heightOfMinutes(maximumMinuteOfDay - minimumMinuteOfDay) +
       dimensions.paddingBottom;
 
+  /// Returns number of minutes between [minimumMinuteOfDay] and [minuteOfDay].
   int _minutesFromMinimumMinute(int minuteOfDay) {
     return minuteOfDay - minimumMinuteOfDay;
   }
 
-  /// Height of [minutes] in DayView.
+  /// Height of the area that should be taken by some item that lasts [minutes].
   double heightOfMinutes(int minutes) {
     return dimensions.heightPerMinute * minutes;
   }
 
-  /// Location (from top) of [minuteOfDay] inside DayView.
-  double minuteOfDayTop(int minuteOfDay) {
+  /// Location (from top) of a specific [minuteOfDay] inside DayView.
+  double minuteOfDayFromTop(int minuteOfDay) {
     assert(minuteOfDay != null);
 
     double location = dimensions.paddingTop;
@@ -59,6 +61,10 @@ class DayViewPositions extends InheritedWidget {
   /// Leftmost location of TimeIndicationArea.
   double get timeIndicationAreaLeft => dimensions.paddingStart;
 
+  /// Rightmost location of TimeIndicationArea.
+  double get timeIndicationAreaRight =>
+      timeIndicationAreaLeft + timeIndicationAreaWidth;
+
   /// Width of TimeIndicationArea.
   double get timeIndicationAreaWidth => dimensions.timeIndicationAreaWidth;
 
@@ -67,6 +73,9 @@ class DayViewPositions extends InheritedWidget {
   /// Leftmost location of SeparationArea.
   double get separationAreaLeft =>
       dimensions.paddingStart + dimensions.timeIndicationAreaWidth;
+
+  /// Rightmost location of separationArea.
+  double get separationAreaRight => separationAreaLeft + separationAreaWidth;
 
   /// Width of SeparationArea.
   double get separationAreaWidth => dimensions.separationAreaWidth;
@@ -79,6 +88,9 @@ class DayViewPositions extends InheritedWidget {
       dimensions.timeIndicationAreaWidth +
       dimensions.separationAreaWidth;
 
+  /// Rightmost location of ContentArea.
+  double get contentAreaRight => contentAreaLeft + contentAreaWidth;
+
   /// Width of ContentArea.
   double get contentAreaWidth =>
       dayViewWidth -
@@ -90,11 +102,14 @@ class DayViewPositions extends InheritedWidget {
   // --- events area
 
   /// Leftmost location of EventsArea.
-  double get eventAreaLeft =>
+  double get eventsAreaLeft =>
       dimensions.paddingStart +
       dimensions.timeIndicationAreaWidth +
       dimensions.separationAreaWidth +
       dimensions.eventsAreaStartMargin;
+
+  /// Rightmost location of EventsArea.
+  double get eventsAreaRight => eventsAreaLeft + eventAreaWidth;
 
   /// Width of EventsArea.
   double get eventAreaWidth =>
@@ -110,7 +125,7 @@ class DayViewPositions extends InheritedWidget {
   bool updateShouldNotify(DayViewPositions oldWidget) {
     return oldWidget.minimumMinuteOfDay != minimumMinuteOfDay ||
         oldWidget.maximumMinuteOfDay != maximumMinuteOfDay ||
-        oldWidget.width != width ||
+        oldWidget.dayViewWidth != dayViewWidth ||
         oldWidget.dimensions != dimensions;
   }
 

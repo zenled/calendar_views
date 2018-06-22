@@ -10,49 +10,37 @@ import '../day_view_component.dart';
 import 'time_indicator_builder.dart';
 import 'time_indicator_properties.dart';
 
+/// [DayViewComponent] that builds TimeIndicators at specific [interval]s starting at [minuteOfDayOfFirstTimeIndicator].
 @immutable
 class IntervalTimeIndicatorsComponent implements DayViewComponent {
-  IntervalTimeIndicatorsComponent._internal({
-    @required this.minuteOfDayOfFirstTimeIndicator,
+  /// Creates a [DayViewComponent] that builds a TimeIndicator every [interval] minutes starting at [minuteOfDayOfFirstTimeIndicator].
+  const IntervalTimeIndicatorsComponent({
+    this.minuteOfDayOfFirstTimeIndicator = 0,
     @required this.interval,
-    @required this.itemBuilder,
+    this.itemBuilder = timeIndicatorItemBuilder,
   })  : assert(minuteOfDayOfFirstTimeIndicator != null &&
-            isValidMinuteOfDay(minuteOfDayOfFirstTimeIndicator),),
+            minuteOfDayOfFirstTimeIndicator >= 0 &&
+            minuteOfDayOfFirstTimeIndicator <= (24 * 60)),
         assert(interval != null && interval > 0),
         assert(itemBuilder != null);
 
-  factory IntervalTimeIndicatorsComponent.everyXMinutes({
-    int minuteOfDayOfFirstIndicator = 0,
-    @required int interval,
-    TimeIndicatorBuilder itemBuilder,
-  }) {
-    itemBuilder ??= timeIndicatorItemBuilder;
-
-    return new IntervalTimeIndicatorsComponent._internal(
-      minuteOfDayOfFirstTimeIndicator: minuteOfDayOfFirstIndicator,
-      interval: interval,
-      itemBuilder: itemBuilder,
-    );
-  }
-
+  /// Creates a [DayViewComponent] that builds a TimeIndicator for every full hour.
   factory IntervalTimeIndicatorsComponent.everyHour({
-    int startingHour = 0,
     TimeIndicatorBuilder itemBuilder,
   }) {
-    return new IntervalTimeIndicatorsComponent.everyXMinutes(
-      minuteOfDayOfFirstIndicator: startingHour * 60,
+    return new IntervalTimeIndicatorsComponent(
       interval: 60,
       itemBuilder: itemBuilder,
     );
   }
 
-  /// Minute of day of first time indicator.
+  /// Minute of day of first TimeIndicator.
   final int minuteOfDayOfFirstTimeIndicator;
 
-  /// Minutes between time indicators.
+  /// Minutes between TimeIndicators.
   final int interval;
 
-  /// Function that builds timeIndicators.
+  /// Function that builds TimeIndicators.
   final TimeIndicatorBuilder itemBuilder;
 
   @override
@@ -72,7 +60,7 @@ class IntervalTimeIndicatorsComponent implements DayViewComponent {
       }
 
       Position itemLocation = new Position(
-        top: positions.minuteOfDayTop(minuteOfDay - (interval ~/ 2)),
+        top: positions.minuteOfDayFromTop(minuteOfDay - (interval ~/ 2)),
         left: positions.timeIndicationAreaLeft,
       );
 

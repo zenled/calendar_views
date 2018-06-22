@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
+/// Widget that propagates DayView's data down the tree.
 class DayViewDate extends InheritedWidget {
   const DayViewDate({
     @required this.date,
@@ -8,6 +9,7 @@ class DayViewDate extends InheritedWidget {
   })  : assert(date != null),
         super(child: child);
 
+  /// Date displayed by DayView.
   final DateTime date;
 
   @override

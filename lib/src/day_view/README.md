@@ -1,4 +1,4 @@
-# DayView Components
+## DayView Components
 
 Set of pre-made components that can be used inside a DayView.
 

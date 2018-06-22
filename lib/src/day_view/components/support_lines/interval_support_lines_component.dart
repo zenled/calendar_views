@@ -9,36 +9,24 @@ import '../../restrictions/all.dart';
 import '../day_view_component.dart';
 import 'support_line_builder.dart';
 
+/// [DayViewComponent] that builds SupportLines at specific [interval]s starting at [minuteOfDayOfFirstSupportLine].
 class IntervalSupportLineComponent implements DayViewComponent {
-  IntervalSupportLineComponent._internal({
-    @required this.minuteOfDayOfFirstSupportLine,
+  /// Creates a [DayViewComponent] that builds a SupportLine every [interval] minutes starting at [minuteOfDayOfFirstSupportLine].
+  const IntervalSupportLineComponent({
+    this.minuteOfDayOfFirstSupportLine = 0,
     @required this.interval,
-    @required this.itemBuilder,
+    this.itemBuilder = supportLineItemBuilder,
   })  : assert(minuteOfDayOfFirstSupportLine != null &&
-            isValidMinuteOfDay(minuteOfDayOfFirstSupportLine)),
+            minuteOfDayOfFirstSupportLine >= 0 &&
+            minuteOfDayOfFirstSupportLine <= (24 * 60)),
         assert(interval != null && interval > 0),
         assert(itemBuilder != null);
 
-  factory IntervalSupportLineComponent.everyXMinutes({
-    int minuteOfDayOfFirstSupportLine = 0,
-    @required int interval,
-    SupportLineBuilder itemBuilder,
-  }) {
-    itemBuilder ??= supportLineItemBuilder;
-
-    return new IntervalSupportLineComponent._internal(
-      minuteOfDayOfFirstSupportLine: minuteOfDayOfFirstSupportLine,
-      interval: interval,
-      itemBuilder: itemBuilder,
-    );
-  }
-
+  /// Creates a [DayViewComponent] that builds a SupportLine for every full hour.
   factory IntervalSupportLineComponent.everyHour({
-    int startingHour = 0,
     SupportLineBuilder itemBuilder,
   }) {
-    return new IntervalSupportLineComponent.everyXMinutes(
-      minuteOfDayOfFirstSupportLine: startingHour * 60,
+    return new IntervalSupportLineComponent(
       interval: 60,
       itemBuilder: itemBuilder,
     );
@@ -70,7 +58,7 @@ class IntervalSupportLineComponent implements DayViewComponent {
       }
 
       Position itemLocation = new Position(
-        top: positions.minuteOfDayTop(minuteOfDay),
+        top: positions.minuteOfDayFromTop(minuteOfDay),
         left: positions.contentAreaLeft,
       );
 

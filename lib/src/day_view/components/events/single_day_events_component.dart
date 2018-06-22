@@ -7,18 +7,21 @@ import '../../dimensions_positions/all.dart';
 import '../../restrictions/all.dart';
 import '../../day_view_date.dart';
 import '../day_view_component.dart';
-import 'single_day_event_builder.dart';
+import 'event_builder.dart';
 
+/// [DayViewComponent] that builds events of a single day.
 class SingleDayEventsComponent extends DayViewComponent {
+  /// Creates a [DayViewComponent] that builds events of a single day.
   const SingleDayEventsComponent({
     this.eventsArranger = const ExtendedColumnsEventsArranger(),
     @required this.itemBuilder,
   })  : assert(eventsArranger != null),
         assert(itemBuilder != null);
 
+  /// Object that arranges the events.
   final EventsArranger eventsArranger;
 
-  final SingleDayEventBuilder itemBuilder;
+  final EventBuilder itemBuilder;
 
   @override
   List<Positioned> buildItems(BuildContext context) {
@@ -44,9 +47,9 @@ class SingleDayEventsComponent extends DayViewComponent {
     List<ArrangedEvent> arrangedEvents = eventsArranger.arrangeEvents(
       events: events.toList(),
       constraints: new ArrangerConstraints(
-        areaLeft: dayViewPositions.eventAreaLeft,
+        areaLeft: dayViewPositions.eventsAreaLeft,
         areaWidth: dayViewPositions.eventAreaWidth,
-        positionTop: dayViewPositions.minuteOfDayTop,
+        positionTop: dayViewPositions.minuteOfDayFromTop,
         height: dayViewPositions.heightOfMinutes,
       ),
     );

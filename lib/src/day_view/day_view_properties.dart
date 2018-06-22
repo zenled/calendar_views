@@ -4,6 +4,7 @@ import 'dimensions_positions/all.dart';
 import 'components/all.dart';
 import 'restrictions/all.dart';
 
+/// Convenience widget that builds [DayViewRestrictions], [DayViewPositions] and [DayViewComponentsProvider].
 class DayViewProperties extends StatefulWidget {
   DayViewProperties({
     this.minimumMinuteOfDay = 0,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'day_view_component.dart';
 
-/// Inherited widget that provides [DayViewComponent]s to DayView.
+/// Inherited widget that provides list of [DayViewComponent]s to its children.
 class DayViewComponentsProvider extends InheritedWidget {
   DayViewComponentsProvider({
     @required this.components,
@@ -10,7 +10,7 @@ class DayViewComponentsProvider extends InheritedWidget {
   })  : assert(components != null),
         super(child: child);
 
-  /// List of components to be displayed inside a DayView.
+  /// List of components to be displayed by DayView.
   final List<DayViewComponent> components;
 
   @override
