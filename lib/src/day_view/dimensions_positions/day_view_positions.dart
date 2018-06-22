@@ -54,20 +54,32 @@ class DayViewPositions extends InheritedWidget {
     return location;
   }
 
-  /// Leftmost location of timeIndicationArea.
+  // --- timeIndication area
+
+  /// Leftmost location of TimeIndicationArea.
   double get timeIndicationAreaLeft => dimensions.paddingStart;
 
-  /// Leftmost location of separationArea.
+  /// Width of TimeIndicationArea.
+  double get timeIndicationAreaWidth => dimensions.timeIndicationAreaWidth;
+
+  // --- separation area
+
+  /// Leftmost location of SeparationArea.
   double get separationAreaLeft =>
       dimensions.paddingStart + dimensions.timeIndicationAreaWidth;
 
-  /// Leftmost location of contentArea.
+  /// Width of SeparationArea.
+  double get separationAreaWidth => dimensions.separationAreaWidth;
+
+  // --- content area
+
+  /// Leftmost location of ContentArea.
   double get contentAreaLeft =>
       dimensions.paddingStart +
       dimensions.timeIndicationAreaWidth +
       dimensions.separationAreaWidth;
 
-  /// Width of the content area.
+  /// Width of ContentArea.
   double get contentAreaWidth =>
       dayViewWidth -
       dimensions.paddingStart -
@@ -75,12 +87,24 @@ class DayViewPositions extends InheritedWidget {
       dimensions.separationAreaWidth -
       dimensions.paddingEnd;
 
+  // --- events area
+
   /// Leftmost location of EventsArea.
   double get eventAreaLeft =>
       dimensions.paddingStart +
       dimensions.timeIndicationAreaWidth +
       dimensions.separationAreaWidth +
       dimensions.eventsAreaStartMargin;
+
+  /// Width of EventsArea.
+  double get eventAreaWidth =>
+      dayViewWidth -
+      dimensions.paddingStart -
+      dimensions.timeIndicationAreaWidth -
+      dimensions.separationAreaWidth -
+      dimensions.eventsAreaStartMargin -
+      dimensions.eventsAreaEndMargin -
+      dimensions.paddingEnd;
 
   @override
   bool updateShouldNotify(DayViewPositions oldWidget) {

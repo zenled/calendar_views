@@ -3,18 +3,18 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/day_view.dart';
 
-import '../location.dart';
+import '../position.dart';
 
 /// Builder for [TimeIndicatorItem].
 Positioned timeIndicatorItemBuilder({
   @required BuildContext context,
-  @required Location location,
+  @required Position position,
   @required Size size,
   @required TimeIndicatorProperties properties,
 }) {
   return new Positioned(
-    top: location.top,
-    left: location.left,
+    top: position.top,
+    left: position.left,
     width: size.width,
     height: size.height,
     child: new TimeIndicatorItem(

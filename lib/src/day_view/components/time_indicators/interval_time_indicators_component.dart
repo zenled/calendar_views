@@ -71,7 +71,7 @@ class IntervalTimeIndicatorsComponent implements DayViewComponent {
         continue;
       }
 
-      Location itemLocation = new Location(
+      Position itemLocation = new Position(
         top: positions.minuteOfDayTop(minuteOfDay - (interval ~/ 2)),
         left: positions.timeIndicationAreaLeft,
       );
@@ -88,7 +88,7 @@ class IntervalTimeIndicatorsComponent implements DayViewComponent {
 
       items.add(itemBuilder(
         context: context,
-        location: itemLocation,
+        position: itemLocation,
         size: itemSize,
         properties: itemProperties,
       ));

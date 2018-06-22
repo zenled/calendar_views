@@ -4,7 +4,7 @@ import 'package:calendar_views/calendar_items.dart';
 
 typedef Positioned SupportLineBuilder({
   @required BuildContext context,
-  @required Location location,
+  @required Position position,
   @required double width,
   @required int minuteOfDay,
 });

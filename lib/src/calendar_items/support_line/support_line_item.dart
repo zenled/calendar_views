@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import '../location.dart';
+import '../position.dart';
 
 Positioned supportLineItemBuilder({
   @required BuildContext context,
-  @required Location location,
+  @required Position position,
   @required double width,
   @required int minuteOfDay,
 }) {
   return new Positioned(
-    top: location.top,
-    left: location.left,
+    top: position.top,
+    left: position.left,
     width: width,
     child: new SupportLineItem(),
   );

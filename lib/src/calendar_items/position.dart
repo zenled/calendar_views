@@ -1,8 +1,8 @@
 import 'package:meta/meta.dart';
 
 @immutable
-class Location {
-  const Location({
+class Position {
+  const Position({
     @required this.top,
     @required this.left,
   })  : assert(top != null),

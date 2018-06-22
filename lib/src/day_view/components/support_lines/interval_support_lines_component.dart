@@ -69,7 +69,7 @@ class IntervalSupportLineComponent implements DayViewComponent {
         continue;
       }
 
-      Location itemLocation = new Location(
+      Position itemLocation = new Position(
         top: positions.minuteOfDayTop(minuteOfDay),
         left: positions.contentAreaLeft,
       );
@@ -79,7 +79,7 @@ class IntervalSupportLineComponent implements DayViewComponent {
       items.add(
         itemBuilder(
           context: context,
-          location: itemLocation,
+          position: itemLocation,
           width: itemWidth,
           minuteOfDay: minuteOfDay,
         ),
