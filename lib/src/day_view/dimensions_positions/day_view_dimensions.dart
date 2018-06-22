@@ -3,7 +3,6 @@ import 'package:meta/meta.dart';
 @immutable
 class DayViewDimensions {
   const DayViewDimensions({
-    @required this.width,
     this.heightPerMinute = 1.0,
     this.paddingStart = 16.0,
     this.paddingEnd = 16.0,
@@ -13,8 +12,7 @@ class DayViewDimensions {
     this.separationAreaWidth = 4.0,
     this.eventsAreaStartMargin = 8.0,
     this.eventsAreaEndMargin = 8.0,
-  })  : assert(width != null && width > 0),
-        assert(heightPerMinute != null && heightPerMinute > 0),
+  })  : assert(heightPerMinute != null && heightPerMinute > 0),
         assert(paddingStart != null && paddingStart >= 0),
         assert(paddingEnd != null && paddingEnd >= 0),
         assert(paddingTop != null && paddingTop >= 0),
@@ -23,10 +21,6 @@ class DayViewDimensions {
         assert(separationAreaWidth != null && separationAreaWidth >= 0),
         assert(eventsAreaStartMargin != null && eventsAreaStartMargin >= 0),
         assert(eventsAreaEndMargin != null && eventsAreaEndMargin >= 0);
-
-  // size
-  /// Width of DayView.
-  final double width;
 
   /// Height taken by every minute in DayView.
   final double heightPerMinute;
@@ -56,16 +50,6 @@ class DayViewDimensions {
   /// Width of margin at start of EventsArea.
   final double eventsAreaStartMargin;
 
-  /// Width of eventsArea.
-  double get eventsAreaWidth =>
-      width -
-      paddingStart -
-      timeIndicationAreaWidth -
-      separationAreaWidth -
-      eventsAreaStartMargin -
-      eventsAreaEndMargin -
-      paddingEnd;
-
   /// Width of margin at end of EventsArea.
   final double eventsAreaEndMargin;
 
@@ -74,7 +58,6 @@ class DayViewDimensions {
       identical(this, other) ||
       other is DayViewDimensions &&
           runtimeType == other.runtimeType &&
-          width == other.width &&
           heightPerMinute == other.heightPerMinute &&
           paddingStart == other.paddingStart &&
           paddingEnd == other.paddingEnd &&
@@ -87,7 +70,6 @@ class DayViewDimensions {
 
   @override
   int get hashCode =>
-      width.hashCode ^
       heightPerMinute.hashCode ^
       paddingStart.hashCode ^
       paddingEnd.hashCode ^

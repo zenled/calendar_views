@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
 import 'dimensions_positions/all.dart';
-import 'items/all.dart';
+import 'components/all.dart';
+import 'restrictions/all.dart';
 
 class DayViewProperties extends StatefulWidget {
   DayViewProperties({
     this.minimumMinuteOfDay = 0,
     this.maximumMinuteOfDay = 24 * 60,
+    @required this.width,
     @required this.dimensions,
     @required this.items,
     @required this.child,
@@ -16,6 +18,7 @@ class DayViewProperties extends StatefulWidget {
         assert(maximumMinuteOfDay != null &&
             maximumMinuteOfDay >= 1 &&
             maximumMinuteOfDay <= (24 * 60)),
+        assert(width != null && width >= 0),
         assert(dimensions != null),
         assert(items != null),
         assert(child != null);
@@ -26,11 +29,14 @@ class DayViewProperties extends StatefulWidget {
   /// Maximum minute of day that the DayView will be able to display (inclusive).
   final int maximumMinuteOfDay;
 
+  /// Width of the dayView.
+  final double width;
+
   /// Dimensions (key points) of DayView.
   final DayViewDimensions dimensions;
 
-  /// List of items to be displayed in DayView.
-  final List<DayViewItem> items;
+  /// List of components to be displayed in DayView.
+  final List<DayViewComponent> items;
 
   /// Child of this widget
   final Widget child;
@@ -42,13 +48,18 @@ class DayViewProperties extends StatefulWidget {
 class _DayViewPropertiesState extends State<DayViewProperties> {
   @override
   Widget build(BuildContext context) {
-    return new DayViewPositions(
+    return new DayViewRestrictions(
       minimumMinuteOfDay: widget.minimumMinuteOfDay,
       maximumMinuteOfDay: widget.maximumMinuteOfDay,
-      dimensions: widget.dimensions,
-      child: new DayViewItemsProvider(
-        items: widget.items,
-        child: widget.child,
+      child: new DayViewPositions(
+        minimumMinuteOfDay: widget.minimumMinuteOfDay,
+        maximumMinuteOfDay: widget.maximumMinuteOfDay,
+        dayViewWidth: widget.width,
+        dimensions: widget.dimensions,
+        child: new DayViewComponentsProvider(
+          components: widget.items,
+          child: widget.child,
+        ),
       ),
     );
   }
