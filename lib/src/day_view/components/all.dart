@@ -1,12 +1,6 @@
-export 'events/event_builder.dart';
-export 'events/single_day_events_component.dart';
-
-export 'support_lines/interval_support_lines_component.dart';
-export 'support_lines/support_line_builder.dart';
-
-export 'time_indicators/interval_time_indicators_component.dart';
-export 'package:calendar_views/src/day_view/components/time_indicators/time_indicator_builder.dart';
-export 'package:calendar_views/src/day_view/components/time_indicators/time_indicator_properties.dart';
+export 'events_component/events_component.dart';
+export 'support_lines_component/support_lines_component.dart';
+export 'time_indicators_component/time_indicators_component.dart';
 
 export 'day_view_component.dart';
 export 'day_view_components_provider.dart';
