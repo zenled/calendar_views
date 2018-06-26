@@ -13,14 +13,16 @@ class ExtendedColumnsEventsArranger implements EventsArranger {
 
   @override
   List<ArrangedEvent> arrangeEvents({
-    @required List<PositionableEvent> events,
+    @required Set<PositionableEvent> events,
     @required ArrangerConstraints constraints,
   }) {
+    List<PositionableEvent> eventsToArrange = events.toList();
+
     // sorts events
-    sortPositionableEvents(events);
+    sortPositionableEvents(eventsToArrange);
 
     // makes columns
-    List<_Column> columns = _makeColumns(events);
+    List<_Column> columns = _makeColumns(eventsToArrange);
 
     // makes positionedEvents
     List<ArrangedEvent> positionedEvents = _columnsToPositionedEvents(
