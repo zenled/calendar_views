@@ -1,9 +1,12 @@
 import 'package:meta/meta.dart';
 
+/// Signature for a function that returns the position (from top) of some minute of day.
 typedef double ArrangerConstraintsPositionTopOfCallback(int minuteOfDay);
 
+/// Signature for a function that returns a height of some duration of minutes.
 typedef double ArrangerConstraintsHeightOfCallback(int durationInMinutes);
 
+/// Constraints passed to [EventsArranger].
 @immutable
 class ArrangerConstraints {
   ArrangerConstraints({
@@ -16,9 +19,10 @@ class ArrangerConstraints {
         assert(positionTopOf != null),
         assert(heightOf != null);
 
-  /// Size of the area in which to arrange events.
+  /// Width of the are in which events must be arranged.
   final double areaWidth;
 
+  /// Height of the area in which events must be arranged.
   final double areaHeight;
 
   /// Callback thar returns a position of some minute of day from top.

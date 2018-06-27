@@ -90,7 +90,7 @@ class _DayViewState extends State<DayView> {
           return new DayViewWidth(
             width: constraints.maxWidth,
             child: new Builder(builder: (BuildContext context) {
-              // Builder is required so that we can determine the widget height
+              // Builder is required so that we can determine height and width.
               return new Container(
                 width: DayViewWidth.of(context).width,
                 height: _determineWidgetHeight(context),
