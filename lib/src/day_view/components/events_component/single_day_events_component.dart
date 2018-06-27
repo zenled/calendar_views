@@ -47,6 +47,7 @@ class SingleDayEventsComponent extends DayViewComponent {
 
   Set<PositionableEvent> _prepareEvents(BuildContext context) {
     Set<PositionableEvent> events = _retrieveEvents(context);
+    events = _removeAllDayEvents(events);
     events = _filterEvents(events);
     events = _extractVisibleEvents(context, events);
 
@@ -55,7 +56,8 @@ class SingleDayEventsComponent extends DayViewComponent {
 
   Set<PositionableEvent> _retrieveEvents(BuildContext context) {
     DateTime date = DayViewDate.of(context).date;
-    return EventsProvider.of(context).events;
+
+    return EventsProvider.of(context).getEventsOf(date: date);
   }
 
   Set<PositionableEvent> _filterEvents(Iterable<PositionableEvent> events) {
@@ -68,6 +70,16 @@ class SingleDayEventsComponent extends DayViewComponent {
     } else {
       return events.toSet();
     }
+  }
+
+  Set<PositionableEvent> _removeAllDayEvents(
+    Iterable<PositionableEvent> events,
+  ) {
+    return events
+        .where(
+          (event) => !event.isAllDay,
+        )
+        .toSet();
   }
 
   Set<PositionableEvent> _extractVisibleEvents(
