@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
-
-import 'package:calendar_views/calendar_items.dart';
 
 import 'package:calendar_views/src/event/events/positionable_event.dart';
 import '../arranged_event.dart';
@@ -18,19 +15,14 @@ class ExtendedColumnsEventsArranger implements EventsArranger {
   }) {
     List<PositionableEvent> eventsToArrange = events.toList();
 
-    // sorts events
     sortPositionableEvents(eventsToArrange);
-
-    // makes columns
     List<_Column> columns = _makeColumns(eventsToArrange);
-
-    // makes positionedEvents
-    List<ArrangedEvent> positionedEvents = _columnsToPositionedEvents(
+    List<ArrangedEvent> arrangedEvents = _columnsToArrangedEvents(
       columns,
       constraints,
     );
 
-    return positionedEvents;
+    return arrangedEvents;
   }
 }
 
@@ -65,12 +57,11 @@ List<_Column> _makeColumns(List<PositionableEvent> events) {
   return columns;
 }
 
-/// Turns columns into positioned events.
-List<ArrangedEvent> _columnsToPositionedEvents(
+List<ArrangedEvent> _columnsToArrangedEvents(
   List<_Column> columns,
   ArrangerConstraints constraints,
 ) {
-  List<ArrangedEvent> positionedEvents = <ArrangedEvent>[];
+  List<ArrangedEvent> arrangedEvents = <ArrangedEvent>[];
 
   double columnWidth = constraints.areaWidth / columns.length;
 
@@ -89,28 +80,20 @@ List<ArrangedEvent> _columnsToPositionedEvents(
         }
       }
 
-      Position position = new Position(
-        top:
-            constraints.positionTop(reservationInColumn.event.beginMinuteOfDay),
-        left: (columnWidth * columnNumber) + constraints.areaLeft,
-      );
-
-      Size size = new Size(
-        columnWidth * widthInColumns,
-        constraints.height(reservationInColumn.event.duration),
-      );
-
-      positionedEvents.add(
+      arrangedEvents.add(
         new ArrangedEvent(
-          position: position,
-          size: size,
+          top: constraints
+              .positionTopOf(reservationInColumn.event.beginMinuteOfDay),
+          left: columnWidth * columnNumber,
+          width: columnWidth * widthInColumns,
+          height: constraints.heightOf(reservationInColumn.event.duration),
           event: reservationInColumn.event,
         ),
       );
     }
   }
 
-  return positionedEvents;
+  return arrangedEvents;
 }
 
 @immutable

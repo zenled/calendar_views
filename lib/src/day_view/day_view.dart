@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 import 'package:calendar_views/event.dart';
+import 'package:calendar_views/src/day_view/positions/positions.dart';
 import 'package:calendar_views/src/utils/all.dart' as utils;
 
-import 'dimensions_positions/all.dart';
-import 'components/all.dart';
+import 'components/components.dart';
+
 import 'day_view_date.dart';
+import 'day_view_width.dart';
 
 class DayView extends StatefulWidget {
   const DayView({
@@ -67,6 +69,13 @@ class _DayViewState extends State<DayView> {
     EventsChangedNotifier.of(context).detach(_onEventsChangedListener);
   }
 
+  double _determineWidgetHeight(BuildContext context) {
+    return DayViewPositionerGenerator
+        .of(context)
+        .createPositioner(context)
+        .height;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!_isOnEventsChangedListenerAttached) {
@@ -74,24 +83,30 @@ class _DayViewState extends State<DayView> {
       _isOnEventsChangedListenerAttached = true;
     }
 
-    return new Container(
-      width: DayViewPositions.of(context).width,
-      height: DayViewPositions.of(context).height,
-      child: new DayViewDate(
-        date: widget.date,
-        child:
-            // A builder is required so that components can access DayViewDate
-            new Builder(builder: (BuildContext context) {
-          return new Stack(
-            children: _buildComponents(context),
+    return new DayViewDate(
+      date: widget.date,
+      child: new LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          return new DayViewWidth(
+            width: constraints.maxWidth,
+            child: new Builder(builder: (BuildContext context) {
+              // Builder is required so that we can determine the widget height
+              return new Container(
+                width: DayViewWidth.of(context).width,
+                height: _determineWidgetHeight(context),
+                child: new Stack(
+                  children: _buildComponents(context),
+                ),
+              );
+            }),
           );
-        }),
+        },
       ),
     );
   }
 
   List<Positioned> _buildComponents(BuildContext context) {
-    /// Context needs to be passed here so components can access [DayViewDate].
+    // Context needs to be passed here so that components can access inherited widgets created in the build method.
 
     List<Positioned> builtComponents = <Positioned>[];
 

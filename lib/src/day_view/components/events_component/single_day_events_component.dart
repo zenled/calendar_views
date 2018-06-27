@@ -6,9 +6,9 @@ class SingleDayEventsComponent extends DayViewComponent {
   const SingleDayEventsComponent({
     this.eventsFilter,
     this.eventsArranger = const ExtendedColumnsEventsArranger(),
-    @required this.itemBuilder,
+    @required this.eventsBuilder,
   })  : assert(eventsArranger != null),
-        assert(itemBuilder != null);
+        assert(eventsBuilder != null);
 
   /// Item that tells this component if certain event should be shown.
   final EventsFilter eventsFilter;
@@ -17,73 +17,83 @@ class SingleDayEventsComponent extends DayViewComponent {
   final EventsArranger eventsArranger;
 
   /// Function that builds an event.
-  final EventBuilder itemBuilder;
+  final EventBuilder eventsBuilder;
 
   @override
   List<Positioned> buildItems(BuildContext context) {
-    List<Positioned> items = <Positioned>[];
-
-    Set<PositionableEvent> events = _prepareEvents(context);
-
-    List<ArrangedEvent> arrangedEvents = eventsArranger.arrangeEvents(
-      events: events,
-      constraints: _makeArrangerConstraints(context),
-    );
-
-    // builds events
-    for (ArrangedEvent arrangedEvent in arrangedEvents) {
-      items.add(
-        itemBuilder(
-          context: context,
-          position: arrangedEvent.position,
-          size: arrangedEvent.size,
-          event: arrangedEvent.event,
-        ),
-      );
-    }
-
-    return items;
+    Set<PositionableEvent> events = _getEvents(context);
+    return _buildItemsFromEvents(context, events);
   }
 
-  Set<PositionableEvent> _prepareEvents(BuildContext context) {
-    Set<PositionableEvent> events = _retrieveEvents(context);
+  Set<PositionableEvent> _getEvents(BuildContext context) {
+    return new _EventsPreparer(
+      context: context,
+      eventsFilter: eventsFilter,
+    ).getAndPrepareEvents();
+  }
+
+  List<Positioned> _buildItemsFromEvents(
+    BuildContext context,
+    Set<PositionableEvent> events,
+  ) {
+    DayViewPositioner positioner =
+        DayViewPositionerGenerator.of(context).createPositioner(context);
+
+    return new _ItemsBuilder(
+      context: context,
+      arranger: eventsArranger,
+      positioner: positioner,
+      itemBuilder: eventsBuilder,
+      events: events,
+    ).makeItems();
+  }
+}
+
+class _EventsPreparer {
+  _EventsPreparer({
+    @required this.context,
+    @required this.eventsFilter,
+  }) : assert(context != null);
+
+  final BuildContext context;
+
+  final EventsFilter eventsFilter;
+
+  Set<PositionableEvent> getAndPrepareEvents() {
+    Set<PositionableEvent> events = _retrieveEvents();
     events = _removeAllDayEvents(events);
     events = _filterEvents(events);
-    events = _extractVisibleEvents(context, events);
+    events = _extractFullyVisibleEvents(context, events);
 
     return events;
   }
 
-  Set<PositionableEvent> _retrieveEvents(BuildContext context) {
+  Set<PositionableEvent> _retrieveEvents() {
     DateTime date = DayViewDate.of(context).date;
 
     return EventsProvider.of(context).getEventsOf(date: date);
   }
 
+  Set<PositionableEvent> _removeAllDayEvents(
+    Iterable<PositionableEvent> events,
+  ) {
+    return events.where((event) => !event.isAllDay).toSet();
+  }
+
   Set<PositionableEvent> _filterEvents(Iterable<PositionableEvent> events) {
     if (eventsFilter != null) {
       return events
-          .where(
-            (event) => eventsFilter.shouldEventBeShown(event),
-          )
+          .where((event) => eventsFilter.shouldEventBeShown(event))
           .toSet();
     } else {
       return events.toSet();
     }
   }
 
-  Set<PositionableEvent> _removeAllDayEvents(
+  Set<PositionableEvent> _extractFullyVisibleEvents(
+    BuildContext context,
     Iterable<PositionableEvent> events,
   ) {
-    return events
-        .where(
-          (event) => !event.isAllDay,
-        )
-        .toSet();
-  }
-
-  Set<PositionableEvent> _extractVisibleEvents(
-      BuildContext context, Iterable<PositionableEvent> events) {
     int minimumMinuteOfDay = DayViewRestrictions.of(context).minimumMinuteOfDay;
     int maximumMinuteOfDay = DayViewRestrictions.of(context).maximumMinuteOfDay;
 
@@ -95,15 +105,63 @@ class SingleDayEventsComponent extends DayViewComponent {
         )
         .toSet();
   }
+}
 
-  ArrangerConstraints _makeArrangerConstraints(BuildContext context) {
-    DayViewPositions dayViewPositions = DayViewPositions.of(context);
+class _ItemsBuilder {
+  _ItemsBuilder({
+    @required this.context,
+    @required this.arranger,
+    @required this.positioner,
+    @required this.itemBuilder,
+    @required this.events,
+  })  : assert(context != null),
+        assert(arranger != null),
+        assert(positioner != null),
+        assert(itemBuilder != null),
+        assert(events != null);
 
+  final BuildContext context;
+
+  final EventsArranger arranger;
+
+  final DayViewPositioner positioner;
+
+  final EventBuilder itemBuilder;
+
+  final Set<PositionableEvent> events;
+
+  List<Positioned> makeItems() {
+    List<ArrangedEvent> arrangedEvents = arranger.arrangeEvents(
+      events: events,
+      constraints: _makeArrangerConstraints(),
+    );
+
+    return _buildArrangedEvents(arrangedEvents);
+  }
+
+  List<Positioned> _buildArrangedEvents(List<ArrangedEvent> arrangedEvents) {
+    return arrangedEvents
+        .map((arrangedEvent) => itemBuilder(
+              context: context,
+              position: new Position(
+                top: arrangedEvent.top + positioner.eventsAreaTop,
+                left: arrangedEvent.left + positioner.eventsAreaLeft,
+              ),
+              size: new Size(
+                arrangedEvent.width,
+                arrangedEvent.height,
+              ),
+              event: arrangedEvent.event,
+            ))
+        .toList();
+  }
+
+  ArrangerConstraints _makeArrangerConstraints() {
     return new ArrangerConstraints(
-      areaLeft: dayViewPositions.eventsAreaLeft,
-      areaWidth: dayViewPositions.eventAreaWidth,
-      positionTop: dayViewPositions.minuteOfDayFromTop,
-      height: dayViewPositions.heightOfMinutes,
+      areaWidth: positioner.eventsAreaWidth,
+      areaHeight: positioner.eventsAreaHeight,
+      positionTopOf: positioner.minuteOfDayFromTopInsideEventsArea,
+      heightOf: positioner.heightOfMinutes,
     );
   }
 }

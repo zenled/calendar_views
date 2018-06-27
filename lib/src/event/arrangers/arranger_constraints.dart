@@ -1,27 +1,29 @@
-import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-typedef double ArrangerConstraintPositionTopCallback(int minuteOfDay);
+typedef double ArrangerConstraintsPositionTopOfCallback(int minuteOfDay);
 
-typedef double ArrangeConstraintHeightCallback(int durationInMinutes);
+typedef double ArrangerConstraintsHeightOfCallback(int durationInMinutes);
 
 @immutable
 class ArrangerConstraints {
   ArrangerConstraints({
-    @required this.areaLeft,
     @required this.areaWidth,
-    @required this.positionTop,
-    @required this.height,
-  })  : assert(areaLeft != null),
-        assert(areaWidth != null),
-        assert(positionTop != null),
-        assert(height != null);
+    @required this.areaHeight,
+    @required this.positionTopOf,
+    @required this.heightOf,
+  })  : assert(areaWidth != null && areaWidth >= 0),
+        assert(areaHeight != null && areaHeight >= 0),
+        assert(positionTopOf != null),
+        assert(heightOf != null);
 
-  final double areaLeft;
-
+  /// Size of the area in which to arrange events.
   final double areaWidth;
 
-  final ArrangerConstraintPositionTopCallback positionTop;
+  final double areaHeight;
 
-  final ArrangeConstraintHeightCallback height;
+  /// Callback thar returns a position of some minute of day from top.
+  final ArrangerConstraintsPositionTopOfCallback positionTopOf;
+
+  /// Callback that returns the recommended height of some item, depending on the item duration.
+  final ArrangerConstraintsHeightOfCallback heightOf;
 }

@@ -1,22 +1,28 @@
-import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 import 'package:calendar_views/event.dart';
-import 'package:calendar_views/calendar_items.dart';
 
 @immutable
 class ArrangedEvent<I extends PositionableEvent> {
   ArrangedEvent({
-    @required this.position,
-    @required this.size,
+    @required this.top,
+    @required this.left,
+    @required this.width,
+    @required this.height,
     @required this.event,
-  })  : assert(position != null),
-        assert(size != null),
+  })  : assert(top != null),
+        assert(left != null),
+        assert(width != null),
+        assert(height != null),
         assert(event != null);
 
-  final Position position;
+  final double top;
 
-  final Size size;
+  final double left;
+
+  final double width;
+
+  final double height;
 
   final I event;
 }
