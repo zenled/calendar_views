@@ -36,6 +36,10 @@ class DayViewPositioner {
     return minuteOfDay - minimumMinuteOfDay;
   }
 
+  int _totalNumberOfMinutes() {
+    return maximumMinuteOfDay - minimumMinuteOfDay;
+  }
+
   /// Height of the area that should be taken by some item that lasts [minutes].
   double heightOfMinutes(int minutes) {
     return dimensions.heightPerMinute * minutes;
@@ -43,8 +47,6 @@ class DayViewPositioner {
 
   /// Location (from top) of a specific [minuteOfDay] inside DayView.
   double minuteOfDayFromTop(int minuteOfDay) {
-    assert(minuteOfDay != null);
-
     double location = dimensions.paddingTop;
     location += heightOfMinutes(
       _minutesFromMinimumMinute(minuteOfDay),
@@ -96,13 +98,29 @@ class DayViewPositioner {
       contentAreaLeft + dimensions.eventsAreaStartMargin;
 
   /// Rightmost location of EventsArea.
-  double get eventsAreaRight => eventsAreaLeft + eventAreaWidth;
+  double get eventsAreaRight => eventsAreaLeft + eventsAreaWidth;
+
+  /// Topmost location of EventsArea.
+  double get eventsAreaTop => dimensions.paddingTop;
+
+  /// Bottommost location of EventsArea.
+  double get eventsAreBottom => height - dimensions.paddingBottom;
 
   /// Width of EventsArea.
-  double get eventAreaWidth =>
+  double get eventsAreaWidth =>
       width -
       timeIndicationAreaWidth -
       separationAreaWidth -
       dimensions.eventsAreaStartMargin -
       dimensions.eventsAreaEndMargin;
+
+  double get eventsAreaHeight => heightOfMinutes(
+        _totalNumberOfMinutes(),
+      );
+
+  double minuteOfDayFromTopInsideEventsArea(int minuteOfDay) {
+    return heightOfMinutes(
+      _minutesFromMinimumMinute(minuteOfDay),
+    );
+  }
 }
