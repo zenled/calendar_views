@@ -1,13 +1,22 @@
+library calendar_events;
+
+import 'dart:async';
+import 'dart:core';
+
 import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 
-import '../positionable_event.dart';
+import 'package:calendar_views/src/internal_date_items/all.dart';
 
-import 'events_master.dart';
+import 'package:calendar_views/src/event/events/positionable_event.dart';
 
-/// Function that returns a set of events that happen on specific [date].
-typedef Set<PositionableEvent> EventsGetter(DateTime date);
+part 'events_changed_notifier.dart';
 
-typedef RefreshEventsOfDateCallback(DateTime date);
+part 'events_manager.dart';
+
+part 'events_provider.dart';
+
+part 'events_refresher.dart';
 
 class CalendarEvents extends StatefulWidget {
   CalendarEvents({
@@ -18,6 +27,7 @@ class CalendarEvents extends StatefulWidget {
 
   final Widget child;
 
+  /// Function that provides events to this widget.
   final EventsFetcher eventsFetcher;
 
   @override
@@ -25,13 +35,13 @@ class CalendarEvents extends StatefulWidget {
 }
 
 class _CalendarEventsState extends State<CalendarEvents> {
-  EventsMaster _eventsMaster;
+  _EventsManager _eventsManager;
 
   @override
   void initState() {
     super.initState();
 
-    _eventsMaster = new EventsMaster(
+    _eventsManager = new _EventsManager(
       eventsFetcher: widget.eventsFetcher,
     );
   }
@@ -41,65 +51,23 @@ class _CalendarEventsState extends State<CalendarEvents> {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.eventsFetcher != widget.eventsFetcher) {
-      _eventsMaster.eventsFetcher = widget.eventsFetcher;
+      _eventsManager.eventsFetcher = widget.eventsFetcher;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return new EventsProvider(
-      getEventsOfDate: _eventsMaster.getEventsOfDate,
-      attachOnEventsOfDateChangedListener: _eventsMaster.attachListener,
-      detachOnEventsOfDateChangedListener: _eventsMaster.detachListener,
-      refreshEventsOfDate: _eventsMaster.refreshEventsOfDate,
-      refreshEventsOfAllDates: _eventsMaster.refreshEventsOfAllDates,
-      child: widget.child,
+      getEventsOf: _eventsManager.getEventsOf,
+      child: new EventsRefresher(
+        refreshEventsOf: _eventsManager.getEventsOf,
+        refreshEventsOfAllDates: _eventsManager.refreshEventsOfAllDates,
+        child: new EventsChangedNotifier(
+          attach: _eventsManager.attachOnEventsChangedListener,
+          detach: _eventsManager.detachOnEventsChangedListener,
+          child: widget.child,
+        ),
+      ),
     );
-  }
-}
-
-class EventsProvider extends InheritedWidget {
-  EventsProvider({
-    @required this.getEventsOfDate,
-    @required this.attachOnEventsOfDateChangedListener,
-    @required this.detachOnEventsOfDateChangedListener,
-    @required this.refreshEventsOfDate,
-    @required this.refreshEventsOfAllDates,
-    @required Widget child,
-  })  : assert(getEventsOfDate != null),
-        assert(attachOnEventsOfDateChangedListener != null),
-        assert(detachOnEventsOfDateChangedListener != null),
-        assert(refreshEventsOfDate != null),
-        assert(refreshEventsOfAllDates != null),
-        super(child: child);
-
-  /// Returns a set of events that happen on [date].
-  final EventsGetter getEventsOfDate;
-
-  /// Attaches [EventsOfDateChangedListener].
-  final EventsOfDateChangedListenerCallback attachOnEventsOfDateChangedListener;
-
-  /// Detaches [EventsOfDateChangedListener].
-  final EventsOfDateChangedListenerCallback detachOnEventsOfDateChangedListener;
-
-  /// Forces a refresh of evens that happen on [date]
-  final RefreshEventsOfDateCallback refreshEventsOfDate;
-
-  /// Forces a refresh of events of all dates of which data has been previously fetched.
-  final VoidCallback refreshEventsOfAllDates;
-
-  @override
-  bool updateShouldNotify(EventsProvider oldWidget) {
-    return oldWidget.getEventsOfDate != getEventsOfDate ||
-        oldWidget.attachOnEventsOfDateChangedListener !=
-            attachOnEventsOfDateChangedListener ||
-        oldWidget.detachOnEventsOfDateChangedListener !=
-            detachOnEventsOfDateChangedListener ||
-        oldWidget.refreshEventsOfDate != refreshEventsOfDate ||
-        oldWidget.refreshEventsOfAllDates != refreshEventsOfDate;
-  }
-
-  static EventsProvider of(BuildContext context) {
-    return context.inheritFromWidgetOfExactType(EventsProvider);
   }
 }

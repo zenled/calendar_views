@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/calendar_items.dart';
 
-import '../../positionable_event.dart';
+import 'package:calendar_views/src/event/events/positionable_event.dart';
 import '../arranged_event.dart';
 import '../arranger_constraints.dart';
 import '../events_arranger.dart';

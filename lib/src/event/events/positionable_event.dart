@@ -13,11 +13,13 @@ abstract class PositionableEvent {
   int get beginMinuteOfDay;
 
   /// Duration of the event.
+  ///
+  /// If event [isAllDay] this should return null.
   int get duration;
 
   /// Minute of day at which the event ends (inclusive).
   ///
-  /// If event [isAllDay] this should be null.
+  /// If event [isAllDay] this should return null.
   int get endMinuteOfDay => beginMinuteOfDay + duration;
 
   int get year;

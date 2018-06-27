@@ -1,36 +1,28 @@
-import 'dart:async';
-
-import 'package:meta/meta.dart';
-
-import '../positionable_event.dart';
-
-import 'package:calendar_views/src/internal_date_items/all.dart';
+part of calendar_events;
 
 /// Function that returns a Future with a set of events that happen on specific [date].
 typedef Future<Set<PositionableEvent>> EventsFetcher(DateTime date);
 
-/// Callback that occurs when a set of events that happen on some day has been changed.
-typedef void OnEventsChangedCallback();
-
-typedef void EventsOfDateChangedListenerCallback(
-    EventsOfDateChangedListener listener);
+typedef void OnEventsChangedListenerCallback(OnEventsChangedListener listener);
 
 /// Class for listening for changes of events of [date].
-class EventsOfDateChangedListener {
-  EventsOfDateChangedListener({
+class OnEventsChangedListener {
+  OnEventsChangedListener({
     @required this.date,
     @required this.onEventsChanged,
   })  : assert(date != null),
         assert(onEventsChanged != null);
 
+  /// Listener is listening for change of events of this [date].
   final DateTime date;
 
-  final OnEventsChangedCallback onEventsChanged;
+  /// Function that fires when the set of events of [date] has changed.
+  final VoidCallback onEventsChanged;
 }
 
 /// Class that retrieves, stores and refreshes events and notifies listeners when changes happen.
-class EventsMaster {
-  EventsMaster({
+class _EventsManager {
+  _EventsManager({
     @required EventsFetcher eventsFetcher,
   }) : assert(eventsFetcher != null) {
     _eventsFetcher = eventsFetcher;
@@ -48,7 +40,11 @@ class EventsMaster {
   set eventsFetcher(EventsFetcher value) => _eventsFetcher = _eventsFetcher;
 
   /// Returns a set of [PositionableEvent]s that happen on specific [date].
-  Set<PositionableEvent> getEventsOfDate(DateTime date) {
+  Set<PositionableEvent> getEventsOf({
+    @required DateTime date,
+  }) {
+    assert(date != null);
+
     Date day = Date.fromDateTime(date);
 
     if (!_eventsStorage.haveEventOfDayBeenSet(day)) {
@@ -58,8 +54,12 @@ class EventsMaster {
     return _eventsStorage.getEventsOfDay(day);
   }
 
-  /// Refreshes events for a specific [date].
-  void refreshEventsOfDate(DateTime date) {
+  /// Refreshes events of a specific [date].
+  void refreshEventsOfDate({
+    @required DateTime date,
+  }) {
+    assert(date != null);
+
     Date day = new Date.fromDateTime(date);
 
     _handleRefreshOfEventsOfDay(day);
@@ -72,9 +72,7 @@ class EventsMaster {
     }
   }
 
-  void attachListener(EventsOfDateChangedListener listener) {
-    assert(listener != null);
-
+  void attachOnEventsChangedListener(OnEventsChangedListener listener) {
     Date day = new Date.fromDateTime(listener.date);
 
     _listenersHandler.addListener(
@@ -83,9 +81,7 @@ class EventsMaster {
     );
   }
 
-  void detachListener(EventsOfDateChangedListener listener) {
-    assert(listener != null);
-
+  void detachOnEventsChangedListener(OnEventsChangedListener listener) {
     Date day = new Date.fromDateTime(listener.date);
 
     _listenersHandler.removeListener(
@@ -143,11 +139,11 @@ class _ListenersHandler {
     _dayToChangeListenersMap = new Map();
   }
 
-  Map<Date, Set<EventsOfDateChangedListener>> _dayToChangeListenersMap;
+  Map<Date, Set<OnEventsChangedListener>> _dayToChangeListenersMap;
 
   void addListener({
     @required Date day,
-    @required EventsOfDateChangedListener listener,
+    @required OnEventsChangedListener listener,
   }) {
     assert(day != null);
     assert(listener != null);
@@ -161,7 +157,7 @@ class _ListenersHandler {
 
   void removeListener({
     @required Date day,
-    @required EventsOfDateChangedListener listener,
+    @required OnEventsChangedListener listener,
   }) {
     assert(day != null);
     assert(listener != null);
@@ -177,8 +173,7 @@ class _ListenersHandler {
 
   void invokeListenersOfDay(Date day) {
     if (_dayToChangeListenersMap.containsKey(day)) {
-      for (EventsOfDateChangedListener listener
-          in _dayToChangeListenersMap[day]) {
+      for (OnEventsChangedListener listener in _dayToChangeListenersMap[day]) {
         listener.onEventsChanged();
       }
     }
