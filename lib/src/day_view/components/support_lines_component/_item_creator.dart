@@ -4,18 +4,18 @@ class _ItemCreator {
   _ItemCreator({
     @required this.context,
     @required this.restrictions,
-    @required this.positions,
+    @required this.positioner,
     @required this.itemBuilder,
   })  : assert(context != null),
         assert(restrictions != null),
-        assert(positions != null),
+        assert(positioner != null),
         assert(itemBuilder != null);
 
   BuildContext context;
 
   DayViewRestrictions restrictions;
 
-  DayViewPositions positions;
+  DayViewPositioner positioner;
 
   SupportLineBuilder itemBuilder;
 
@@ -39,12 +39,12 @@ class _ItemCreator {
 
   Position _createItemPosition(int minuteOfDay) {
     return new Position(
-      top: positions.minuteOfDayFromTop(minuteOfDay),
-      left: positions.contentAreaLeft,
+      top: positioner.minuteOfDayFromTop(minuteOfDay),
+      left: positioner.contentAreaLeft,
     );
   }
 
   double _getItemWidth() {
-    return positions.contentAreaWidth;
+    return positioner.contentAreaWidth;
   }
 }

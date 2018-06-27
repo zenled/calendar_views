@@ -97,13 +97,14 @@ class SingleDayEventsComponent extends DayViewComponent {
   }
 
   ArrangerConstraints _makeArrangerConstraints(BuildContext context) {
-    DayViewPositions dayViewPositions = DayViewPositions.of(context);
+    DayViewPositioner positioner =
+        DayViewPositionerGenerator.of(context).createPositioner(context);
 
     return new ArrangerConstraints(
-      areaLeft: dayViewPositions.eventsAreaLeft,
-      areaWidth: dayViewPositions.eventAreaWidth,
-      positionTop: dayViewPositions.minuteOfDayFromTop,
-      height: dayViewPositions.heightOfMinutes,
+      areaLeft: positioner.eventsAreaLeft,
+      areaWidth: positioner.eventAreaWidth,
+      positionTop: positioner.minuteOfDayFromTop,
+      height: positioner.heightOfMinutes,
     );
   }
 }

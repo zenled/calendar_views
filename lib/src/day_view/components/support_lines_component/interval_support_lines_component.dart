@@ -45,7 +45,8 @@ class IntervalSupportLineComponent implements DayViewComponent {
     _ItemCreator itemCreator = new _ItemCreator(
       context: context,
       restrictions: DayViewRestrictions.of(context),
-      positions: DayViewPositions.of(context),
+      positioner:
+          DayViewPositionerGenerator.of(context).createPositioner(context),
       itemBuilder: itemBuilder,
     );
 

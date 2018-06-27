@@ -1,3 +1,5 @@
+library day_view_components;
+
 export 'events_component/events_component.dart';
 export 'support_lines_component/support_lines_component.dart';
 export 'time_indicators_component/time_indicators_component.dart';

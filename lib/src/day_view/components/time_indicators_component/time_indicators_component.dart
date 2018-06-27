@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 import 'package:calendar_views/calendar_items.dart';
+import 'package:calendar_views/src/day_view/positions/positions.dart';
 import 'package:calendar_views/src/utils/all.dart';
 
-import '../../dimensions_positions/day_view_positions.dart';
-import '../../restrictions/all.dart';
+import '../../restrictions/restrictions.dart';
 import '../day_view_component.dart';
 
 part '_item_creator.dart';

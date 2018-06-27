@@ -4,18 +4,18 @@ class _ItemCreator {
   _ItemCreator({
     @required this.context,
     @required this.restrictions,
-    @required this.positions,
+    @required this.positioner,
     @required this.itemBuilder,
   })  : assert(context != null),
         assert(restrictions != null),
-        assert(positions != null),
+        assert(positioner != null),
         assert(itemBuilder != null);
 
   final BuildContext context;
 
   final DayViewRestrictions restrictions;
 
-  final DayViewPositions positions;
+  final DayViewPositioner positioner;
 
   final TimeIndicatorBuilder itemBuilder;
 
@@ -45,8 +45,8 @@ class _ItemCreator {
     @required int duration,
   }) {
     return new Position(
-      top: positions.minuteOfDayFromTop(minuteOfDay - (duration ~/ 2)),
-      left: positions.timeIndicationAreaLeft,
+      top: positioner.minuteOfDayFromTop(minuteOfDay - (duration ~/ 2)),
+      left: positioner.timeIndicationAreaLeft,
     );
   }
 
@@ -54,8 +54,8 @@ class _ItemCreator {
     @required int duration,
   }) {
     return new Size(
-      positions.dimensions.timeIndicationAreaWidth,
-      positions.heightOfMinutes(duration),
+      positioner.dimensions.timeIndicationAreaWidth,
+      positioner.heightOfMinutes(duration),
     );
   }
 }

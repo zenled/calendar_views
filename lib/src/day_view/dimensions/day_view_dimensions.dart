@@ -1,4 +1,4 @@
-import 'package:meta/meta.dart';
+part of day_view_dimensions;
 
 /// Sizes of key DayView components.
 @immutable

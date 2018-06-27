@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-
-import 'package:calendar_views/src/utils/all.dart';
+part of day_view_restrictions;
 
 /// Widget that propagates restrictions placed upon DayViews.
 class DayViewRestrictions extends InheritedWidget {
