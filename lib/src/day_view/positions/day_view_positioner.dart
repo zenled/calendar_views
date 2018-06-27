@@ -55,7 +55,7 @@ class DayViewPositioner {
   // TimeIndication area
 
   /// Leftmost location of TimeIndicationArea.
-  double get timeIndicationAreaLeft => dimensions.paddingStart;
+  double get timeIndicationAreaLeft => 0.0;
 
   /// Rightmost location of TimeIndicationArea.
   double get timeIndicationAreaRight =>
@@ -67,8 +67,7 @@ class DayViewPositioner {
   // Separation area
 
   /// Leftmost location of SeparationArea.
-  double get separationAreaLeft =>
-      dimensions.paddingStart + dimensions.timeIndicationAreaWidth;
+  double get separationAreaLeft => timeIndicationAreaRight;
 
   /// Rightmost location of separationArea.
   double get separationAreaRight => separationAreaLeft + separationAreaWidth;
@@ -79,10 +78,7 @@ class DayViewPositioner {
   // Content area
 
   /// Leftmost location of ContentArea.
-  double get contentAreaLeft =>
-      dimensions.paddingStart +
-      dimensions.timeIndicationAreaWidth +
-      dimensions.separationAreaWidth;
+  double get contentAreaLeft => separationAreaRight;
 
   /// Rightmost location of ContentArea.
   double get contentAreaRight => contentAreaLeft + contentAreaWidth;
@@ -90,19 +86,14 @@ class DayViewPositioner {
   /// Width of ContentArea.
   double get contentAreaWidth =>
       width -
-      dimensions.paddingStart -
       dimensions.timeIndicationAreaWidth -
-      dimensions.separationAreaWidth -
-      dimensions.paddingEnd;
+      dimensions.separationAreaWidth;
 
   // Events area
 
   /// Leftmost location of EventsArea.
   double get eventsAreaLeft =>
-      dimensions.paddingStart +
-      dimensions.timeIndicationAreaWidth +
-      dimensions.separationAreaWidth +
-      dimensions.eventsAreaStartMargin;
+      contentAreaLeft + dimensions.eventsAreaStartMargin;
 
   /// Rightmost location of EventsArea.
   double get eventsAreaRight => eventsAreaLeft + eventAreaWidth;
@@ -110,10 +101,8 @@ class DayViewPositioner {
   /// Width of EventsArea.
   double get eventAreaWidth =>
       width -
-      dimensions.paddingStart -
-      dimensions.timeIndicationAreaWidth -
-      dimensions.separationAreaWidth -
+      timeIndicationAreaWidth -
+      separationAreaWidth -
       dimensions.eventsAreaStartMargin -
-      dimensions.eventsAreaEndMargin -
-      dimensions.paddingEnd;
+      dimensions.eventsAreaEndMargin;
 }

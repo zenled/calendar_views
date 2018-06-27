@@ -5,8 +5,6 @@ part of day_view_dimensions;
 class DayViewDimensions {
   const DayViewDimensions({
     this.heightPerMinute = 1.0,
-    this.paddingStart = 16.0,
-    this.paddingEnd = 16.0,
     this.paddingTop = 40.0,
     this.paddingBottom = 40.0,
     this.timeIndicationAreaWidth = 60.0,
@@ -14,8 +12,6 @@ class DayViewDimensions {
     this.eventsAreaStartMargin = 8.0,
     this.eventsAreaEndMargin = 8.0,
   })  : assert(heightPerMinute != null && heightPerMinute > 0),
-        assert(paddingStart != null && paddingStart >= 0),
-        assert(paddingEnd != null && paddingEnd >= 0),
         assert(paddingTop != null && paddingTop >= 0),
         assert(paddingBottom != null && paddingBottom >= 0),
         assert(timeIndicationAreaWidth != null && timeIndicationAreaWidth >= 0),
@@ -27,12 +23,6 @@ class DayViewDimensions {
   final double heightPerMinute;
 
   // padding
-
-  /// Padding at the start (left) of DayView.
-  final double paddingStart;
-
-  /// Padding at the end (right) of DayView.
-  final double paddingEnd;
 
   /// Padding at the top of DayView.
   final double paddingTop;
@@ -62,8 +52,6 @@ class DayViewDimensions {
       other is DayViewDimensions &&
           runtimeType == other.runtimeType &&
           heightPerMinute == other.heightPerMinute &&
-          paddingStart == other.paddingStart &&
-          paddingEnd == other.paddingEnd &&
           paddingTop == other.paddingTop &&
           paddingBottom == other.paddingBottom &&
           timeIndicationAreaWidth == other.timeIndicationAreaWidth &&
@@ -74,8 +62,6 @@ class DayViewDimensions {
   @override
   int get hashCode =>
       heightPerMinute.hashCode ^
-      paddingStart.hashCode ^
-      paddingEnd.hashCode ^
       paddingTop.hashCode ^
       paddingBottom.hashCode ^
       timeIndicationAreaWidth.hashCode ^
