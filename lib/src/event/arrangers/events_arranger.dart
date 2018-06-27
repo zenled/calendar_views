@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 import 'package:calendar_views/src/event/events/positionable_event.dart';
