@@ -5,7 +5,7 @@ class SingleDayEventsComponent extends DayViewComponent {
   /// Creates a [DayViewComponent] that builds events of a single day.
   const SingleDayEventsComponent({
     this.eventsFilter,
-    this.eventsArranger = const ExtendedColumnsEventsArranger(),
+    this.eventsArranger = const ColumnsEventsArranger(),
     @required this.eventsBuilder,
   })  : assert(eventsArranger != null),
         assert(eventsBuilder != null);

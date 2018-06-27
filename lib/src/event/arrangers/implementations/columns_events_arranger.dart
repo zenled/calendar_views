@@ -5,8 +5,14 @@ import '../arranged_event.dart';
 import '../arranger_constraints.dart';
 import '../events_arranger.dart';
 
-class ExtendedColumnsEventsArranger implements EventsArranger {
-  const ExtendedColumnsEventsArranger();
+@immutable
+class ColumnsEventsArranger implements EventsArranger {
+  const ColumnsEventsArranger({
+    this.extendColumns = true,
+  }) : assert(extendColumns != null);
+
+  /// If true event in column will be extended (horizontally) to fill the available space.
+  final bool extendColumns;
 
   @override
   List<ArrangedEvent> arrangeEvents({
@@ -17,12 +23,12 @@ class ExtendedColumnsEventsArranger implements EventsArranger {
 
     sortPositionableEvents(eventsToArrange);
     List<_Column> columns = _makeColumns(eventsToArrange);
-    List<ArrangedEvent> arrangedEvents = _columnsToArrangedEvents(
-      columns,
-      constraints,
-    );
 
-    return arrangedEvents;
+    return _columnsToArrangedEvents(
+      columns: columns,
+      constraints: constraints,
+      extendColumns: extendColumns,
+    );
   }
 }
 
@@ -57,10 +63,29 @@ List<_Column> _makeColumns(List<PositionableEvent> events) {
   return columns;
 }
 
-List<ArrangedEvent> _columnsToArrangedEvents(
-  List<_Column> columns,
-  ArrangerConstraints constraints,
-) {
+List<ArrangedEvent> _columnsToArrangedEvents({
+  @required List<_Column> columns,
+  @required ArrangerConstraints constraints,
+  @required bool extendColumns,
+}) {
+  int determineWidthInColumns(int columnNumber, _Reservation reservation) {
+    int widthInColumns = 1;
+
+    if (extendColumns) {
+      for (int i = columnNumber + 1; i < columns.length; i++) {
+        _Column columnToDevour = columns[i];
+
+        if (columnToDevour.isReservationAvailable(reservation)) {
+          widthInColumns++;
+        } else {
+          break;
+        }
+      }
+    }
+
+    return widthInColumns;
+  }
+
   List<ArrangedEvent> arrangedEvents = <ArrangedEvent>[];
 
   double columnWidth = constraints.areaWidth / columns.length;
@@ -69,16 +94,10 @@ List<ArrangedEvent> _columnsToArrangedEvents(
     _Column column = columns[columnNumber];
 
     for (_Reservation reservationInColumn in column.reservations) {
-      int widthInColumns = 1;
-      for (int i = columnNumber + 1; i < columns.length; i++) {
-        _Column columnToDevour = columns[i];
-
-        if (columnToDevour.isReservationAvailable(reservationInColumn)) {
-          widthInColumns++;
-        } else {
-          break;
-        }
-      }
+      int widthInColumns = determineWidthInColumns(
+        columnNumber,
+        reservationInColumn,
+      );
 
       arrangedEvents.add(
         new ArrangedEvent(
