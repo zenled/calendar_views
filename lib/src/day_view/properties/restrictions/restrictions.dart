@@ -21,6 +21,8 @@ class Restrictions {
   /// Maximum minute of day that a DayView is allowed to display (inclusive).
   final int maximumMinuteOfDay;
 
+  int get totalNumberOfMinutes => maximumMinuteOfDay - minimumMinuteOfDay;
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||

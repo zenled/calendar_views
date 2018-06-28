@@ -6,16 +6,16 @@ class Dimensions {
   const Dimensions({
     this.heightPerMinute = 1.0,
     this.separationBetweenDays = 20.0,
-    this.paddingTop = 40.0,
-    this.paddingBottom = 40.0,
+    this.topExtension = 40.0,
+    this.bottomExtension = 40.0,
     this.timeIndicationAreaWidth = 60.0,
     this.separationAreaWidth = 4.0,
     this.eventsAreaStartMargin = 8.0,
     this.eventsAreaEndMargin = 8.0,
   })  : assert(heightPerMinute != null && heightPerMinute > 0),
         assert(separationBetweenDays != null && separationBetweenDays >= 0),
-        assert(paddingTop != null && paddingTop >= 0),
-        assert(paddingBottom != null && paddingBottom >= 0),
+        assert(topExtension != null && topExtension >= 0),
+        assert(bottomExtension != null && bottomExtension >= 0),
         assert(timeIndicationAreaWidth != null && timeIndicationAreaWidth >= 0),
         assert(separationAreaWidth != null && separationAreaWidth >= 0),
         assert(eventsAreaStartMargin != null && eventsAreaStartMargin >= 0),
@@ -27,13 +27,13 @@ class Dimensions {
   /// Separation between days of DayView.
   final double separationBetweenDays;
 
-  // padding
+  // extension
 
-  /// Padding at the top of DayView.
-  final double paddingTop;
+  /// Extension at the top of DayView.
+  final double topExtension;
 
-  /// Padding at the bottom of DayView
-  final double paddingBottom;
+  /// Extension at the bottom of DayView
+  final double bottomExtension;
 
   // areas from start to end
 
@@ -58,8 +58,8 @@ class Dimensions {
           runtimeType == other.runtimeType &&
           heightPerMinute == other.heightPerMinute &&
           separationBetweenDays == other.separationBetweenDays &&
-          paddingTop == other.paddingTop &&
-          paddingBottom == other.paddingBottom &&
+          topExtension == other.topExtension &&
+          bottomExtension == other.bottomExtension &&
           timeIndicationAreaWidth == other.timeIndicationAreaWidth &&
           separationAreaWidth == other.separationAreaWidth &&
           eventsAreaStartMargin == other.eventsAreaStartMargin &&
@@ -69,8 +69,8 @@ class Dimensions {
   int get hashCode =>
       heightPerMinute.hashCode ^
       separationBetweenDays.hashCode ^
-      paddingTop.hashCode ^
-      paddingBottom.hashCode ^
+      topExtension.hashCode ^
+      bottomExtension.hashCode ^
       timeIndicationAreaWidth.hashCode ^
       separationAreaWidth.hashCode ^
       eventsAreaStartMargin.hashCode ^
