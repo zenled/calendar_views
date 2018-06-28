@@ -6,7 +6,7 @@ import 'package:meta/meta.dart';
 import 'package:calendar_views/event.dart';
 import 'package:calendar_views/src/day_view/positions/positions.dart';
 import 'package:calendar_views/src/day_view/restrictions/restrictions.dart';
-import 'package:calendar_views/src/day_view/day_view_dates.dart';
+import 'package:calendar_views/src/day_view/info/info.dart';
 import 'package:calendar_views/calendar_items.dart';
 
 import '../events_component.dart';

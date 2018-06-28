@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 import 'package:calendar_views/event.dart';
-import 'package:calendar_views/src/day_view/positions/positions.dart';
 import 'package:calendar_views/src/utils/all.dart' as utils;
 
-import 'components/components.dart';
+import 'package:calendar_views/src/day_view/info/info.dart';
+import 'package:calendar_views/src/day_view/positions/positions.dart';
 
-import 'day_view_dates.dart';
-import 'day_view_width.dart';
+import 'components/components.dart';
 
 class DayView extends StatefulWidget {
   const DayView({

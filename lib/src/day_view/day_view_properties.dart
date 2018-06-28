@@ -23,7 +23,7 @@ class DayViewProperties extends StatefulWidget {
         assert(components != null),
         assert(child != null);
 
-  /// Minimum minute of day that the DayView will be able to Sdisplay (inclusive).
+  /// Minimum minute of day that the DayView will be able to display (inclusive).
   final int minimumMinuteOfDay;
 
   /// Maximum minute of day that the DayView will be able to display (inclusive).

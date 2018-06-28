@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
+part of day_view_info;
 
 class DayViewWidth extends InheritedWidget {
   DayViewWidth({

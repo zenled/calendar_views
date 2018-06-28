@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
-
-import 'package:calendar_views/src/utils/all.dart' as util;
+part of day_view_info;
 
 /// Widget that propagates DayView's dates down the tree.
 class DayViewDates extends InheritedWidget {
@@ -18,7 +15,7 @@ class DayViewDates extends InheritedWidget {
 
   @override
   bool updateShouldNotify(DayViewDates oldWidget) {
-    return !util.areListsOfDatesTheSame(oldWidget.dates, dates);
+    return !utils.areListsOfDatesTheSame(oldWidget.dates, dates);
   }
 
   static DayViewDates of(BuildContext context) {
