@@ -1,51 +1,24 @@
-part of day_view_positions;
+import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
+
+import 'package:calendar_views/src/day_view/properties/all.dart';
 
 @immutable
-class DayViewPositioner {
-  DayViewPositioner({
-    @required this.minimumMinuteOfDay,
-    @required this.maximumMinuteOfDay,
-    @required this.numberOfDays,
+class PositioningAssistant {
+  PositioningAssistant({
+    @required this.dates,
     @required this.dimensions,
-    @required this.width,
-  })  : assert(minimumMinuteOfDay != null &&
-            isValidMinuteOfDay(minimumMinuteOfDay)),
-        assert(maximumMinuteOfDay != null &&
-            isValidMinuteOfDay(maximumMinuteOfDay)),
-        assert(minimumMinuteOfDay <= maximumMinuteOfDay),
-        assert(numberOfDays != null && numberOfDays > 0),
+    @required this.restrictions,
+    @required this.sizes,
+  })  : assert(dates != null),
         assert(dimensions != null),
-        assert(width != null && width >= 0);
+        assert(restrictions != null),
+        assert(sizes != null);
 
-  final int minimumMinuteOfDay;
-
-  final int maximumMinuteOfDay;
-
-  final int positioningAssistant;
-
-  /// Number of days that this positioner can position.
-  final int numberOfDays;
-
-  /// Dimensions to acknowledge when positioning.
-  final DayViewDimensions dimensions;
-
-  /// Width of the whole positioning area.
-  final double width;
-
-  /// Height that the whole positioning area.
-  double get height =>
-      dimensions.paddingTop +
-      heightOfMinutes(maximumMinuteOfDay - minimumMinuteOfDay) +
-      dimensions.paddingBottom;
-
-  /// Returns number of minutes between [minimumMinuteOfDay] and [minuteOfDay].
-  int _minutesFromMinimumMinute(int minuteOfDay) {
-    return minuteOfDay - minimumMinuteOfDay;
-  }
-
-  int _totalNumberOfMinutes() {
-    return maximumMinuteOfDay - minimumMinuteOfDay;
-  }
+  final Dates dates;
+  final Dimensions dimensions;
+  final Restrictions restrictions;
+  final Sizes sizes;
 
   /// Height of the area that should be taken by some item that lasts [minutes].
   double heightOfMinutes(int minutes) {
@@ -54,14 +27,50 @@ class DayViewPositioner {
 
   /// Location (from top) of a specific [minuteOfDay] inside DayView.
   double minuteOfDayFromTop(int minuteOfDay) {
-    double location = dimensions.paddingTop;
+    double location = dimensions.topExtension;
     location += heightOfMinutes(
       _minutesFromMinimumMinute(minuteOfDay),
     );
     return location;
   }
 
-  // TimeIndication area
+  // total Size ----------------------------------------------------------------
+
+  double get totalAreaWidth => sizes.totalAvailableWidth;
+
+  /// Height that the whole positioning area.
+  double get totalAreaHeight =>
+      dimensions.topExtension +
+      heightOfMinutes(_totalNumberOfMinutes) +
+      dimensions.bottomExtension;
+
+  Size get totalSize => new Size(totalAreaWidth, totalAreaHeight);
+
+  double get totalAreaLeft => 0.0;
+
+  double get totalAreaRight => totalAreaLeft + totalAreaWidth;
+
+  double get totalAreaTop => 0.0;
+
+  double get totalAreaBottom => totalAreaTop + totalAreaHeight;
+
+  double minuteOfDayFromTopInsideTotalArea(int minuteOfDay) {
+    _throwArgumentErrorIfInvalidMinuteOfDay(minuteOfDay);
+
+    double r = dimensions.topExtension;
+    r += heightOfMinutes(_minutesFromMinimumMinute(minuteOfDay));
+    return r;
+  }
+
+  // TimeIndication area -------------------------------------------------------
+
+  /// Width of TimeIndicationArea.
+  double get timeIndicationAreaWidth => dimensions.timeIndicationAreaWidth;
+
+  double get timeIndicationAreHeight => totalAreaHeight;
+
+  Size get timeIndicationAreaSize =>
+      new Size(timeIndicationAreaWidth, timeIndicationAreHeight);
 
   /// Leftmost location of TimeIndicationArea.
   double get timeIndicationAreaLeft => 0.0;
@@ -70,10 +79,23 @@ class DayViewPositioner {
   double get timeIndicationAreaRight =>
       timeIndicationAreaLeft + timeIndicationAreaWidth;
 
-  /// Width of TimeIndicationArea.
-  double get timeIndicationAreaWidth => dimensions.timeIndicationAreaWidth;
+  double get timeIndicationAreaTop => 0.0;
 
-  // Separation area
+  double get timeIndicationAreaBottom => totalAreaWidth;
+
+  double minuteOfDayFromTopInsideTimeIndicationArea(int minuteOfDay) {
+    return minuteOfDayFromTopInsideTotalArea(minuteOfDay);
+  }
+
+  // Separation area -----------------------------------------------------------
+
+  /// Width of SeparationArea.
+  double get separationAreaWidth => dimensions.separationAreaWidth;
+
+  double get separationAreaHeight => totalAreaHeight;
+
+  Size get separationAreaSize =>
+      new Size(separationAreaWidth, separationAreaHeight);
 
   /// Leftmost location of SeparationArea.
   double get separationAreaLeft => timeIndicationAreaRight;
@@ -81,24 +103,52 @@ class DayViewPositioner {
   /// Rightmost location of separationArea.
   double get separationAreaRight => separationAreaLeft + separationAreaWidth;
 
-  /// Width of SeparationArea.
-  double get separationAreaWidth => dimensions.separationAreaWidth;
+  double get separationAreaTop => 0.0;
 
-  // Content area
+  double get separationAreaBottom => totalAreaHeight;
+
+  double minuteOfDayFromTopInsideSeparationArea(int minuteOfDay) {
+    return minuteOfDayFromTopInsideTotalArea(minuteOfDay);
+  }
+
+  // Content area --------------------------------------------------------------
+
+  /// Width of ContentArea.
+  double get contentAreaWidth =>
+      totalAreaWidth - timeIndicationAreaWidth - separationAreaWidth;
+
+  double get contentAreaHeight => totalAreaHeight;
+
+  Size get contentAreaSize => new Size(contentAreaWidth, contentAreaHeight);
 
   /// Leftmost location of ContentArea.
   double get contentAreaLeft => separationAreaRight;
 
-  /// Rightmost location of ContentArea.
   double get contentAreaRight => contentAreaLeft + contentAreaWidth;
 
-  /// Width of ContentArea.
-  double get contentAreaWidth =>
-      width -
-      dimensions.timeIndicationAreaWidth -
-      dimensions.separationAreaWidth;
+  double get contentAreaTop => 0.0;
 
-  // Events area
+  double get contentAreaBottom => totalAreaHeight;
+
+  double minuteOfDayFromTopInsideContentArea(int minuteOfDay) {
+    return minuteOfDayFromTopInsideTotalArea(minuteOfDay);
+  }
+
+  // Events area ---------------------------------------------------------------
+
+  /// Width of EventsArea.
+  double get eventsAreaWidth =>
+      totalAreaWidth -
+      timeIndicationAreaWidth -
+      separationAreaWidth -
+      dimensions.eventsAreaStartMargin -
+      dimensions.eventsAreaEndMargin;
+
+  /// Height of the EventsArea.
+  double get eventsAreaHeight =>
+      totalAreaHeight - dimensions.topExtension - dimensions.bottomExtension;
+
+  Size get eventsAreaSize => new Size(eventsAreaWidth, eventsAreaHeight);
 
   /// Leftmost location of EventsArea.
   double get eventsAreaLeft =>
@@ -108,31 +158,33 @@ class DayViewPositioner {
   double get eventsAreaRight => eventsAreaLeft + eventsAreaWidth;
 
   /// Topmost location of EventsArea.
-  double get eventsAreaTop => dimensions.paddingTop;
+  double get eventsAreaTop => dimensions.topExtension;
 
   /// Bottommost location of EventsArea.
-  double get eventsAreaBottom => height - dimensions.paddingBottom;
-
-  /// Width of EventsArea.
-  double get eventsAreaWidth =>
-      width -
-      timeIndicationAreaWidth -
-      separationAreaWidth -
-      dimensions.eventsAreaStartMargin -
-      dimensions.eventsAreaEndMargin;
-
-  /// Height of the EventsArea.
-  double get eventsAreaHeight => heightOfMinutes(
-        _totalNumberOfMinutes(),
-      );
+  double get eventsAreaBottom => eventsAreaTop + eventsAreaHeight;
 
   double minuteOfDayFromTopInsideEventsArea(int minuteOfDay) {
+    _throwArgumentErrorIfInvalidMinuteOfDay(minuteOfDay);
+
     return heightOfMinutes(
       _minutesFromMinimumMinute(minuteOfDay),
     );
   }
 
-  // Day area
+  // Day area ------------------------------------------------------------------
+
+  double get dayAreWidth {
+    double r = eventsAreaWidth;
+    // remove separation between days
+    r -= (_numberOfDays - 1) * dimensions.separationBetweenDays;
+    // divide the rest of the are between days
+    r /= _numberOfDays;
+    return r;
+  }
+
+  double get dayAreaHeight => eventsAreaHeight;
+
+  Size get dayAreaSize => new Size(dayAreWidth, dayAreaHeight);
 
   double dayAreLeft(int dayNumber) {
     _throwArgumentErrorIfInvalidDayNumber(dayNumber);
@@ -164,31 +216,25 @@ class DayViewPositioner {
     return eventsAreaBottom;
   }
 
-  double minuteOfDayInsideDayArea(int dayNumber, int minuteOfDay) {
+  double minuteOfDayFromTopInsideDayArea(int dayNumber, int minuteOfDay) {
     _throwArgumentErrorIfInvalidDayNumber(dayNumber);
+    _throwArgumentErrorIfInvalidMinuteOfDay(minuteOfDay);
 
-    return heightOfMinutes(
-      _minutesFromMinimumMinute(minuteOfDay),
-    );
+    return minuteOfDayFromTopInsideEventsArea(minuteOfDay);
   }
 
-  double get dayAreWidth {
-    double r = eventsAreaWidth;
-    // remove separation between days
-    r -= (numberOfDays - 1) * dimensions.separationBetweenDays;
-    // divide the rest of the are between days
-    r /= numberOfDays;
-    return r;
-  }
+  // ---------------------------------------------------------------------------
 
-  double get dayAreaHeight => eventsAreaHeight;
+  int get _totalNumberOfMinutes => restrictions.totalNumberOfMinutes;
+
+  int get _numberOfDays => dates.numberOfDates;
 
   void _throwArgumentErrorIfInvalidDayNumber(int dayNumber) {
-    if (dayNumber >= numberOfDays) {
+    if (dayNumber >= _numberOfDays) {
       throw new ArgumentError.value(
         dayNumber,
         "dayNumber",
-        "DayNumber is greater that the ammount of days this positioner can position ($numberOfDays).",
+        "DayNumber is greater that the ammount of days this PositioningAssistant can position ($_numberOfDays).",
       );
     }
     if (dayNumber < 0) {
@@ -198,5 +244,28 @@ class DayViewPositioner {
         "DayNumber must be greater or equal to 0.",
       );
     }
+  }
+
+  void _throwArgumentErrorIfInvalidMinuteOfDay(int minuteOfDay) {
+    if (minuteOfDay < restrictions.minimumMinuteOfDay) {
+      throw new ArgumentError.value(
+          minuteOfDay,
+          "minuteOfDay",
+          "MinuteOfDay is lower than minimumMinuteOfDay (${restrictions
+              .minimumMinuteOfDay})");
+    }
+    if (minuteOfDay > restrictions.maximumMinuteOfDay) {
+      throw new ArgumentError.value(
+        minuteOfDay,
+        "minuteOfDay",
+        "MinuteOfDay is greate than maximumMinuteOfDay (${restrictions
+            .maximumMinuteOfDay}",
+      );
+    }
+  }
+
+  /// Returns number of minutes between [minimumMinuteOfDay] and [minuteOfDay].
+  int _minutesFromMinimumMinute(int minuteOfDay) {
+    return minuteOfDay - restrictions.minimumMinuteOfDay;
   }
 }

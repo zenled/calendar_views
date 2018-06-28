@@ -1,44 +1,35 @@
-part of day_view_positions;
+import 'package:flutter/material.dart';
 
-class DayViewPositionerGenerator extends InheritedWidget {
-  DayViewPositionerGenerator({
-    @required Widget child,
-  }) : super(child: child);
+import 'package:calendar_views/src/day_view/properties/all.dart';
 
-  DayViewPositioner createPositioner(BuildContext context) {
-    DayViewRestrictions restrictions = _getRestrictions(context);
+import 'positioning_assistant.dart';
 
-    return new DayViewPositioner(
-      minimumMinuteOfDay: restrictions.minimumMinuteOfDay,
-      maximumMinuteOfDay: restrictions.maximumMinuteOfDay,
-      numberOfDays: _getNumberOfDays(context),
+class PositioningAssistantGenerator extends InheritedWidget {
+  PositioningAssistant generatePositioningAssistant(BuildContext context) {
+    return new PositioningAssistant(
+      dates: _getDates(context),
       dimensions: _getDimensions(context),
-      width: _getWidth(context),
+      restrictions: _getRestrictions(context),
+      sizes: _getSizes(context),
     );
   }
 
-  DayViewRestrictions _getRestrictions(BuildContext context) {
-    return DayViewRestrictions.of(context);
-  }
+  Dates _getDates(BuildContext context) => DatesProvider.of(context);
 
-  int _getNumberOfDays(BuildContext context) {
-    return Dates.of(context).numberOfDates;
-  }
+  Dimensions _getDimensions(BuildContext context) =>
+      DimensionsProvider.of(context);
 
-  DayViewDimensions _getDimensions(BuildContext context) {
-    return DayViewDimensionsProvider.of(context).dimensions;
-  }
+  Restrictions _getRestrictions(BuildContext context) =>
+      RestrictionsProvider.of(context);
 
-  double _getWidth(BuildContext context) {
-    return DayViewWidth.of(context).width;
-  }
+  Sizes _getSizes(BuildContext context) => SizesProvider.of(context);
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) {
     return false;
   }
 
-  static DayViewPositionerGenerator of(BuildContext context) {
-    return context.inheritFromWidgetOfExactType(DayViewPositionerGenerator);
+  static PositioningAssistantGenerator of(BuildContext context) {
+    return context.inheritFromWidgetOfExactType(PositioningAssistantGenerator);
   }
 }
