@@ -5,6 +5,7 @@ class DayViewPositioner {
   DayViewPositioner({
     @required this.minimumMinuteOfDay,
     @required this.maximumMinuteOfDay,
+    @required this.numberOfDays,
     @required this.dimensions,
     @required this.width,
   })  : assert(minimumMinuteOfDay != null &&
@@ -12,12 +13,16 @@ class DayViewPositioner {
         assert(maximumMinuteOfDay != null &&
             isValidMinuteOfDay(maximumMinuteOfDay)),
         assert(minimumMinuteOfDay <= maximumMinuteOfDay),
+        assert(numberOfDays != null && numberOfDays > 0),
         assert(dimensions != null),
         assert(width != null && width >= 0);
 
   final int minimumMinuteOfDay;
 
   final int maximumMinuteOfDay;
+
+  /// Number of days that this positioner can position.
+  final int numberOfDays;
 
   /// Dimensions to acknowledge when positioning.
   final DayViewDimensions dimensions;
@@ -104,7 +109,7 @@ class DayViewPositioner {
   double get eventsAreaTop => dimensions.paddingTop;
 
   /// Bottommost location of EventsArea.
-  double get eventsAreBottom => height - dimensions.paddingBottom;
+  double get eventsAreaBottom => height - dimensions.paddingBottom;
 
   /// Width of EventsArea.
   double get eventsAreaWidth =>
@@ -114,6 +119,7 @@ class DayViewPositioner {
       dimensions.eventsAreaStartMargin -
       dimensions.eventsAreaEndMargin;
 
+  /// Height of the EventsArea.
   double get eventsAreaHeight => heightOfMinutes(
         _totalNumberOfMinutes(),
       );
@@ -122,5 +128,73 @@ class DayViewPositioner {
     return heightOfMinutes(
       _minutesFromMinimumMinute(minuteOfDay),
     );
+  }
+
+  // Day area
+
+  double dayAreLeft(int dayNumber) {
+    _throwArgumentErrorIfInvalidDayNumber(dayNumber);
+
+    double r = eventsAreaLeft;
+    r += dimensions.separationBetweenDays * dayNumber;
+    r += dayAreWidth * dayNumber;
+    return r;
+  }
+
+  double dayAreRight(int dayNumber) {
+    _throwArgumentErrorIfInvalidDayNumber(dayNumber);
+
+    double r = eventsAreaRight;
+    r -= dimensions.separationBetweenDays * dayNumber;
+    r -= dayAreWidth * dayNumber;
+    return r;
+  }
+
+  double dayAreaTop(int dayNumber) {
+    _throwArgumentErrorIfInvalidDayNumber(dayNumber);
+
+    return eventsAreaTop;
+  }
+
+  double dayAreaBottom(int dayNumber) {
+    _throwArgumentErrorIfInvalidDayNumber(dayNumber);
+
+    return eventsAreaBottom;
+  }
+
+  double minuteOfDayInsideDayArea(int dayNumber, int minuteOfDay) {
+    _throwArgumentErrorIfInvalidDayNumber(dayNumber);
+
+    return heightOfMinutes(
+      _minutesFromMinimumMinute(minuteOfDay),
+    );
+  }
+
+  double get dayAreWidth {
+    double r = eventsAreaWidth;
+    // remove separation between days
+    r -= (numberOfDays - 1) * dimensions.separationBetweenDays;
+    // divide the rest of the are between days
+    r /= numberOfDays;
+    return r;
+  }
+
+  double get dayAreaHeight => eventsAreaHeight;
+
+  void _throwArgumentErrorIfInvalidDayNumber(int dayNumber) {
+    if (dayNumber >= numberOfDays) {
+      throw new ArgumentError.value(
+        dayNumber,
+        "dayNumber",
+        "DayNumber is greater that the ammount of days this positioner can position ($numberOfDays).",
+      );
+    }
+    if (dayNumber < 0) {
+      throw new ArgumentError.value(
+        dayNumber,
+        "dayNumber",
+        "DayNumber must be greater or equal to 0.",
+      );
+    }
   }
 }

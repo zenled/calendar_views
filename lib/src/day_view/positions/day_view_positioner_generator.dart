@@ -11,6 +11,7 @@ class DayViewPositionerGenerator extends InheritedWidget {
     return new DayViewPositioner(
       minimumMinuteOfDay: restrictions.minimumMinuteOfDay,
       maximumMinuteOfDay: restrictions.maximumMinuteOfDay,
+      numberOfDays: _getNumberOfDays(context),
       dimensions: _getDimensions(context),
       width: _getWidth(context),
     );
@@ -18,6 +19,10 @@ class DayViewPositionerGenerator extends InheritedWidget {
 
   DayViewRestrictions _getRestrictions(BuildContext context) {
     return DayViewRestrictions.of(context);
+  }
+
+  int _getNumberOfDays(BuildContext context) {
+    return DayViewDates.of(context).numberOfDates;
   }
 
   DayViewDimensions _getDimensions(BuildContext context) {

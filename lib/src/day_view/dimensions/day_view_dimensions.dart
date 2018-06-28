@@ -5,6 +5,7 @@ part of day_view_dimensions;
 class DayViewDimensions {
   const DayViewDimensions({
     this.heightPerMinute = 1.0,
+    this.separationBetweenDays = 20.0,
     this.paddingTop = 40.0,
     this.paddingBottom = 40.0,
     this.timeIndicationAreaWidth = 60.0,
@@ -12,6 +13,7 @@ class DayViewDimensions {
     this.eventsAreaStartMargin = 8.0,
     this.eventsAreaEndMargin = 8.0,
   })  : assert(heightPerMinute != null && heightPerMinute > 0),
+        assert(separationBetweenDays != null && separationBetweenDays >= 0),
         assert(paddingTop != null && paddingTop >= 0),
         assert(paddingBottom != null && paddingBottom >= 0),
         assert(timeIndicationAreaWidth != null && timeIndicationAreaWidth >= 0),
@@ -21,6 +23,9 @@ class DayViewDimensions {
 
   /// Height taken by every minute inside a DayView.
   final double heightPerMinute;
+
+  /// Separation between days of DayView.
+  final double separationBetweenDays;
 
   // padding
 
@@ -52,6 +57,7 @@ class DayViewDimensions {
       other is DayViewDimensions &&
           runtimeType == other.runtimeType &&
           heightPerMinute == other.heightPerMinute &&
+          separationBetweenDays == other.separationBetweenDays &&
           paddingTop == other.paddingTop &&
           paddingBottom == other.paddingBottom &&
           timeIndicationAreaWidth == other.timeIndicationAreaWidth &&
@@ -62,6 +68,7 @@ class DayViewDimensions {
   @override
   int get hashCode =>
       heightPerMinute.hashCode ^
+      separationBetweenDays.hashCode ^
       paddingTop.hashCode ^
       paddingBottom.hashCode ^
       timeIndicationAreaWidth.hashCode ^
