@@ -9,11 +9,11 @@ class EventsChangedNotifier extends InheritedWidget {
         assert(detach != null),
         super(child: child);
 
-  /// Attaches [OnEventsChangedListener].
-  final OnEventsChangedListenerCallback attach;
+  /// Attaches [EventsChangedListener].
+  final EventsChangedListenerCallback attach;
 
-  /// Detaches [OnEventsChangedListener].
-  final OnEventsChangedListenerCallback detach;
+  /// Detaches [EventsChangedListener].
+  final EventsChangedListenerCallback detach;
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) {

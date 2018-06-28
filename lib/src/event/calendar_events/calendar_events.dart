@@ -1,18 +1,12 @@
 library calendar_events;
 
-import 'dart:async';
-import 'dart:core';
-
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/internal_date_items/all.dart';
-
+import 'package:calendar_views/src/event/events_manager/events_manager.dart';
 import 'package:calendar_views/src/event/events/positionable_event.dart';
 
 part 'events_changed_notifier.dart';
-
-part 'events_manager.dart';
 
 part 'events_provider.dart';
 
@@ -35,13 +29,13 @@ class CalendarEvents extends StatefulWidget {
 }
 
 class _CalendarEventsState extends State<CalendarEvents> {
-  _EventsManager _eventsManager;
+  EventsManager _eventsManager;
 
   @override
   void initState() {
     super.initState();
 
-    _eventsManager = new _EventsManager(
+    _eventsManager = new EventsManager(
       eventsFetcher: widget.eventsFetcher,
     );
   }
@@ -51,7 +45,7 @@ class _CalendarEventsState extends State<CalendarEvents> {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.eventsFetcher != widget.eventsFetcher) {
-      _eventsManager.eventsFetcher = widget.eventsFetcher;
+      _eventsManager.updateEventsFetcher(widget.eventsFetcher);
     }
   }
 
@@ -60,11 +54,11 @@ class _CalendarEventsState extends State<CalendarEvents> {
     return new EventsProvider(
       getEventsOf: _eventsManager.getEventsOf,
       child: new EventsRefresher(
-        refreshEventsOf: _eventsManager.getEventsOf,
+        refreshEventsOf: _eventsManager.refreshEventsOf,
         refreshEventsOfAllDates: _eventsManager.refreshEventsOfAllDates,
         child: new EventsChangedNotifier(
-          attach: _eventsManager.attachOnEventsChangedListener,
-          detach: _eventsManager.detachOnEventsChangedListener,
+          attach: _eventsManager.attachEventsChangedListener,
+          detach: _eventsManager.detachEventsChangedListener,
           child: widget.child,
         ),
       ),
