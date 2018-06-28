@@ -23,22 +23,22 @@ class DayView extends StatefulWidget {
 }
 
 class _DayViewState extends State<DayView> {
-  bool _isOnEventsChangedListenerAttached;
-  OnEventsChangedListener _onEventsChangedListener;
+  bool _isEventsChangedListenerAttached;
+  EventsChangedListener _eventsChangedListener;
 
   @override
   void initState() {
     super.initState();
 
-    _isOnEventsChangedListenerAttached = false;
-    _onEventsChangedListener = _initOnEventsChangedListener();
+    _isEventsChangedListenerAttached = false;
+    _eventsChangedListener = _initEventsChangedListener();
   }
 
   @override
   void dispose() {
     super.dispose();
 
-    _detachOnEventsChangedListener();
+    _detachEventsChangedListener();
   }
 
   @override
@@ -46,14 +46,14 @@ class _DayViewState extends State<DayView> {
     super.didUpdateWidget(oldWidget);
 
     if (!utils.isSameDate(oldWidget.date, widget.date)) {
-      _detachOnEventsChangedListener();
-      _onEventsChangedListener = _initOnEventsChangedListener();
-      _attachOnEventsChangedListener();
+      _detachEventsChangedListener();
+      _eventsChangedListener = _initEventsChangedListener();
+      _attachEventsChangedListener();
     }
   }
 
-  OnEventsChangedListener _initOnEventsChangedListener() {
-    return new OnEventsChangedListener(
+  EventsChangedListener _initEventsChangedListener() {
+    return new EventsChangedListener(
       date: widget.date,
       onEventsChanged: () {
         setState(() {});
@@ -61,12 +61,12 @@ class _DayViewState extends State<DayView> {
     );
   }
 
-  void _attachOnEventsChangedListener() {
-    EventsChangedNotifier.of(context).attach(_onEventsChangedListener);
+  void _attachEventsChangedListener() {
+    EventsChangedNotifier.of(context).attach(_eventsChangedListener);
   }
 
-  void _detachOnEventsChangedListener() {
-    EventsChangedNotifier.of(context).detach(_onEventsChangedListener);
+  void _detachEventsChangedListener() {
+    EventsChangedNotifier.of(context).detach(_eventsChangedListener);
   }
 
   double _determineWidgetHeight(BuildContext context) {
@@ -78,9 +78,9 @@ class _DayViewState extends State<DayView> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_isOnEventsChangedListenerAttached) {
-      _attachOnEventsChangedListener();
-      _isOnEventsChangedListenerAttached = true;
+    if (!_isEventsChangedListenerAttached) {
+      _attachEventsChangedListener();
+      _isEventsChangedListenerAttached = true;
     }
 
     return new DayViewDate(
