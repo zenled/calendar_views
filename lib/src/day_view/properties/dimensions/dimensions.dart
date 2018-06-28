@@ -1,9 +1,9 @@
-part of day_view_dimensions;
+import 'package:meta/meta.dart';
 
 /// Sizes of key DayView components.
 @immutable
-class DayViewDimensions {
-  const DayViewDimensions({
+class Dimensions {
+  const Dimensions({
     this.heightPerMinute = 1.0,
     this.separationBetweenDays = 20.0,
     this.paddingTop = 40.0,
@@ -54,7 +54,7 @@ class DayViewDimensions {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is DayViewDimensions &&
+      other is Dimensions &&
           runtimeType == other.runtimeType &&
           heightPerMinute == other.heightPerMinute &&
           separationBetweenDays == other.separationBetweenDays &&

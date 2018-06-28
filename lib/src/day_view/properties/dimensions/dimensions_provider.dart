@@ -1,20 +1,25 @@
-part of day_view_dimensions;
+import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 
-class DayViewDimensionsProvider extends InheritedWidget {
-  DayViewDimensionsProvider({
+import 'dimensions.dart';
+
+class DimensionsProvider extends InheritedWidget {
+  DimensionsProvider({
     @required this.dimensions,
     @required Widget child,
   })  : assert(dimensions != null),
         super(child: child);
 
-  final DayViewDimensions dimensions;
+  final Dimensions dimensions;
 
   @override
-  bool updateShouldNotify(DayViewDimensionsProvider oldWidget) {
+  bool updateShouldNotify(DimensionsProvider oldWidget) {
     return oldWidget.dimensions != dimensions;
   }
 
-  static DayViewDimensionsProvider of(BuildContext context) {
-    return context.inheritFromWidgetOfExactType(DayViewDimensionsProvider);
+  static Dimensions of(BuildContext context) {
+    return (context.inheritFromWidgetOfExactType(DimensionsProvider)
+            as DimensionsProvider)
+        .dimensions;
   }
 }
