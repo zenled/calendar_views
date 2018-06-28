@@ -21,6 +21,8 @@ class DayViewPositioner {
 
   final int maximumMinuteOfDay;
 
+  final int positioningAssistant;
+
   /// Number of days that this positioner can position.
   final int numberOfDays;
 

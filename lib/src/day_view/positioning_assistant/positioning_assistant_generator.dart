@@ -22,7 +22,7 @@ class DayViewPositionerGenerator extends InheritedWidget {
   }
 
   int _getNumberOfDays(BuildContext context) {
-    return DayViewDates.of(context).numberOfDates;
+    return Dates.of(context).numberOfDates;
   }
 
   DayViewDimensions _getDimensions(BuildContext context) {
