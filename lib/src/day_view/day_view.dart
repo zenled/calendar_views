@@ -7,66 +7,87 @@ import 'package:calendar_views/src/utils/all.dart' as utils;
 
 import 'components/components.dart';
 
-import 'day_view_date.dart';
+import 'day_view_dates.dart';
 import 'day_view_width.dart';
 
 class DayView extends StatefulWidget {
   const DayView({
-    @required this.date,
-  }) : assert(date != null);
+    @required this.dates,
+  }) : assert(dates != null);
 
-  /// Date which events are displayed by this day view.
-  final DateTime date;
+  factory DayView.forSingleDay({
+    @required DateTime day,
+  }) {
+    assert(day != null);
+
+    return new DayView(
+      dates: <DateTime>[day],
+    );
+  }
+
+  /// Dates of which events are displayed by this DayView.
+  final List<DateTime> dates;
 
   @override
   _DayViewState createState() => new _DayViewState();
 }
 
 class _DayViewState extends State<DayView> {
-  bool _isEventsChangedListenerAttached;
-  EventsChangedListener _eventsChangedListener;
+  bool _areEventsChangedListenerAttached;
+  List<EventsChangedListener> _eventsChangedListeners;
 
   @override
   void initState() {
     super.initState();
 
-    _isEventsChangedListenerAttached = false;
-    _eventsChangedListener = _initEventsChangedListener();
+    _areEventsChangedListenerAttached = false;
+    _eventsChangedListeners = _createEventsChangedListeners();
   }
 
   @override
   void dispose() {
     super.dispose();
 
-    _detachEventsChangedListener();
+    _detachEventsChangedListeners();
   }
 
   @override
   void didUpdateWidget(DayView oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (!utils.isSameDate(oldWidget.date, widget.date)) {
-      _detachEventsChangedListener();
-      _eventsChangedListener = _initEventsChangedListener();
-      _attachEventsChangedListener();
+    if (!utils.areListsOfDatesTheSame(oldWidget.dates, widget.dates)) {
+      _detachEventsChangedListeners();
+      _eventsChangedListeners = _createEventsChangedListeners();
+      _areEventsChangedListenerAttached = false;
     }
   }
 
-  EventsChangedListener _initEventsChangedListener() {
-    return new EventsChangedListener(
-      date: widget.date,
-      onEventsChanged: () {
-        setState(() {});
-      },
-    );
+  List<EventsChangedListener> _createEventsChangedListeners() {
+    return widget.dates
+        .map(
+          (date) => new EventsChangedListener(
+              date: date,
+              onEventsChanged: () {
+                setState(() {});
+              }),
+        )
+        .toList();
   }
 
-  void _attachEventsChangedListener() {
-    EventsChangedNotifier.of(context).attach(_eventsChangedListener);
+  void _attachEventsChangedListeners() {
+    EventsChangedNotifier changedNotifier = EventsChangedNotifier.of(context);
+
+    for (EventsChangedListener listener in _eventsChangedListeners) {
+      changedNotifier.attach(listener);
+    }
   }
 
-  void _detachEventsChangedListener() {
-    EventsChangedNotifier.of(context).detach(_eventsChangedListener);
+  void _detachEventsChangedListeners() {
+    EventsChangedNotifier changedNotifier = EventsChangedNotifier.of(context);
+
+    for (EventsChangedListener listener in _eventsChangedListeners) {
+      changedNotifier.detach(listener);
+    }
   }
 
   double _determineWidgetHeight(BuildContext context) {
@@ -78,13 +99,13 @@ class _DayViewState extends State<DayView> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_isEventsChangedListenerAttached) {
-      _attachEventsChangedListener();
-      _isEventsChangedListenerAttached = true;
+    if (!_areEventsChangedListenerAttached) {
+      _attachEventsChangedListeners();
+      _areEventsChangedListenerAttached = true;
     }
 
-    return new DayViewDate(
-      date: widget.date,
+    return new DayViewDates(
+      dates: widget.dates,
       child: new LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
           return new DayViewWidth(
