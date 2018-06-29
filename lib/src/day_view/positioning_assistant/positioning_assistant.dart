@@ -15,7 +15,7 @@ class PositioningAssistant {
         assert(restrictions != null),
         assert(sizes != null);
 
-  final Dates dates;
+  final Days dates;
   final Dimensions dimensions;
   final Restrictions restrictions;
   final Sizes sizes;

@@ -1,5 +1,5 @@
-export 'dates/dates.dart';
-export 'dates/dates_provider.dart';
+export 'days/days.dart';
+export 'days/days_provider.dart';
 
 export 'dimensions/dimensions.dart';
 export 'dimensions/dimensions_provider.dart';

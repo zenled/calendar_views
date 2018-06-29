@@ -2,17 +2,17 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/src/utils/all.dart' as utils;
 
-/// Item with a list of dates that a DayView should display.
+/// Item with a list of dates that a DayView is  displaying.
 @immutable
-class Dates {
-  const Dates({
+class Days {
+  const Days({
     @required this.dates,
   }) : assert(dates != null);
 
-  factory Dates.forASingleDay({
+  factory Days.forASingleDay({
     @required DateTime date,
   }) {
-    return new Dates(
+    return new Days(
       dates: <DateTime>[date],
     );
   }
@@ -38,7 +38,7 @@ class Dates {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Dates &&
+      other is Days &&
           runtimeType == other.runtimeType &&
           utils.areListsOfDatesTheSame(dates, other.dates);
 

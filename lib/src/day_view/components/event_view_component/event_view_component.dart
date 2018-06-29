@@ -37,9 +37,9 @@ class EventViewComponent extends Component {
     PositioningAssistant positioningAssistant =
         _getPositioningAssistant(context);
 
-    Dates dates = _getDates(context);
-    for (int dayNumber in dates.dayNumbers) {
-      DateTime date = dates.getDate(dayNumber);
+    Days days = _getDays(context);
+    for (int dayNumber in days.dayNumbers) {
+      DateTime date = days.getDate(dayNumber);
 
       SingleDayEventItemsCreator itemsCreator = new SingleDayEventItemsCreator(
         context: context,
@@ -60,8 +60,8 @@ class EventViewComponent extends Component {
     return builtItems;
   }
 
-  Dates _getDates(BuildContext context) {
-    return DatesProvider.of(context);
+  Days _getDays(BuildContext context) {
+    return DaysProvider.of(context);
   }
 
   Restrictions _getRestrictions(BuildContext context) {

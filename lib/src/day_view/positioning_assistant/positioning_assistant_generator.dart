@@ -18,7 +18,7 @@ class PositioningAssistantGenerator extends InheritedWidget {
     );
   }
 
-  Dates _getDates(BuildContext context) => DatesProvider.of(context);
+  Days _getDates(BuildContext context) => DaysProvider.of(context);
 
   Dimensions _getDimensions(BuildContext context) =>
       DimensionsProvider.of(context);

@@ -19,7 +19,7 @@ class DayView extends StatefulWidget {
     assert(dates != null);
 
     return new DayView(
-      dates: new Dates(dates: dates),
+      dates: new Days(dates: dates),
     );
   }
 
@@ -29,14 +29,14 @@ class DayView extends StatefulWidget {
     assert(day != null);
 
     return new DayView(
-      dates: new Dates(
+      dates: new Days(
         dates: <DateTime>[day],
       ),
     );
   }
 
   /// Dates of which events are displayed by this DayView.
-  final Dates dates;
+  final Days dates;
 
   @override
   _DayViewState createState() => new _DayViewState();
@@ -110,7 +110,7 @@ class _DayViewState extends State<DayView> {
       _areEventsChangedListenersAttached = true;
     }
 
-    return new DatesProvider(
+    return new DaysProvider(
       dates: widget.dates,
       child: new LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
