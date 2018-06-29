@@ -5,6 +5,10 @@ import 'package:calendar_views/src/day_view/properties/all.dart';
 import 'positioning_assistant.dart';
 
 class PositioningAssistantGenerator extends InheritedWidget {
+  const PositioningAssistantGenerator({
+    @required Widget child,
+  }) : super(child: child);
+
   PositioningAssistant generatePositioningAssistant(BuildContext context) {
     return new PositioningAssistant(
       dates: _getDates(context),

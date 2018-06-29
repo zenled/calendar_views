@@ -4,42 +4,53 @@ import 'package:meta/meta.dart';
 import 'package:calendar_views/event.dart';
 import 'package:calendar_views/src/utils/all.dart' as utils;
 
-import 'package:calendar_views/src/day_view/info/info.dart';
-import 'package:calendar_views/src/day_view/positions/positions.dart';
-
-import 'components/components.dart';
+import 'components/all.dart';
+import 'positioning_assistant/all.dart';
+import 'properties/all.dart';
 
 class DayView extends StatefulWidget {
   const DayView({
     @required this.dates,
   }) : assert(dates != null);
 
-  factory DayView.forSingleDay({
+  factory DayView.fromAListOfDates({
+    @required List<DateTime> dates,
+  }) {
+    assert(dates != null);
+
+    return new DayView(
+      dates: new Dates(dates: dates),
+    );
+  }
+
+  factory DayView.forASingleDay({
     @required DateTime day,
   }) {
     assert(day != null);
 
     return new DayView(
-      dates: <DateTime>[day],
+      dates: new Dates(
+        dates: <DateTime>[day],
+      ),
     );
   }
 
   /// Dates of which events are displayed by this DayView.
-  final List<DateTime> dates;
+  final Dates dates;
 
   @override
   _DayViewState createState() => new _DayViewState();
 }
 
 class _DayViewState extends State<DayView> {
-  bool _areEventsChangedListenerAttached;
+  bool _areEventsChangedListenersAttached;
   List<EventsChangedListener> _eventsChangedListeners;
 
   @override
   void initState() {
     super.initState();
 
-    _areEventsChangedListenerAttached = false;
+    _areEventsChangedListenersAttached = false;
     _eventsChangedListeners = _createEventsChangedListeners();
   }
 
@@ -54,15 +65,18 @@ class _DayViewState extends State<DayView> {
   void didUpdateWidget(DayView oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (!utils.areListsOfDatesTheSame(oldWidget.dates, widget.dates)) {
+    if (!utils.areListsOfDatesTheSame(
+      widget.dates.dates,
+      oldWidget.dates.dates,
+    )) {
       _detachEventsChangedListeners();
       _eventsChangedListeners = _createEventsChangedListeners();
-      _areEventsChangedListenerAttached = false;
+      _areEventsChangedListenersAttached = false;
     }
   }
 
   List<EventsChangedListener> _createEventsChangedListeners() {
-    return widget.dates
+    return widget.dates.dates
         .map(
           (date) => new EventsChangedListener(
               date: date,
@@ -89,55 +103,64 @@ class _DayViewState extends State<DayView> {
     }
   }
 
-  double _determineWidgetHeight(BuildContext context) {
-    return DayViewPositionerGenerator
-        .of(context)
-        .createPositioner(context)
-        .height;
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (!_areEventsChangedListenerAttached) {
+    if (!_areEventsChangedListenersAttached) {
       _attachEventsChangedListeners();
-      _areEventsChangedListenerAttached = true;
+      _areEventsChangedListenersAttached = true;
     }
 
-    return new DayViewDates(
+    return new DatesProvider(
       dates: widget.dates,
       child: new LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          return new DayViewWidth(
-            width: constraints.maxWidth,
-            child: new Builder(builder: (BuildContext context) {
-              // Builder is required so that we can determine height and width.
-              return new Container(
-                width: DayViewWidth.of(context).width,
-                height: _determineWidgetHeight(context),
-                child: new Stack(
-                  children: _buildComponents(context),
-                ),
-              );
-            }),
-          );
-        },
-      ),
+          builder: (BuildContext context, BoxConstraints constraints) {
+        return new SizesProvider(
+          sizes: new Sizes(totalAvailableWidth: constraints.maxWidth),
+          child: new Builder(builder: (BuildContext context) {
+            // A Builder is needed here so PositioningAssistantGenerator can access sizes
+
+            PositioningAssistant positioningAssistant =
+                _createPositioningAssistant(context);
+
+            return new PositioningAssistantProvider(
+              positioningAssistant: positioningAssistant,
+              child: new Builder(builder: (BuildContext context) {
+                // A Builder is needed so Components can access PositioningAssistantProvider
+
+                return new Container(
+                  width: positioningAssistant.totalAreaWidth,
+                  height: positioningAssistant.totalAreaHeight,
+                  child: new Stack(
+                    children: _buildComponentItems(context),
+                  ),
+                );
+              }),
+            );
+          }),
+        );
+      }),
     );
   }
 
-  List<Positioned> _buildComponents(BuildContext context) {
-    // Context needs to be passed here so that components can access inherited widgets created in the build method.
+  List<Positioned> _buildComponentItems(BuildContext context) {
+    List<Positioned> builtComponentsItems = <Positioned>[];
 
-    List<Positioned> builtComponents = <Positioned>[];
-
-    List<DayViewComponent> components =
-        DayViewComponentsProvider.of(context).components;
-    for (DayViewComponent component in components) {
-      builtComponents.addAll(
+    for (Component component in _getComponents(context)) {
+      builtComponentsItems.addAll(
         component.buildItems(context),
       );
     }
 
-    return builtComponents;
+    return builtComponentsItems;
+  }
+
+  PositioningAssistant _createPositioningAssistant(BuildContext context) {
+    return PositioningAssistantGenerator
+        .of(context)
+        .generatePositioningAssistant(context);
+  }
+
+  List<Component> _getComponents(BuildContext context) {
+    return ComponentsProvider.of(context);
   }
 }

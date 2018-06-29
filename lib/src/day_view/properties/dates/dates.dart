@@ -21,8 +21,18 @@ class Dates {
 
   int get numberOfDates => dates.length;
 
-  DateTime getDate(int index) {
-    return dates[index];
+  List<int> get dayNumbers {
+    List<int> dayNumbers = <int>[];
+
+    for (int i = 0; i < dates.length; i++) {
+      dayNumbers.add(i);
+    }
+
+    return dayNumbers;
+  }
+
+  DateTime getDate(int dayNumber) {
+    return dates[dayNumber];
   }
 
   @override

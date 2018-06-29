@@ -4,7 +4,7 @@ import 'component.dart';
 
 /// Inherited widget that provides list of [Component]s to its children.
 class ComponentsProvider extends InheritedWidget {
-  ComponentsProvider({
+  const ComponentsProvider({
     @required this.components,
     @required Widget child,
   })  : assert(components != null),

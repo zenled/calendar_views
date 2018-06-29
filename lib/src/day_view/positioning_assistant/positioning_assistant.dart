@@ -173,7 +173,9 @@ class PositioningAssistant {
 
   // Day area ------------------------------------------------------------------
 
-  double get dayAreWidth {
+  double dayAreWidth(int dayNumber) {
+    _throwArgumentErrorIfInvalidDayNumber(dayNumber);
+
     double r = eventsAreaWidth;
     // remove separation between days
     r -= (_numberOfDays - 1) * dimensions.separationBetweenDays;
@@ -182,16 +184,24 @@ class PositioningAssistant {
     return r;
   }
 
-  double get dayAreaHeight => eventsAreaHeight;
+  double dayAreaHeight(int dayNumber) {
+    _throwArgumentErrorIfInvalidDayNumber(dayNumber);
 
-  Size get dayAreaSize => new Size(dayAreWidth, dayAreaHeight);
+    return eventsAreaHeight;
+  }
+
+  Size dayAreaSize(int dayNumber) {
+    _throwArgumentErrorIfInvalidDayNumber(dayNumber);
+
+    return new Size(dayAreWidth(dayNumber), dayAreaHeight(dayNumber));
+  }
 
   double dayAreLeft(int dayNumber) {
     _throwArgumentErrorIfInvalidDayNumber(dayNumber);
 
     double r = eventsAreaLeft;
     r += dimensions.separationBetweenDays * dayNumber;
-    r += dayAreWidth * dayNumber;
+    r += dayAreWidth(dayNumber) * dayNumber;
     return r;
   }
 
@@ -200,7 +210,7 @@ class PositioningAssistant {
 
     double r = eventsAreaRight;
     r -= dimensions.separationBetweenDays * dayNumber;
-    r -= dayAreWidth * dayNumber;
+    r -= dayAreWidth(dayNumber) * dayNumber;
     return r;
   }
 

@@ -1,7 +1,6 @@
-export 'components/components.dart';
-export 'dimensions/dimensions.dart';
-export 'positions/positions.dart';
-export 'restrictions/restrictions.dart';
+export 'components/all.dart';
+export 'positioning_assistant/all.dart';
+export 'properties/all.dart';
 
 export 'day_view.dart';
-export 'day_view_properties.dart';
+export 'day_view_resources.dart';

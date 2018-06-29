@@ -1,39 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/day_view/components/components.dart';
-import 'package:calendar_views/src/day_view/dimensions/dimensions.dart';
-import 'package:calendar_views/src/day_view/positions/positions.dart';
-import 'package:calendar_views/src/day_view/restrictions/restrictions.dart';
+import 'components/all.dart';
+import 'positioning_assistant/all.dart';
+import 'properties/all.dart';
 
 /// Convenience widget that builds [DayViewRestrictions], [DayViewPositions] and [DayViewComponentsProvider].
-class DayViewProperties extends StatefulWidget {
-  DayViewProperties({
-    this.minimumMinuteOfDay = 0,
-    this.maximumMinuteOfDay = 24 * 60,
-    @required this.dimensions,
+class DayViewResources extends StatefulWidget {
+  DayViewResources({
+    this.restrictions = const Restrictions(),
+    this.dimensions = const Dimensions(),
     @required this.components,
     @required this.child,
-  })  : assert(minimumMinuteOfDay != null &&
-            minimumMinuteOfDay >= 0 &&
-            minimumMinuteOfDay <= (24 * 60 - 1)),
-        assert(maximumMinuteOfDay != null &&
-            maximumMinuteOfDay >= 1 &&
-            maximumMinuteOfDay <= (24 * 60)),
+  })  : assert(restrictions != null),
         assert(dimensions != null),
         assert(components != null),
         assert(child != null);
 
-  /// Minimum minute of day that the DayView will be able to display (inclusive).
-  final int minimumMinuteOfDay;
+  /// Restrictions placed upon child DayViews.
+  final Restrictions restrictions;
 
-  /// Maximum minute of day that the DayView will be able to display (inclusive).
-  final int maximumMinuteOfDay;
+  /// Dimensions of child DayViews.
+  final Dimensions dimensions;
 
-  /// Dimensions (key points) of DayView.
-  final DayViewDimensions dimensions;
-
-  /// List of components to be displayed in DayView.
-  final List<DayViewComponent> components;
+  /// List of components to be displayed in child DayViews.
+  final List<Component> components;
 
   /// Child of this widget
   final Widget child;
@@ -42,16 +33,15 @@ class DayViewProperties extends StatefulWidget {
   _DayViewPropertiesState createState() => new _DayViewPropertiesState();
 }
 
-class _DayViewPropertiesState extends State<DayViewProperties> {
+class _DayViewPropertiesState extends State<DayViewResources> {
   @override
   Widget build(BuildContext context) {
-    return new DayViewRestrictions(
-      minimumMinuteOfDay: widget.minimumMinuteOfDay,
-      maximumMinuteOfDay: widget.maximumMinuteOfDay,
-      child: new DayViewDimensionsProvider(
+    return new RestrictionsProvider(
+      restrictions: widget.restrictions,
+      child: new DimensionsProvider(
         dimensions: widget.dimensions,
-        child: new DayViewPositionerGenerator(
-          child: new DayViewComponentsProvider(
+        child: new PositioningAssistantGenerator(
+          child: new ComponentsProvider(
             components: widget.components,
             child: widget.child,
           ),
