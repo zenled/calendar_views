@@ -1,61 +1,71 @@
-part of time_indicators_component;
+import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 
-class _ItemCreator {
-  _ItemCreator({
+import 'package:calendar_views/src/day_view/positioning_assistant/positioning_assistant.dart';
+import 'package:calendar_views/src/day_view/properties/all.dart';
+
+import '../item_position.dart';
+import '../item_size.dart';
+import 'time_indicator_item_builder.dart';
+import 'time_indicator_properties.dart';
+
+class TimeIndicatorItemCreator {
+  TimeIndicatorItemCreator({
     @required this.context,
     @required this.restrictions,
-    @required this.positioner,
-    @required this.itemBuilder,
+    @required this.positioningAssistant,
+    @required this.builder,
   })  : assert(context != null),
         assert(restrictions != null),
-        assert(positioner != null),
-        assert(itemBuilder != null);
+        assert(positioningAssistant != null),
+        assert(builder != null);
 
   final BuildContext context;
 
-  final DayViewRestrictions restrictions;
+  final Restrictions restrictions;
+  final PositioningAssistant positioningAssistant;
+  final TimeIndicatorItemBuilder builder;
 
-  final DayViewPositioner positioner;
-
-  final TimeIndicatorBuilder itemBuilder;
-
-  bool canItemBeBuilt(int minuteOfDay) {
-    return _isItemVisible(minuteOfDay);
-  }
-
-  Positioned buildItem(TimeIndicatorProperties itemProperties) {
-    return itemBuilder(
-      context: context,
-      position: _createPosition(
-        minuteOfDay: itemProperties.minuteOfDay,
-        duration: itemProperties.duration,
-      ),
-      size: _createSize(duration: itemProperties.duration),
-      properties: itemProperties,
-    );
-  }
-
-  bool _isItemVisible(int minuteOfDay) {
+  bool wouldItemBeVisible(int minuteOfDay) {
     return minuteOfDay >= restrictions.minimumMinuteOfDay &&
         minuteOfDay <= restrictions.maximumMinuteOfDay;
   }
 
-  ItemPosition _createPosition({
+  Positioned createItem({
+    @required TimeIndicatorProperties itemProperties,
+  }) {
+    return builder(
+      context: context,
+      position: _positionOf(
+        minuteOfDay: itemProperties.minuteOfDay,
+        duration: itemProperties.duration,
+      ),
+      size: _sizeOf(
+        minutes: itemProperties.duration,
+      ),
+      properties: itemProperties,
+    );
+  }
+
+  ItemPosition _positionOf({
     @required int minuteOfDay,
     @required int duration,
   }) {
     return new ItemPosition(
-      top: positioner.minuteOfDayFromTop(minuteOfDay - (duration ~/ 2)),
-      left: positioner.timeIndicationAreaLeft,
+      top: positioningAssistant.minuteOfDayFromTopInsideTimeIndicationArea(
+            minuteOfDay - (duration ~/ 2),
+          ) +
+          positioningAssistant.timeIndicationAreaTop,
+      left: positioningAssistant.timeIndicationAreaLeft,
     );
   }
 
-  Size _createSize({
-    @required int duration,
+  ItemSize _sizeOf({
+    @required int minutes,
   }) {
-    return new Size(
-      positioner.dimensions.timeIndicationAreaWidth,
-      positioner.heightOfMinutes(duration),
+    return new ItemSize(
+      width: positioningAssistant.timeIndicationAreaWidth,
+      height: positioningAssistant.heightOfMinutes(minutes),
     );
   }
 }

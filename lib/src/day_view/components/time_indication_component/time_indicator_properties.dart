@@ -1,4 +1,6 @@
-part of time_indicators_component;
+import 'package:meta/meta.dart';
+
+import 'package:calendar_views/src/utils/all.dart' as utils;
 
 /// Properties of a TimeIndicator.
 ///
@@ -11,8 +13,8 @@ class TimeIndicatorProperties {
     @required this.minuteOfDay,
     @required this.duration,
   })  : assert(minuteOfDay != null &&
-            minuteOfDay >= minimum_minute_of_day &&
-            minuteOfDay <= maximum_minute_of_day),
+            minuteOfDay >= utils.minimum_minute_of_day &&
+            minuteOfDay <= utils.maximum_minute_of_day),
         assert(duration != null && duration >= 0);
 
   /// Minute of Day at which this TimeIndicator should/will be placed.

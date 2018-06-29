@@ -1,7 +1,16 @@
-part of time_indicators_component;
+import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 
-class CustomTimeIndicatorsComponent implements DayViewComponent {
-  const CustomTimeIndicatorsComponent({
+import 'package:calendar_views/src/day_view/positioning_assistant/all.dart';
+import 'package:calendar_views/src/day_view/properties/all.dart';
+
+import '../day_view_component.dart';
+import 'time_indicator_item_builder.dart';
+import 'time_indicator_item_creator.dart';
+import 'time_indicator_properties.dart';
+
+class CustomTimeIndicationComponent implements DayViewComponent {
+  const CustomTimeIndicationComponent({
     @required this.timeIndicatorsToMake,
     @required this.itemBuilder,
   })  : assert(timeIndicatorsToMake != null),
@@ -11,30 +20,39 @@ class CustomTimeIndicatorsComponent implements DayViewComponent {
   final List<TimeIndicatorProperties> timeIndicatorsToMake;
 
   /// Function that builds a TimeIndicator.
-  final TimeIndicatorBuilder itemBuilder;
+  final TimeIndicatorItemBuilder itemBuilder;
 
   @override
   List<Positioned> buildItems(BuildContext context) {
-    List<Positioned> items = <Positioned>[];
+    List<Positioned> builtItems = <Positioned>[];
 
-    _ItemCreator itemCreator = new _ItemCreator(
+    TimeIndicatorItemCreator itemCreator = new TimeIndicatorItemCreator(
       context: context,
-      restrictions: DayViewRestrictions.of(context),
-      positioner:
-          DayViewPositionerGenerator.of(context).createPositioner(context),
-      itemBuilder: itemBuilder,
+      restrictions: _getRestrictions(context),
+      positioningAssistant: _getPositioningAssistant(context),
+      builder: itemBuilder,
     );
 
     for (TimeIndicatorProperties itemProperties in timeIndicatorsToMake) {
-      if (!itemCreator._isItemVisible(itemProperties.minuteOfDay)) {
+      if (!itemCreator.wouldItemBeVisible(itemProperties.minuteOfDay)) {
         continue;
       }
 
-      items.add(
-        itemCreator.buildItem(itemProperties),
+      builtItems.add(
+        itemCreator.createItem(
+          itemProperties: itemProperties,
+        ),
       );
     }
 
-    return items;
+    return builtItems;
+  }
+
+  Restrictions _getRestrictions(BuildContext context) {
+    return RestrictionsProvider.of(context);
+  }
+
+  PositioningAssistant _getPositioningAssistant(BuildContext context) {
+    return PositioningAssistantProvider.of(context);
   }
 }
