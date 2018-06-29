@@ -1,19 +1,27 @@
-part of one_time_events_builder;
+import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
+
+import 'package:calendar_views/event.dart';
+import 'package:calendar_views/src/day_view/properties/all.dart';
 
 /// Utility that prepares events of some [date].
-class _SingleDateEventsPreparer {
-  _SingleDateEventsPreparer({
+class SingleDayEventsPreparer {
+  SingleDayEventsPreparer({
     @required this.context,
+    @required this.restrictions,
+    @required this.filter,
     @required this.date,
-    @required this.eventsFilter,
   })  : assert(context != null),
+        assert(restrictions != null),
+        assert(filter != null),
         assert(date != null);
 
   final BuildContext context;
 
-  final DateTime date;
+  final Restrictions restrictions;
+  final EventsFilter filter;
 
-  final EventsFilter eventsFilter;
+  final DateTime date;
 
   Set<PositionableEvent> getAndPrepareEvents() {
     Set<PositionableEvent> events;
@@ -37,10 +45,8 @@ class _SingleDateEventsPreparer {
   }
 
   Set<PositionableEvent> _filterEvents(Iterable<PositionableEvent> events) {
-    if (eventsFilter != null) {
-      return events
-          .where((event) => eventsFilter.shouldEventBeShown(event))
-          .toSet();
+    if (filter != null) {
+      return events.where((event) => filter.shouldEventBeShown(event)).toSet();
     } else {
       return events.toSet();
     }
@@ -50,14 +56,14 @@ class _SingleDateEventsPreparer {
     BuildContext context,
     Iterable<PositionableEvent> events,
   ) {
-    int minimumMinuteOfDay = DayViewRestrictions.of(context).minimumMinuteOfDay;
-    int maximumMinuteOfDay = DayViewRestrictions.of(context).maximumMinuteOfDay;
+    int minimumMinuteOfDay = restrictions.minimumMinuteOfDay;
+    int maximumMinuteOfDay = restrictions.maximumMinuteOfDay;
 
     return events
         .where(
           (event) =>
               event.beginMinuteOfDay >= minimumMinuteOfDay &&
-              (event.beginMinuteOfDay + event.duration) <= maximumMinuteOfDay,
+              event.endMinuteOfDay <= maximumMinuteOfDay,
         )
         .toSet();
   }

@@ -1,20 +1,18 @@
-library events_component;
-
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 import 'package:calendar_views/event.dart';
-import 'package:calendar_views/calendar_items.dart';
+import 'package:calendar_views/src/day_view/positioning_assistant/all.dart';
+import 'package:calendar_views/src/day_view/properties/all.dart';
 
 import '../day_view_component.dart';
-import 'one_time_events_builder/one_time_events_builder.dart';
-
-part 'event_builder.dart';
+import 'single_day_events_items_creator/single_day_event_items_creator.dart';
+import 'event_item_builder.dart';
 
 /// [DayViewComponent] that builds events.
-class EventsComponent extends DayViewComponent {
+class EventViewComponent extends DayViewComponent {
   /// Creates a [DayViewComponent] that builds events of a single day.
-  const EventsComponent({
+  const EventViewComponent({
     this.eventsFilter,
     this.eventsArranger = const ColumnsEventsArranger(),
     @required this.eventBuilder,
@@ -32,11 +30,45 @@ class EventsComponent extends DayViewComponent {
 
   @override
   List<Positioned> buildItems(BuildContext context) {
-    return OneTimeEventsBuilder(
-      context: context,
-      filter: eventsFilter,
-      arranger: eventsArranger,
-      builder: eventBuilder,
-    ).buildItems();
+    List<Positioned> builtItems = <Positioned>[];
+
+    Restrictions restrictions = _getRestrictions(context);
+
+    PositioningAssistant positioningAssistant =
+        _getPositioningAssistant(context);
+
+    Dates dates = _getDates(context);
+    for (int dayNumber in dates.dayNumbers) {
+      DateTime date = dates.getDate(dayNumber);
+
+      SingleDayEventItemsCreator itemsCreator = new SingleDayEventItemsCreator(
+        context: context,
+        restrictions: restrictions,
+        filter: eventsFilter,
+        arranger: eventsArranger,
+        positioningAssistant: positioningAssistant,
+        builder: eventBuilder,
+        date: date,
+        dayNumber: dayNumber,
+      );
+
+      builtItems.addAll(
+        itemsCreator.createItems(),
+      );
+    }
+
+    return builtItems;
+  }
+
+  Dates _getDates(BuildContext context) {
+    return DatesProvider.of(context);
+  }
+
+  Restrictions _getRestrictions(BuildContext context) {
+    return RestrictionsProvider.of(context);
+  }
+
+  PositioningAssistant _getPositioningAssistant(BuildContext context) {
+    return PositioningAssistantProvider.of(context);
   }
 }
