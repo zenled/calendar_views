@@ -40,11 +40,11 @@ class _ItemCreator {
         minuteOfDay <= restrictions.maximumMinuteOfDay;
   }
 
-  Position _createPosition({
+  ItemPosition _createPosition({
     @required int minuteOfDay,
     @required int duration,
   }) {
-    return new Position(
+    return new ItemPosition(
       top: positioner.minuteOfDayFromTop(minuteOfDay - (duration ~/ 2)),
       left: positioner.timeIndicationAreaLeft,
     );
