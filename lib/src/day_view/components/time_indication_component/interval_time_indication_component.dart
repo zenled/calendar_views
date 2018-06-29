@@ -6,15 +6,15 @@ import 'package:calendar_views/src/day_view/positioning_assistant/all.dart';
 import 'package:calendar_views/src/day_view/properties/all.dart';
 import 'package:calendar_views/src/utils/all.dart' as utils;
 
-import '../day_view_component.dart';
+import '../component.dart';
 import 'time_indicator_item_builder.dart';
 import 'time_indicator_item_creator.dart';
 import 'time_indicator_properties.dart';
 
-/// [DayViewComponent] that builds TimeIndicators at specific [interval]s starting at [minuteOfDayOfFirstTimeIndicator].
+/// [Component] that builds TimeIndicators at specific [interval]s starting at [minuteOfDayOfFirstTimeIndicator].
 @immutable
-class IntervalTimeIndicationComponent implements DayViewComponent {
-  /// Creates a [DayViewComponent] that builds a TimeIndicator every [interval] minutes starting at [minuteOfDayOfFirstTimeIndicator].
+class IntervalTimeIndicationComponent implements Component {
+  /// Creates a [Component] that builds a TimeIndicator every [interval] minutes starting at [minuteOfDayOfFirstTimeIndicator].
   const IntervalTimeIndicationComponent({
     this.minuteOfDayOfFirstTimeIndicator = 0,
     @required this.interval,
@@ -25,7 +25,7 @@ class IntervalTimeIndicationComponent implements DayViewComponent {
         assert(interval != null && interval > 0),
         assert(itemBuilder != null);
 
-  /// Creates a [DayViewComponent] that builds a TimeIndicator for every full hour.
+  /// Creates a [Component] that builds a TimeIndicator for every full hour.
   factory IntervalTimeIndicationComponent.everyHour({
     TimeIndicatorItemBuilder itemBuilder,
   }) {

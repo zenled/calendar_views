@@ -5,13 +5,13 @@ import 'package:calendar_views/event.dart';
 import 'package:calendar_views/src/day_view/positioning_assistant/all.dart';
 import 'package:calendar_views/src/day_view/properties/all.dart';
 
-import '../day_view_component.dart';
+import '../component.dart';
 import 'single_day_events_items_creator/single_day_event_items_creator.dart';
 import 'event_item_builder.dart';
 
-/// [DayViewComponent] that builds events.
-class EventViewComponent extends DayViewComponent {
-  /// Creates a [DayViewComponent] that builds events of a single day.
+/// [Component] that builds events.
+class EventViewComponent extends Component {
+  /// Creates a [Component] that builds events of a single day.
   const EventViewComponent({
     this.eventsFilter,
     this.eventsArranger = const ColumnsEventsArranger(),

@@ -4,12 +4,12 @@ import 'package:meta/meta.dart';
 import 'package:calendar_views/src/day_view/positioning_assistant/all.dart';
 import 'package:calendar_views/src/day_view/properties/all.dart';
 
-import '../day_view_component.dart';
+import '../component.dart';
 import 'time_indicator_item_builder.dart';
 import 'time_indicator_item_creator.dart';
 import 'time_indicator_properties.dart';
 
-class CustomTimeIndicationComponent implements DayViewComponent {
+class CustomTimeIndicationComponent implements Component {
   const CustomTimeIndicationComponent({
     @required this.timeIndicatorsToMake,
     @required this.itemBuilder,

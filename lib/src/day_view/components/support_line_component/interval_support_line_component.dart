@@ -6,14 +6,14 @@ import 'package:calendar_views/src/day_view/properties/all.dart';
 import 'package:calendar_views/src/day_view/positioning_assistant/all.dart';
 import 'package:calendar_views/src/utils/all.dart' as utils;
 
-import '../day_view_component.dart';
+import '../component.dart';
 import 'support_line_item_creator.dart';
 import 'support_line_item_builder.dart';
 import 'support_line_properties.dart';
 
-/// [DayViewComponent] that builds SupportLines at specific [interval]s starting at [minuteOfDayOfFirstSupportLine].
-class IntervalSupportLineComponent implements DayViewComponent {
-  /// Creates a [DayViewComponent] that builds a SupportLine every [interval] minutes starting at [minuteOfDayOfFirstSupportLine].
+/// [Component] that builds SupportLines at specific [interval]s starting at [minuteOfDayOfFirstSupportLine].
+class IntervalSupportLineComponent implements Component {
+  /// Creates a [Component] that builds a SupportLine every [interval] minutes starting at [minuteOfDayOfFirstSupportLine].
   const IntervalSupportLineComponent({
     this.minuteOfDayOfFirstSupportLine = 0,
     @required this.interval,
@@ -24,7 +24,7 @@ class IntervalSupportLineComponent implements DayViewComponent {
         assert(interval != null && interval > 0),
         assert(itemBuilder != null);
 
-  /// Creates a [DayViewComponent] that builds a SupportLine for every full hour.
+  /// Creates a [Component] that builds a SupportLine for every full hour.
   factory IntervalSupportLineComponent.everyHour({
     SupportLineItemBuilder itemBuilder,
   }) {
