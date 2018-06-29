@@ -8,7 +8,7 @@ import 'package:calendar_views/src/utils/all.dart' as utils;
 
 import '../day_view_component.dart';
 import 'support_line_item_creator.dart';
-import 'support_line_builder.dart';
+import 'support_line_item_builder.dart';
 import 'support_line_properties.dart';
 
 /// [DayViewComponent] that builds SupportLines at specific [interval]s starting at [minuteOfDayOfFirstSupportLine].

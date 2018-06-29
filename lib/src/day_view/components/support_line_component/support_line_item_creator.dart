@@ -5,7 +5,7 @@ import 'package:calendar_views/src/day_view/positioning_assistant/positioning_as
 import 'package:calendar_views/src/day_view/properties/all.dart';
 
 import '../item_position.dart';
-import 'support_line_builder.dart';
+import 'support_line_item_builder.dart';
 import 'support_line_properties.dart';
 
 @immutable

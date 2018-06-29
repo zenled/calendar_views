@@ -6,7 +6,7 @@ import 'package:calendar_views/src/day_view/positioning_assistant/all.dart';
 import 'package:calendar_views/src/day_view/properties/all.dart';
 
 import '../day_view_component.dart';
-import 'support_line_builder.dart';
+import 'support_line_item_builder.dart';
 import 'support_line_item_creator.dart';
 import 'support_line_properties.dart';
 
