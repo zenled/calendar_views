@@ -1,9 +1,19 @@
-part of support_lines_component;
+import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 
-class CustomSupportLinesComponent extends DayViewComponent {
-  const CustomSupportLinesComponent({
+import 'package:calendar_views/calendar_items.dart';
+import 'package:calendar_views/src/day_view/positioning_assistant/all.dart';
+import 'package:calendar_views/src/day_view/properties/all.dart';
+
+import '../day_view_component.dart';
+import 'support_line_builder.dart';
+import 'support_line_item_creator.dart';
+import 'support_line_properties.dart';
+
+class CustomSupportLineComponent extends DayViewComponent {
+  const CustomSupportLineComponent({
     @required this.supportLinesToBuild,
-    @required this.itemBuilder,
+    this.itemBuilder = defaultSupportLineBuilder,
   })  : assert(supportLinesToBuild != null),
         assert(itemBuilder != null);
 
@@ -11,28 +21,39 @@ class CustomSupportLinesComponent extends DayViewComponent {
   final List<SupportLineProperties> supportLinesToBuild;
 
   /// Function that builds a SupportLine.
-  final SupportLineBuilder itemBuilder;
+  final SupportLineItemBuilder itemBuilder;
 
   @override
   List<Positioned> buildItems(BuildContext context) {
-    List<Positioned> items = <Positioned>[];
-
-    _ItemCreator itemCreator = new _ItemCreator(
+    SupportLineItemCreator itemCreator = new SupportLineItemCreator(
       context: context,
-      restrictions: DayViewRestrictions.of(context),
-      positioner: DayViewPositionerGenerator.of(context).createPositioner(context),
-      itemBuilder: itemBuilder,
+      restrictions: _getRestrictions(context),
+      positioningAssistant: _getPositioningAssistant(context),
+      builder: itemBuilder,
     );
 
+    List<Positioned> items = <Positioned>[];
+
     for (SupportLineProperties itemProperties in supportLinesToBuild) {
-      if (!itemCreator.canItemBeBuilt(itemProperties.minuteOfDay)) {
+      if (!itemCreator.wouldItemBeVisible(itemProperties.minuteOfDay)) {
         continue;
       }
+
       items.add(
-        itemCreator.buildItem(itemProperties),
+        itemCreator.createItem(
+          itemProperties: itemProperties,
+        ),
       );
     }
 
     return items;
+  }
+
+  Restrictions _getRestrictions(BuildContext context) {
+    return RestrictionsProvider.of(context);
+  }
+
+  PositioningAssistant _getPositioningAssistant(BuildContext context) {
+    return PositioningAssistantProvider.of(context);
   }
 }

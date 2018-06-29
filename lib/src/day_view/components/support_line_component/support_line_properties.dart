@@ -1,12 +1,14 @@
-part of support_lines_component;
+import 'package:meta/meta.dart';
+
+import 'package:calendar_views/src/utils/all.dart' as utils;
 
 @immutable
 class SupportLineProperties {
   const SupportLineProperties({
     @required this.minuteOfDay,
   }) : assert(minuteOfDay != null &&
-            minuteOfDay >= minimum_minute_of_day &&
-            minuteOfDay <= maximum_minute_of_day);
+            minuteOfDay >= utils.minimum_minute_of_day &&
+            minuteOfDay <= utils.maximum_minute_of_day);
 
   final int minuteOfDay;
 }

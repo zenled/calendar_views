@@ -1,9 +1,12 @@
-part of support_lines_component;
+import 'package:flutter/material.dart';
+
+import '../item_position.dart';
+import 'support_line_properties.dart';
 
 /// Signature for a function that builds a SupportLine.
-typedef Positioned SupportLineBuilder({
+typedef Positioned SupportLineItemBuilder({
   @required BuildContext context,
-  @required Position position,
+  @required ItemPosition position,
   @required double width,
   @required SupportLineProperties properties,
 });
