@@ -14,7 +14,7 @@ class PositioningAssistantGenerator extends InheritedWidget {
       dates: _getDates(context),
       dimensions: _getDimensions(context),
       restrictions: _getRestrictions(context),
-      sizes: _getSizes(context),
+      sizeConstraints: _getSizeConstraints(context),
     );
   }
 
@@ -26,7 +26,8 @@ class PositioningAssistantGenerator extends InheritedWidget {
   Restrictions _getRestrictions(BuildContext context) =>
       RestrictionsProvider.of(context);
 
-  Sizes _getSizes(BuildContext context) => SizesProvider.of(context);
+  SizeConstraints _getSizeConstraints(BuildContext context) =>
+      SizeConstraintsProvider.of(context);
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) {

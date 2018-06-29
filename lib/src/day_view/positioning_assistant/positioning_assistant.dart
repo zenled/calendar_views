@@ -9,16 +9,16 @@ class PositioningAssistant {
     @required this.dates,
     @required this.dimensions,
     @required this.restrictions,
-    @required this.sizes,
+    @required this.sizeConstraints,
   })  : assert(dates != null),
         assert(dimensions != null),
         assert(restrictions != null),
-        assert(sizes != null);
+        assert(sizeConstraints != null);
 
   final Days dates;
   final Dimensions dimensions;
   final Restrictions restrictions;
-  final Sizes sizes;
+  final SizeConstraints sizeConstraints;
 
   /// Height of the area that should be taken by some item that lasts [minutes].
   double heightOfMinutes(int minutes) {
@@ -36,7 +36,7 @@ class PositioningAssistant {
 
   // total Size ----------------------------------------------------------------
 
-  double get totalAreaWidth => sizes.totalAvailableWidth;
+  double get totalAreaWidth => sizeConstraints.availableWidth;
 
   /// Height that the whole positioning area.
   double get totalAreaHeight =>

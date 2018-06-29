@@ -114,8 +114,8 @@ class _DayViewState extends State<DayView> {
       dates: widget.dates,
       child: new LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
-        return new SizesProvider(
-          sizes: new Sizes(totalAvailableWidth: constraints.maxWidth),
+        return new SizeConstraintsProvider(
+          sizes: new SizeConstraints(availableWidth: constraints.maxWidth),
           child: new Builder(builder: (BuildContext context) {
             // A Builder is needed here so PositioningAssistantGenerator can access sizes
 
