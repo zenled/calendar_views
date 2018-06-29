@@ -5,7 +5,7 @@ part of events_component;
 /// Event should be encapsulated inside a [Positioned] widget.
 typedef Positioned EventBuilder<T extends PositionableEvent>({
   @required BuildContext context,
-  @required Position position,
+  @required ItemPosition position,
   @required Size size,
   @required T event,
 });

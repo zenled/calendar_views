@@ -86,7 +86,7 @@ class OneTimeEventsBuilder {
 }
 
 List<DateTime> _getDates(BuildContext context) {
-  return DayViewDates.of(context).dates;
+  return Dates.of(context).dates;
 }
 
 DayViewPositioner _getPositioner(BuildContext context) {

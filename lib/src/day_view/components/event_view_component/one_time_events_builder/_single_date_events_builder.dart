@@ -59,14 +59,14 @@ class _SingleDateEventsBuilder {
       areaWidth: positioner.dayAreWidth,
       areaHeight: positioner.dayAreaHeight,
       positionTopOf: (int minuteOfDay) {
-        return positioner.minuteOfDayInsideDayArea(dayNumber, minuteOfDay);
+        return positioner.minuteOfDayFromTopInsideDayArea(dayNumber, minuteOfDay);
       },
       heightOf: positioner.heightOfMinutes,
     );
   }
 
-  Position _makePositionOfArrangedEvent(ArrangedEvent arrangedEvent) {
-    return new Position(
+  ItemPosition _makePositionOfArrangedEvent(ArrangedEvent arrangedEvent) {
+    return new ItemPosition(
       top: arrangedEvent.top + positioner.dayAreaTop(dayNumber),
       left: arrangedEvent.left + positioner.dayAreLeft(dayNumber),
     );
