@@ -3,13 +3,13 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/day_view.dart';
 
-import '../position.dart';
+import 'package:calendar_views/src/day_view/components/item_position.dart';
 
-/// Builder for [TimeIndicatorItem].
-Positioned timeIndicatorItemBuilder({
+/// Builder for [DefaultTimeIndicator].
+Positioned defaultTimeIndicatorBuilder({
   @required BuildContext context,
-  @required Position position,
-  @required Size size,
+  @required ItemPosition position,
+  @required ItemSize size,
   @required TimeIndicatorProperties properties,
 }) {
   return new Positioned(
@@ -17,17 +17,17 @@ Positioned timeIndicatorItemBuilder({
     left: position.left,
     width: size.width,
     height: size.height,
-    child: new TimeIndicatorItem(
+    child: new DefaultTimeIndicator(
       properties: properties,
-      size: size,
+      size: new Size(size.width, size.height),
       backgroundColor: Colors.yellow.shade200,
     ),
   );
 }
 
 /// Default widget for a time indicator.
-class TimeIndicatorItem extends StatelessWidget {
-  TimeIndicatorItem({
+class DefaultTimeIndicator extends StatelessWidget {
+  DefaultTimeIndicator({
     @required this.properties,
     @required this.size,
     this.backgroundColor,

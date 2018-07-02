@@ -3,11 +3,11 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/event.dart';
 
-import '../position.dart';
+import 'package:calendar_views/src/day_view/components/item_position.dart';
 
 Positioned eventWithTitleBuilder<T extends PositionableEvent>({
   @required BuildContext context,
-  @required Position position,
+  @required ItemPosition position,
   @required Size size,
   @required T event,
 }) {
@@ -41,9 +41,12 @@ class EventWithTitle extends StatelessWidget {
     return new Container(
       width: size.width,
       height: size.height,
-      color: color,
-      child: new Center(
-        child: new Text(title),
+      child: new Container(
+        color: color,
+        margin: new EdgeInsets.only(left: 2.0, right: 2.0, bottom: 2.0),
+        child: new Center(
+          child: new Text(title),
+        ),
       ),
     );
   }

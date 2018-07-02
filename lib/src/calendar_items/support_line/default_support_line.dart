@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import '../position.dart';
+import 'package:calendar_views/day_view.dart';
 
-Positioned supportLineItemBuilder({
+Positioned defaultSupportLineBuilder({
   @required BuildContext context,
-  @required Position position,
+  @required ItemPosition position,
   @required double width,
-  @required int minuteOfDay,
+  @required SupportLineProperties properties,
 }) {
   return new Positioned(
     top: position.top,
     left: position.left,
     width: width,
-    child: new SupportLineItem(),
+    child: new DefaultSupportLine(),
   );
 }
 
-class SupportLineItem extends StatelessWidget {
-  const SupportLineItem({
+class DefaultSupportLine extends StatelessWidget {
+  const DefaultSupportLine({
     this.height = 0.5,
     this.color = Colors.black,
   })  : assert(height != null),
