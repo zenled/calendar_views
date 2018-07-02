@@ -174,7 +174,7 @@ class PositioningAssistant {
 
     double r = eventsAreaWidth;
     // remove separation between days
-    r -= (_numberOfDays - 1) * dimensions.separationBetweenDays;
+    r -= (_numberOfDays - 1) * dimensions.daySeparation;
     // divide the rest of the are between days
     r /= _numberOfDays;
     return r;
@@ -196,16 +196,16 @@ class PositioningAssistant {
     _throwArgumentErrorIfInvalidDayNumber(dayNumber);
 
     double r = eventsAreaLeft;
-    r += dimensions.separationBetweenDays * dayNumber;
+    r += dimensions.daySeparation * dayNumber;
     r += dayAreWidth(dayNumber) * dayNumber;
     return r;
   }
 
-  double dayAreRight(int dayNumber) {
+  double dayAreaRight(int dayNumber) {
     _throwArgumentErrorIfInvalidDayNumber(dayNumber);
 
     double r = eventsAreaRight;
-    r -= dimensions.separationBetweenDays * dayNumber;
+    r -= dimensions.daySeparation * dayNumber;
     r -= dayAreWidth(dayNumber) * dayNumber;
     return r;
   }
@@ -228,11 +228,134 @@ class PositioningAssistant {
     return minuteOfDayFromTopInsideEventsArea(minuteOfDay);
   }
 
+  // Day Separation Area -------------------------------------------------------
+
+  double daySeparationAreaWidth(int daySeparationNumber) {
+    _throwArgumentErrorIfInvalidDaySeparationNumber(daySeparationNumber);
+
+    return dimensions.daySeparation;
+  }
+
+  double daySeparationAreaHeight(int daySeparationNumber) {
+    _throwArgumentErrorIfInvalidDaySeparationNumber(daySeparationNumber);
+
+    return eventsAreaHeight;
+  }
+
+  Size daySeparationAreaSize(int daySeparationNumber) {
+    _throwArgumentErrorIfInvalidDaySeparationNumber(daySeparationNumber);
+
+    return new Size(
+      daySeparationAreaWidth(daySeparationNumber),
+      daySeparationAreaHeight(daySeparationNumber),
+    );
+  }
+
+  double daySeparationAreaLeft(int daySeparationNumber) {
+    _throwArgumentErrorIfInvalidDaySeparationNumber(daySeparationNumber);
+
+    return dayAreaRight(daySeparationNumber);
+  }
+
+  double daySeparationAreaRight(int daySeparationNumber) {
+    _throwArgumentErrorIfInvalidDaySeparationNumber(daySeparationNumber);
+
+    double r = 0.0;
+    r = daySeparationAreaLeft(daySeparationNumber);
+    r += daySeparationAreaWidth(daySeparationNumber);
+    return r;
+  }
+
+  double daySeparationAreaTop(int daySeparationNumber) {
+    _throwArgumentErrorIfInvalidDaySeparationNumber(daySeparationNumber);
+
+    return eventsAreaTop;
+  }
+
+  double daySeparationAreaBottom(int daySeparationNumber) {
+    _throwArgumentErrorIfInvalidDaySeparationNumber(daySeparationNumber);
+
+    return eventsAreaBottom;
+  }
+
+  double minuteOfDayFromTopInsideDaySeparationArea(
+    int daySeparationNumber,
+    int minuteOfDay,
+  ) {
+    _throwArgumentErrorIfInvalidDaySeparationNumber(daySeparationNumber);
+
+    return minuteOfDayFromTopInsideDayArea(daySeparationNumber, minuteOfDay);
+  }
+
+  // Extended Day Separation Area ----------------------------------------------
+
+  double extendedDaySeparationAreaWidth(int daySeparationNumber) {
+    _throwArgumentErrorIfInvalidDaySeparationNumber(daySeparationNumber);
+
+    return dimensions.daySeparation;
+  }
+
+  double extendedDaySeparationAreaHeight(int daySeparationNumber) {
+    _throwArgumentErrorIfInvalidDaySeparationNumber(daySeparationNumber);
+
+    return contentAreaHeight;
+  }
+
+  Size extendedDaySeparationAreaSize(int daySeparationNumber) {
+    _throwArgumentErrorIfInvalidDaySeparationNumber(daySeparationNumber);
+
+    return new Size(
+      extendedDaySeparationAreaWidth(daySeparationNumber),
+      extendedDaySeparationAreaHeight(daySeparationNumber),
+    );
+  }
+
+  double extendedDaySeparationAreaLeft(int daySeparationNumber) {
+    _throwArgumentErrorIfInvalidDaySeparationNumber(daySeparationNumber);
+
+    return dayAreaRight(daySeparationNumber);
+  }
+
+  double extendedDaySeparationAreaRight(int daySeparationNumber) {
+    _throwArgumentErrorIfInvalidDaySeparationNumber(daySeparationNumber);
+
+    double r = 0.0;
+    r = daySeparationAreaLeft(daySeparationNumber);
+    r += daySeparationAreaWidth(daySeparationNumber);
+    return r;
+  }
+
+  double extendedDaySeparationAreTop(int daySeparationNumber) {
+    _throwArgumentErrorIfInvalidDaySeparationNumber(daySeparationNumber);
+
+    return contentAreaTop;
+  }
+
+  double extendedDaySeparationAreaBottom(int daySeparationNumber) {
+    _throwArgumentErrorIfInvalidDaySeparationNumber(daySeparationNumber);
+
+    return contentAreaBottom;
+  }
+
+  double minuteOfDayFromTopInsideExtendedDaySeparationArea(
+    int daySeparationNumber,
+    int minuteOfDay,
+  ) {
+    _throwArgumentErrorIfInvalidDaySeparationNumber(daySeparationNumber);
+
+    double r = daySeparationAreaTop(daySeparationNumber);
+    r += minuteOfDayFromTopInsideDaySeparationArea(
+        daySeparationNumber, minuteOfDay);
+    return r;
+  }
+
   // ---------------------------------------------------------------------------
 
   int get _totalNumberOfMinutes => restrictions.totalNumberOfMinutes;
 
   int get _numberOfDays => days.numberOfDays;
+
+  int get _numberOfDaySeparations => _numberOfDays - 1;
 
   void _throwArgumentErrorIfInvalidDayNumber(int dayNumber) {
     if (dayNumber >= _numberOfDays) {
@@ -247,6 +370,24 @@ class PositioningAssistant {
         dayNumber,
         "dayNumber",
         "DayNumber must be greater or equal to 0.",
+      );
+    }
+  }
+
+  void _throwArgumentErrorIfInvalidDaySeparationNumber(
+      int daySeparationNumber) {
+    if (daySeparationNumber >= _numberOfDaySeparations) {
+      throw new ArgumentError.value(
+        daySeparationNumber,
+        "daySeparationNumber",
+        "There are numberOfDays -1 daySeparations (number of day separations: $_numberOfDaySeparations)",
+      );
+    }
+    if (daySeparationNumber < 0) {
+      throw new ArgumentError.value(
+        daySeparationNumber,
+        "daySeparationNumber",
+        "DaySeparationNumber must be greater or equal to 0",
       );
     }
   }

@@ -5,7 +5,7 @@ import 'package:meta/meta.dart';
 class Dimensions {
   const Dimensions({
     this.heightPerMinute = 1.0,
-    this.separationBetweenDays = 20.0,
+    this.daySeparation = 20.0,
     this.topExtension = 40.0,
     this.bottomExtension = 40.0,
     this.timeIndicationAreaWidth = 60.0,
@@ -13,7 +13,7 @@ class Dimensions {
     this.eventsAreaStartMargin = 8.0,
     this.eventsAreaEndMargin = 8.0,
   })  : assert(heightPerMinute != null && heightPerMinute > 0),
-        assert(separationBetweenDays != null && separationBetweenDays >= 0),
+        assert(daySeparation != null && daySeparation >= 0),
         assert(topExtension != null && topExtension >= 0),
         assert(bottomExtension != null && bottomExtension >= 0),
         assert(timeIndicationAreaWidth != null && timeIndicationAreaWidth >= 0),
@@ -25,7 +25,7 @@ class Dimensions {
   final double heightPerMinute;
 
   /// Separation between days of DayView.
-  final double separationBetweenDays;
+  final double daySeparation;
 
   // extension
 
@@ -57,7 +57,7 @@ class Dimensions {
       other is Dimensions &&
           runtimeType == other.runtimeType &&
           heightPerMinute == other.heightPerMinute &&
-          separationBetweenDays == other.separationBetweenDays &&
+          daySeparation == other.daySeparation &&
           topExtension == other.topExtension &&
           bottomExtension == other.bottomExtension &&
           timeIndicationAreaWidth == other.timeIndicationAreaWidth &&
@@ -68,7 +68,7 @@ class Dimensions {
   @override
   int get hashCode =>
       heightPerMinute.hashCode ^
-      separationBetweenDays.hashCode ^
+      daySeparation.hashCode ^
       topExtension.hashCode ^
       bottomExtension.hashCode ^
       timeIndicationAreaWidth.hashCode ^
