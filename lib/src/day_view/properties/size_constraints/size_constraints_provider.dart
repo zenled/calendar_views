@@ -5,21 +5,21 @@ import 'size_constraints.dart';
 
 class SizeConstraintsProvider extends InheritedWidget {
   const SizeConstraintsProvider({
-    @required this.sizes,
+    @required this.sizeConstraints,
     @required Widget child,
-  })  : assert(sizes != null),
+  })  : assert(sizeConstraints != null),
         super(child: child);
 
-  final SizeConstraints sizes;
+  final SizeConstraints sizeConstraints;
 
   @override
   bool updateShouldNotify(SizeConstraintsProvider oldWidget) {
-    return sizes != oldWidget.sizes;
+    return sizeConstraints != oldWidget.sizeConstraints;
   }
 
   static SizeConstraints of(BuildContext context) {
     return (context.inheritFromWidgetOfExactType(SizeConstraintsProvider)
             as SizeConstraintsProvider)
-        .sizes;
+        .sizeConstraints;
   }
 }
