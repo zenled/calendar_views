@@ -78,7 +78,7 @@ class SingleDayEventItemsCreator {
 
   ArrangerConstraints _makeArrangerConstraints() {
     return new ArrangerConstraints(
-      areaWidth: positioningAssistant.dayAreWidth(dayNumber),
+      areaWidth: positioningAssistant.dayAreaWidth(dayNumber),
       areaHeight: positioningAssistant.dayAreaHeight(dayNumber),
       positionTopOf: (int minuteOfDay) {
         return positioningAssistant.minuteOfDayFromTopInsideDayArea(
@@ -93,7 +93,7 @@ class SingleDayEventItemsCreator {
   ItemPosition _makeItemPosition(ArrangedEvent arrangedEvent) {
     return new ItemPosition(
       top: arrangedEvent.top + positioningAssistant.dayAreaTop(dayNumber),
-      left: arrangedEvent.left + positioningAssistant.dayAreLeft(dayNumber),
+      left: arrangedEvent.left + positioningAssistant.dayAreaLeft(dayNumber),
     ) ;
   }
 

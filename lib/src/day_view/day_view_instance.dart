@@ -70,7 +70,7 @@ class _DayViewInstanceState extends State<DayViewInstance> {
   @override
   Widget build(BuildContext context) {
     return new DaysProvider(
-      dates: widget.days,
+      days: widget.days,
       child: new LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
         return new SizeConstraintsProvider(

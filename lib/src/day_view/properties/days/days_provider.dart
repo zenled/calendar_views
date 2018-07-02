@@ -6,20 +6,20 @@ import 'days.dart';
 /// Widget that propagates DayView dates down the tree.
 class DaysProvider extends InheritedWidget {
   const DaysProvider({
-    @required this.dates,
+    @required this.days,
     @required Widget child,
-  })  : assert(dates != null),
+  })  : assert(days != null),
         super(child: child);
 
-  final Days dates;
+  final Days days;
 
   @override
   bool updateShouldNotify(DaysProvider oldWidget) {
-    return dates != oldWidget.dates;
+    return days != oldWidget.days;
   }
 
   static Days of(BuildContext context) {
     return (context.inheritFromWidgetOfExactType(DaysProvider) as DaysProvider)
-        .dates;
+        .days;
   }
 }

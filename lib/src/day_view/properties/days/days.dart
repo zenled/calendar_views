@@ -31,6 +31,18 @@ class Days {
     return dayNumbers;
   }
 
+  int get numberOfDaySeparations => numberOfDays - 1;
+
+  List<int> get daySeparationNumbers {
+    List<int> daySeparationNumbers = <int>[];
+
+    for (int i = 0; i < numberOfDaySeparations; i++) {
+      daySeparationNumbers.add(i);
+    }
+
+    return daySeparationNumbers;
+  }
+
   DateTime getDate(int dayNumber) {
     return dates[dayNumber];
   }
