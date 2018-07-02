@@ -47,5 +47,5 @@ abstract class EventBase implements PositionableEvent {
 
   final int duration;
 
-  int get endMinuteOfDay => beginMinuteOfDay + endMinuteOfDay;
+  int get endMinuteOfDay => beginMinuteOfDay + duration;
 }

@@ -81,8 +81,10 @@ class SingleDayEventItemsCreator {
       areaWidth: positioningAssistant.dayAreWidth(dayNumber),
       areaHeight: positioningAssistant.dayAreaHeight(dayNumber),
       positionTopOf: (int minuteOfDay) {
-        positioningAssistant.minuteOfDayFromTopInsideDayArea(
-            dayNumber, minuteOfDay);
+        return positioningAssistant.minuteOfDayFromTopInsideDayArea(
+          dayNumber,
+          minuteOfDay,
+        );
       },
       heightOf: positioningAssistant.heightOfMinutes,
     );
@@ -92,7 +94,7 @@ class SingleDayEventItemsCreator {
     return new ItemPosition(
       top: arrangedEvent.top + positioningAssistant.dayAreaTop(dayNumber),
       left: arrangedEvent.left + positioningAssistant.dayAreLeft(dayNumber),
-    );
+    ) ;
   }
 
   ItemSize _makeItemSize(ArrangedEvent arrangedEvent) {

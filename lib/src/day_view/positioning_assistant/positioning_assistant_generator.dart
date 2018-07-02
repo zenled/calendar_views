@@ -11,14 +11,14 @@ class PositioningAssistantGenerator extends InheritedWidget {
 
   PositioningAssistant generatePositioningAssistant(BuildContext context) {
     return new PositioningAssistant(
-      dates: _getDates(context),
+      days: _getDays(context),
       dimensions: _getDimensions(context),
       restrictions: _getRestrictions(context),
       sizeConstraints: _getSizeConstraints(context),
     );
   }
 
-  Days _getDates(BuildContext context) => DaysProvider.of(context);
+  Days _getDays(BuildContext context) => DaysProvider.of(context);
 
   Dimensions _getDimensions(BuildContext context) =>
       DimensionsProvider.of(context);

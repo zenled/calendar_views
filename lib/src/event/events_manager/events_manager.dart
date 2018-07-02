@@ -25,6 +25,7 @@ class EventsManager {
 
     _eventsStorage = new _EventsStorage();
     _listenersHandler = new _ListenersHandler();
+    _daysForWhichCurrentlyFetchingEvents = new Set();
   }
 
   EventsFetcher _eventsFetcher;
@@ -32,6 +33,8 @@ class EventsManager {
   _EventsStorage _eventsStorage;
 
   _ListenersHandler _listenersHandler;
+
+  Set<Date> _daysForWhichCurrentlyFetchingEvents;
 
   void updateEventsFetcher(EventsFetcher fetcher) {
     _eventsFetcher = fetcher;
@@ -82,16 +85,29 @@ class EventsManager {
     _listenersHandler.removeListener(day: day, listener: listener);
   }
 
-  Future _handleRefreshOfEventsOf({
+  void _handleRefreshOfEventsOf({
     @required Date day,
-  }) async {
-    Set<PositionableEvent> eventsOfDay = await _fetchEvents(day);
-
-    _eventsStorage.storeEvents(day: day, events: eventsOfDay);
-    _listenersHandler.invokeListenersOf(day: day);
+  }) {
+    if (_daysForWhichCurrentlyFetchingEvents.contains(day)) {
+      return;
+    } else {
+      _daysForWhichCurrentlyFetchingEvents.add(day);
+      _refreshEventsOf(day: day);
+    }
   }
 
   Future<Set<PositionableEvent>> _fetchEvents(Date day) {
     return _eventsFetcher(day.toDateTime());
+  }
+
+  Future _refreshEventsOf({
+    @required Date day,
+  }) async {
+    Set<PositionableEvent> eventsOfDay = await _fetchEvents(day);
+
+    _daysForWhichCurrentlyFetchingEvents.remove(day);
+
+    _eventsStorage.storeEvents(day: day, events: eventsOfDay);
+    _listenersHandler.invokeListenersOf(day: day);
   }
 }

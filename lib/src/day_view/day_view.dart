@@ -35,9 +35,9 @@ class _DayViewState extends State<DayView> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    _detachEventsChangedListeners();
-
-    _areEventsChangedListenersAttached = false;
+    if (_areEventsChangedListenersAttached) {
+      _detachEventsChangedListeners();
+    }
   }
 
   void _createAndAttachEventsChangedListeners() {
@@ -46,8 +46,6 @@ class _DayViewState extends State<DayView> {
     _eventsChangedListeners = _createEventsChangedListeners(days);
 
     _attachEventsChangedListeners();
-
-    _areEventsChangedListenersAttached = true;
   }
 
   List<EventsChangedListener> _createEventsChangedListeners(Days days) {
@@ -68,6 +66,8 @@ class _DayViewState extends State<DayView> {
     for (EventsChangedListener listener in _eventsChangedListeners) {
       changedNotifier.attach(listener);
     }
+
+    _areEventsChangedListenersAttached = true;
   }
 
   void _detachEventsChangedListeners() {
@@ -76,6 +76,8 @@ class _DayViewState extends State<DayView> {
     for (EventsChangedListener listener in _eventsChangedListeners) {
       changedNotifier.detach(listener);
     }
+
+    _areEventsChangedListenersAttached = false;
   }
 
   Days _getDays() {

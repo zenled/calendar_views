@@ -6,16 +6,16 @@ import 'package:calendar_views/src/day_view/properties/all.dart';
 @immutable
 class PositioningAssistant {
   PositioningAssistant({
-    @required this.dates,
+    @required this.days,
     @required this.dimensions,
     @required this.restrictions,
     @required this.sizeConstraints,
-  })  : assert(dates != null),
+  })  : assert(days != null),
         assert(dimensions != null),
         assert(restrictions != null),
         assert(sizeConstraints != null);
 
-  final Days dates;
+  final Days days;
   final Dimensions dimensions;
   final Restrictions restrictions;
   final SizeConstraints sizeConstraints;
@@ -55,8 +55,6 @@ class PositioningAssistant {
   double get totalAreaBottom => totalAreaTop + totalAreaHeight;
 
   double minuteOfDayFromTopInsideTotalArea(int minuteOfDay) {
-    _throwArgumentErrorIfInvalidMinuteOfDay(minuteOfDay);
-
     double r = dimensions.topExtension;
     r += heightOfMinutes(_minutesFromMinimumMinute(minuteOfDay));
     return r;
@@ -164,8 +162,6 @@ class PositioningAssistant {
   double get eventsAreaBottom => eventsAreaTop + eventsAreaHeight;
 
   double minuteOfDayFromTopInsideEventsArea(int minuteOfDay) {
-    _throwArgumentErrorIfInvalidMinuteOfDay(minuteOfDay);
-
     return heightOfMinutes(
       _minutesFromMinimumMinute(minuteOfDay),
     );
@@ -228,7 +224,6 @@ class PositioningAssistant {
 
   double minuteOfDayFromTopInsideDayArea(int dayNumber, int minuteOfDay) {
     _throwArgumentErrorIfInvalidDayNumber(dayNumber);
-    _throwArgumentErrorIfInvalidMinuteOfDay(minuteOfDay);
 
     return minuteOfDayFromTopInsideEventsArea(minuteOfDay);
   }
@@ -237,7 +232,7 @@ class PositioningAssistant {
 
   int get _totalNumberOfMinutes => restrictions.totalNumberOfMinutes;
 
-  int get _numberOfDays => dates.numberOfDates;
+  int get _numberOfDays => days.numberOfDays;
 
   void _throwArgumentErrorIfInvalidDayNumber(int dayNumber) {
     if (dayNumber >= _numberOfDays) {
@@ -252,24 +247,6 @@ class PositioningAssistant {
         dayNumber,
         "dayNumber",
         "DayNumber must be greater or equal to 0.",
-      );
-    }
-  }
-
-  void _throwArgumentErrorIfInvalidMinuteOfDay(int minuteOfDay) {
-    if (minuteOfDay < restrictions.minimumMinuteOfDay) {
-      throw new ArgumentError.value(
-          minuteOfDay,
-          "minuteOfDay",
-          "MinuteOfDay is lower than minimumMinuteOfDay (${restrictions
-              .minimumMinuteOfDay})");
-    }
-    if (minuteOfDay > restrictions.maximumMinuteOfDay) {
-      throw new ArgumentError.value(
-        minuteOfDay,
-        "minuteOfDay",
-        "MinuteOfDay is greate than maximumMinuteOfDay (${restrictions
-            .maximumMinuteOfDay}",
       );
     }
   }

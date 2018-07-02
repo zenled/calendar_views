@@ -13,7 +13,6 @@ class SingleDayEventsPreparer {
     @required this.date,
   })  : assert(context != null),
         assert(restrictions != null),
-        assert(filter != null),
         assert(date != null);
 
   final BuildContext context;

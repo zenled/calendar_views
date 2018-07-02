@@ -19,7 +19,7 @@ class Days {
 
   final List<DateTime> dates;
 
-  int get numberOfDates => dates.length;
+  int get numberOfDays => dates.length;
 
   List<int> get dayNumbers {
     List<int> dayNumbers = <int>[];
