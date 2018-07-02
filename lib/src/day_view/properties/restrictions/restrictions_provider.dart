@@ -1,31 +1,26 @@
-part of day_view_restrictions;
+import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 
-/// Widget that propagates restrictions placed upon DayViews.
-class DayViewRestrictions extends InheritedWidget {
-  DayViewRestrictions({
-    @required this.minimumMinuteOfDay,
-    @required this.maximumMinuteOfDay,
+import 'restrictions.dart';
+
+/// Widget that propagates DayView [Restrictions] down the widget tree.
+class RestrictionsProvider extends InheritedWidget {
+  RestrictionsProvider({
+    @required this.restrictions,
     @required Widget child,
-  })  : assert(minimumMinuteOfDay != null &&
-            isValidMinuteOfDay(minimumMinuteOfDay)),
-        assert(maximumMinuteOfDay != null &&
-            isValidMinuteOfDay(maximumMinuteOfDay)),
-        assert(maximumMinuteOfDay >= minimumMinuteOfDay),
+  })  : assert(restrictions != null),
         super(child: child);
 
-  /// Minimum minuteOfDay that child DayViews are allowed to display (inclusive).
-  final int minimumMinuteOfDay;
-
-  /// Maximum minuteOfDay that child DayViews are allowed to display (inclusive).
-  final int maximumMinuteOfDay;
+  final Restrictions restrictions;
 
   @override
-  bool updateShouldNotify(DayViewRestrictions oldWidget) {
-    return oldWidget.minimumMinuteOfDay != minimumMinuteOfDay ||
-        oldWidget.maximumMinuteOfDay != maximumMinuteOfDay;
+  bool updateShouldNotify(RestrictionsProvider oldWidget) {
+    return restrictions != oldWidget.restrictions;
   }
 
-  static DayViewRestrictions of(BuildContext context) {
-    return context.inheritFromWidgetOfExactType(DayViewRestrictions);
+  static Restrictions of(BuildContext context) {
+    return (context.inheritFromWidgetOfExactType(RestrictionsProvider)
+            as RestrictionsProvider)
+        .restrictions;
   }
 }
