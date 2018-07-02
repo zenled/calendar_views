@@ -395,4 +395,21 @@ class PositioningAssistant {
   int _minutesFromMinimumMinute(int minuteOfDay) {
     return minuteOfDay - restrictions.minimumMinuteOfDay;
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PositioningAssistant &&
+          runtimeType == other.runtimeType &&
+          days == other.days &&
+          dimensions == other.dimensions &&
+          restrictions == other.restrictions &&
+          sizeConstraints == other.sizeConstraints;
+
+  @override
+  int get hashCode =>
+      days.hashCode ^
+      dimensions.hashCode ^
+      restrictions.hashCode ^
+      sizeConstraints.hashCode;
 }

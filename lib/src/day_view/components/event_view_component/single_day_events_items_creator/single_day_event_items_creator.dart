@@ -94,7 +94,7 @@ class SingleDayEventItemsCreator {
     return new ItemPosition(
       top: arrangedEvent.top + positioningAssistant.dayAreaTop(dayNumber),
       left: arrangedEvent.left + positioningAssistant.dayAreaLeft(dayNumber),
-    ) ;
+    );
   }
 
   ItemSize _makeItemSize(ArrangedEvent arrangedEvent) {

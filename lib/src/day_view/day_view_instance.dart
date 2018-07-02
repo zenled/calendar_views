@@ -45,26 +45,10 @@ class DayViewInstance extends StatefulWidget {
 }
 
 class _DayViewInstanceState extends State<DayViewInstance> {
-  PositioningAssistant _positioningAssistant;
-
   PositioningAssistant _createPositioningAssistant(BuildContext context) {
     return PositioningAssistantGenerator
         .of(context)
         .generatePositioningAssistant(context);
-  }
-
-  void _handleCreationOfPositioningAssistant({
-    @required BuildContext context,
-    @required double totalAreaWidth,
-  }) {
-    // Positioning assistant must be rebuilt if number of days or available width changes.
-    if (_positioningAssistant == null ||
-        _positioningAssistant.days.numberOfDays != widget.days.numberOfDays ||
-        _positioningAssistant.totalAreaWidth != totalAreaWidth) {
-      _positioningAssistant = PositioningAssistantGenerator
-          .of(context)
-          .generatePositioningAssistant(context);
-    }
   }
 
   @override
@@ -78,13 +62,8 @@ class _DayViewInstanceState extends State<DayViewInstance> {
             availableWidth: constraints.maxWidth,
           ),
           child: new Builder(builder: (BuildContext context) {
-            _handleCreationOfPositioningAssistant(
-              context: context,
-              totalAreaWidth: constraints.maxWidth,
-            );
-
             return new PositioningAssistantProvider(
-              positioningAssistant: _positioningAssistant,
+              positioningAssistant: _createPositioningAssistant(context),
               child: widget.child,
             );
           }),
