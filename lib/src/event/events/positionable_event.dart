@@ -31,6 +31,8 @@ abstract class PositionableEvent {
   int get weekday;
 }
 
+typedef void PositionableEventsSorter(List<PositionableEvent> events);
+
 void sortPositionableEvents(List<PositionableEvent> events) {
   events.sort((PositionableEvent event1, PositionableEvent event2) {
     if (event1.isAllDay && event2.isAllDay) {

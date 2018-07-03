@@ -1,4 +1,4 @@
-export 'implementations/columns_events_arranger.dart';
+export 'implementations/all.dart';
 
 export 'arranged_event.dart';
 export 'arranger_constraints.dart';

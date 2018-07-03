@@ -14,7 +14,7 @@ class EventViewComponent extends Component {
   /// Creates a [Component] that builds events of a single day.
   const EventViewComponent({
     this.eventsFilter,
-    this.eventsArranger = const ColumnsEventsArranger(),
+    this.eventsArranger = const ChainsEventsArranger(),
     @required this.eventBuilder,
   })  : assert(eventsArranger != null),
         assert(eventBuilder != null);
