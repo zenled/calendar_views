@@ -112,8 +112,18 @@ class PositioningAssistant {
   // Content area --------------------------------------------------------------
 
   /// Width of ContentArea.
-  double get contentAreaWidth =>
-      totalAreaWidth - timeIndicationAreaWidth - separationAreaWidth;
+  double get contentAreaWidth {
+    double r = 0.0;
+    r = totalAreaWidth;
+    r -= timeIndicationAreaWidth;
+    r -= separationAreaWidth;
+
+    if (r < 0) {
+      r = 0.0;
+    }
+
+    return r;
+  }
 
   double get contentAreaHeight => totalAreaHeight;
 
@@ -135,16 +145,34 @@ class PositioningAssistant {
   // Events area ---------------------------------------------------------------
 
   /// Width of EventsArea.
-  double get eventsAreaWidth =>
-      totalAreaWidth -
-      timeIndicationAreaWidth -
-      separationAreaWidth -
-      dimensions.eventsAreaStartMargin -
-      dimensions.eventsAreaEndMargin;
+  double get eventsAreaWidth {
+    double r = 0.0;
+    r = totalAreaWidth;
+    r -= timeIndicationAreaWidth;
+    r -= separationAreaWidth;
+    r -= dimensions.eventsAreaStartMargin;
+    r -= dimensions.eventsAreaEndMargin;
+
+    if (r < 0) {
+      r = 0.0;
+    }
+
+    return r;
+  }
 
   /// Height of the EventsArea.
-  double get eventsAreaHeight =>
-      totalAreaHeight - dimensions.topExtension - dimensions.bottomExtension;
+  double get eventsAreaHeight {
+    double r = 0.0;
+    r = totalAreaHeight;
+    r -= dimensions.topExtension;
+    r -= dimensions.bottomExtension;
+
+    if (r < 0) {
+      r = 0.0;
+    }
+
+    return r;
+  }
 
   Size get eventsAreaSize => new Size(eventsAreaWidth, eventsAreaHeight);
 
@@ -177,6 +205,11 @@ class PositioningAssistant {
     r -= (_numberOfDays - 1) * dimensions.daySeparation;
     // divide the rest of the are between days
     r /= _numberOfDays;
+
+    if (r < 0) {
+      r = 0.0;
+    }
+
     return r;
   }
 
