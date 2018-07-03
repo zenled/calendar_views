@@ -4,10 +4,10 @@ class WeekPagerController {
   static const _default_weeksDelta_from_initialWeek = 1000;
 
   WeekPagerController.raw({
+    @required this.firstWeekday,
     @required DateTime initialWeek,
     @required DateTime minimumWeek,
     @required DateTime maximumWeek,
-    @required this.firstWeekday,
   })  : assert(utils.isValidWeekday(firstWeekday)),
         // converts dateTime to week
         _initialWeek = _dateTimeToWeek(firstWeekday, initialWeek),
@@ -23,13 +23,37 @@ class WeekPagerController {
     // validates _maximumWeek
     if (!(_maximumWeek.isAfter(_initialWeek) || _maximumWeek == _initialWeek)) {
       throw new ArgumentError(
-        "MaximumWeek should be afrer or same week as initialWeek",
+        "MaximumWeek should be after or same week as initialWeek",
       );
     }
 
     // sets other properties
     _initialPage = _weeksBetween(_minimumWeek, _initialWeek);
     _numberOfPages = _weeksBetween(_minimumWeek, _maximumWeek) + 1;
+  }
+
+  factory WeekPagerController({
+    int firstWeekday = DateTime.monday,
+    DateTime initialWeek,
+    DateTime minimumWeek,
+    DateTime maximumWeek,
+  }) {
+    initialWeek ??= new DateTime.now();
+
+    minimumWeek ??= initialWeek.add(
+      new Duration(days: -(7 * _default_weeksDelta_from_initialWeek)),
+    );
+
+    maximumWeek ??= initialWeek.add(new Duration(
+      days: (7 * _default_weeksDelta_from_initialWeek),
+    ));
+
+    return new WeekPagerController.raw(
+      firstWeekday: firstWeekday,
+      initialWeek: initialWeek,
+      minimumWeek: minimumWeek,
+      maximumWeek: maximumWeek,
+    );
   }
 
   final Date _minimumWeek;
@@ -43,6 +67,12 @@ class WeekPagerController {
   int _initialPage;
 
   int _numberOfPages;
+
+  DateTime get minimumWeek => _minimumWeek.toDateTime();
+
+  DateTime get maximumWeek => _maximumWeek.toDateTime();
+
+  DateTime get initialWeek => _initialWeek.toDateTime();
 
   int get initialPage => _initialPage;
 

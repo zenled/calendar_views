@@ -16,7 +16,7 @@ typedef Widget WeekPagerPageBuilder(
 );
 
 class WeekPager extends StatefulWidget {
-  WeekPager({
+  WeekPager._internal({
     @required this.controller,
     @required this.pageBuilder,
     @required this.onPageChanged,
@@ -24,6 +24,22 @@ class WeekPager extends StatefulWidget {
   })  : assert(controller != null),
         assert(pageBuilder != null),
         assert(scrollDirection != null);
+
+  factory WeekPager({
+    WeekPagerController controller,
+    @required WeekPagerPageBuilder pageBuilder,
+    ValueChanged<List<DateTime>> onPageChanged,
+    Axis scrollDirection = Axis.horizontal,
+  }) {
+    controller ??= new WeekPagerController();
+
+    return new WeekPager._internal(
+      controller: controller,
+      pageBuilder: pageBuilder,
+      onPageChanged: onPageChanged,
+      scrollDirection: scrollDirection,
+    );
+  }
 
   final WeekPagerController controller;
 
@@ -137,7 +153,7 @@ class _WeekPagerState extends State<WeekPager> {
       jumpToPage: _pageController.jumpToPage,
       animateToPage: _pageController.animateToPage,
       getDisplayedPage: () {
-        _pageController.page.round();
+        return _pageController.page.round();
       },
     );
   }

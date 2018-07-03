@@ -8,7 +8,7 @@ typedef void _AnimateToPage(
   @required Curve curve,
 });
 
-/// Communicator between [DayPager] and [DayPagerController].
+/// Communicator between [WeekPager] and [WeekPagerController].
 @immutable
 class _PagerPosition {
   _PagerPosition({
@@ -19,12 +19,12 @@ class _PagerPosition {
         assert(animateToPage != null),
         assert(getDisplayedPage != null);
 
-  /// Tells [DayPager] to jump to a specified page.
+  /// Tells [WeekPager] to jump to a specified page.
   final _JumpToPage jumpToPage;
 
-  /// Tells [DayPager] to animate to a specified page.
+  /// Tells [WeekPager] to animate to a specified page.
   final _AnimateToPage animateToPage;
 
-  /// Requests the current displayed page index from the [DayPager].
+  /// Requests the current displayed page index from the [WeekPager].
   final ValueGetter<int> getDisplayedPage;
 }

@@ -12,6 +12,7 @@ void main() {
     _testDaysBetween();
     _testCopyWith();
     _testAdd();
+    _testLowerToFirstWeekday();
   });
 }
 
@@ -349,6 +350,23 @@ void _testAdd() {
         date.add(years: -1, months: -1, days: -1),
         new Date(year: 2017, month: 5, day: 3),
       );
+    });
+  });
+}
+
+void _testLowerToFirstWeekday() {
+  group(".lowerToFirstWeekday", () {
+    test("is same day", () {
+      Date date = new Date(year: 2018, month: 7, day: 5);
+      int firstWeekday = date.weekday;
+      expect(date.lowerToFirstWeekday(firstWeekday), date);
+    });
+
+    test("is previous day", () {
+      Date date = new Date(year: 2018, month: 7, day: 5);
+      int firstWeekday = date.weekday - 1;
+      Date expected = date.add(days: -1);
+      expect(date.lowerToFirstWeekday(firstWeekday), expected);
     });
   });
 }
