@@ -3,6 +3,8 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/day_view.dart';
 
+import 'dummy_evets_fetcher.dart';
+
 class DayViewExample extends StatefulWidget {
   @override
   _DayViewExampleState createState() => new _DayViewExampleState();
@@ -21,34 +23,76 @@ class _DayViewExampleState extends State<DayViewExample> {
         title: new Text("DayView Example"),
       ),
       body: new Builder(builder: (BuildContext context) {
-        return new EventsProvider(
-          events: <PositionableEvent>[
-            new SimpleEvent(
-                beginMinuteOfDay: 5 * 60, duration: 60, title: "Before"),
-            new SimpleEvent(
-                beginMinuteOfDay: 11 * 60, duration: 60, title: "Abc"),
-          ].toSet(),
-          child: new DayViewProperties(
-            minimumMinuteOfDay: 7 * 60,
-            width: MediaQuery.of(context).size.width,
-            dimensions: new DayViewDimensions(),
-            items: <DayViewComponent>[
-              new IntervalTimeIndicatorsComponent.everyHour(),
-              new IntervalSupportLineComponent.everyHour(),
-              new SingleDayEventsComponent(itemBuilder: eventWithTitleBuilder),
-            ],
-            child: new SingleChildScrollView(
-              child: new Column(
-                children: <Widget>[
-                  new DayView(
-                    date: new DateTime.now(),
-                  ),
+        return new CalendarEvents(
+          eventsFetcher: dummyEventsFetcher,
+          child: new Builder(
+            builder: (BuildContext context) {
+              return new DayViewResources(
+                dimensions: new Dimensions(),
+                components: <Component>[
+                  new IntervalTimeIndicationComponent.everyHour(),
+                  new IntervalSupportLineComponent.everyHour(),
+                  new DaySeparationComponent(),
+                  new EventViewComponent(eventBuilder: eventWithTitleBuilder),
                 ],
-              ),
-            ),
+                child: new SingleChildScrollView(
+                  child: new Container(
+                    padding: new EdgeInsets.symmetric(horizontal: 16.0),
+                    child: new DayViewInstance(
+                      days: new Days(dates: <DateTime>[
+                        new DateTime.now(),
+                        new DateTime.now().add(new Duration(days: 1)),
+                        new DateTime.now().add(new Duration(days: 1)),
+                        new DateTime.now(),
+                        new DateTime.now(),
+                        new DateTime.now(),
+                        new DateTime.now(),
+                      ]),
+                      child: new Column(
+                        children: <Widget>[
+                          new Container(
+                            height: 20.0,
+                          ),
+                          new RaisedButton(
+                              child: new Text("Refresh events"),
+                              onPressed: () {
+                                EventsRefresher
+                                    .of(context)
+                                    .refreshEventsOfAllDates();
+                              }),
+                          new Container(
+                            height: 20.0,
+                          ),
+                          new DaysHeader.builder(
+                            headerBuilder: _headerBuilder,
+                          ),
+                          new Container(
+                            height: 20.0,
+                          ),
+                          new DayView(),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         );
       }),
+    );
+  }
+
+  Widget _headerBuilder({
+    @required BuildContext context,
+    @required DateTime date,
+  }) {
+    return new Container(
+      height: 20.0,
+      color: Colors.redAccent,
+      child: new Center(
+        child: new Text("${date.month}.${date.day}"),
+      ),
     );
   }
 }
