@@ -1,9 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
+part of day_pager;
 
-typedef void JumpToPage(int page);
+typedef void _JumpToPage(int page);
 
-typedef void AnimateToPage(
+typedef void _AnimateToPage(
   int page, {
   @required Duration duration,
   @required Curve curve,
@@ -11,8 +10,8 @@ typedef void AnimateToPage(
 
 /// Communicator between [DayPager] and [DayPagerController].
 @immutable
-class DayPagerPosition {
-  DayPagerPosition({
+class _PagerPosition {
+  _PagerPosition({
     @required this.jumpToPage,
     @required this.animateToPage,
     @required this.getDisplayedPage,
@@ -21,10 +20,10 @@ class DayPagerPosition {
         assert(getDisplayedPage != null);
 
   /// Tells [DayPager] to jump to a specified page.
-  final JumpToPage jumpToPage;
+  final _JumpToPage jumpToPage;
 
   /// Tells [DayPager] to animate to a specified page.
-  final AnimateToPage animateToPage;
+  final _AnimateToPage animateToPage;
 
   /// Requests the current displayed page index from the [DayPager].
   final ValueGetter<int> getDisplayedPage;

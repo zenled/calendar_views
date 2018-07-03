@@ -1,8 +1,13 @@
+library day_pager;
+
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import 'day_pager_controller.dart';
-import 'day_pager_position.dart';
+import 'package:calendar_views/src/internal_date_items/all.dart';
+
+part 'day_pager_controller.dart';
+
+part '_pager_position.dart';
 
 /// Signature for a function that builds a widget for a given [date].
 ///
@@ -85,10 +90,17 @@ class _DayPagerState extends State<DayPager> {
 
     if (oldWidget.controller != widget.controller) {
       DateTime dateOnOldWidget = oldWidget.controller.displayedDate;
-      int initialIndexOnNewWidget = widget.controller.pageOf(dateOnOldWidget);
+      int initialPageOnNewPageController;
+
+      if (dateOnOldWidget != null) {
+        initialPageOnNewPageController =
+            widget.controller.pageOf(dateOnOldWidget);
+      } else {
+        initialPageOnNewPageController = widget.controller.initialPage;
+      }
 
       _pageController = _createPageController(
-        initialPage: initialIndexOnNewWidget,
+        initialPage: initialPageOnNewPageController,
       );
 
       oldWidget.controller.detach();
@@ -96,7 +108,9 @@ class _DayPagerState extends State<DayPager> {
         _createDayPagerPosition(),
       );
 
-      widget.onPageChanged(widget.controller.dateOf(initialIndexOnNewWidget));
+      widget.onPageChanged(
+        widget.controller.dateOf(initialPageOnNewPageController),
+      );
 
       recreatePageView = true;
     }
@@ -114,7 +128,9 @@ class _DayPagerState extends State<DayPager> {
     }
   }
 
-  PageController _createPageController({@required int initialPage}) {
+  PageController _createPageController({
+    @required int initialPage,
+  }) {
     assert(initialPage != null);
 
     return new PageController(
@@ -122,8 +138,8 @@ class _DayPagerState extends State<DayPager> {
     );
   }
 
-  DayPagerPosition _createDayPagerPosition() {
-    return new DayPagerPosition(
+  _PagerPosition _createDayPagerPosition() {
+    return new _PagerPosition(
       jumpToPage: _pageController.jumpToPage,
       animateToPage: _pageController.animateToPage,
       getDisplayedPage: () {

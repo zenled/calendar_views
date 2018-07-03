@@ -1,9 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
-
-import 'package:calendar_views/src/internal_date_items/all.dart';
-
-import 'day_pager_position.dart';
+part of day_pager;
 
 /// Controller for [DayPager].
 class DayPagerController {
@@ -27,7 +22,6 @@ class DayPagerController {
         "MinimumDate should be before or same date as InitialDate.",
       );
     }
-
     // validates maximum date
     if (!(_maximumDate.isAfter(_initialDate) || _maximumDate == _initialDate)) {
       throw new ArgumentError(
@@ -58,17 +52,13 @@ class DayPagerController {
   }) {
     initialDate ??= new DateTime.now();
 
-    if (minimumDate == null) {
-      minimumDate = initialDate.add(
-        new Duration(days: -_default_daysDelta_from_initialDate),
-      );
-    }
+    minimumDate ??= initialDate.add(
+      new Duration(days: -_default_daysDelta_from_initialDate),
+    );
 
-    if (maximumDate == null) {
-      maximumDate = initialDate.add(
-        new Duration(days: _default_daysDelta_from_initialDate),
-      );
-    }
+    maximumDate ??= initialDate.add(
+      new Duration(days: _default_daysDelta_from_initialDate),
+    );
 
     return new DayPagerController.raw(
       initialDate: initialDate,
@@ -88,7 +78,7 @@ class DayPagerController {
   int _numberOfPages;
 
   /// Connector for controlling the attached pager.
-  DayPagerPosition _pagerPosition;
+  _PagerPosition _pagerPosition;
 
   /// Minimum date that the attached pager should display (inclusive).
   DateTime get minimumDate => _maximumDate.toDateTime();
@@ -143,14 +133,14 @@ class DayPagerController {
         .toDateTime();
   }
 
-  /// Registers the given [DayPagerPosition] with the controller.
+  /// Registers the given [_PagerPosition] with the controller.
   ///
-  /// If a previous [DayPagerPosition] is registered, it is replaced with the new one.
-  void attach(DayPagerPosition pagerPosition) {
+  /// If a previous [_PagerPosition] is registered, it is replaced with the new one.
+  void attach(_PagerPosition pagerPosition) {
     _pagerPosition = pagerPosition;
   }
 
-  /// Unregisters the previously attached [DayPagerPosition].
+  /// Unregisters the previously attached [_PagerPosition].
   void detach() {
     _pagerPosition = null;
   }

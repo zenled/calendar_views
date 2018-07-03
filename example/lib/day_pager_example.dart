@@ -45,13 +45,14 @@ class _DayPagerExampleState extends State<DayPagerExample> {
         return new Column(
           children: <Widget>[
             new Expanded(
-                child: new DayPager(
-              controller: _dayPagerController,
-              onPageChanged: (DateTime date) {
-                print("Displaying: ${date.year}.${date.month}.${date.day}");
-              },
-              pageBuilder: _pageBuilder,
-            )),
+              child: new DayPager(
+                controller: _dayPagerController,
+                onPageChanged: (DateTime date) {
+                  print("Displaying: ${date.year}.${date.month}.${date.day}");
+                },
+                pageBuilder: _pageBuilder,
+              ),
+            ),
             new Container(
               margin: new EdgeInsets.symmetric(vertical: 16.0),
               child: new RaisedButton(
