@@ -43,6 +43,8 @@ class Date {
   /// Days are 1-based (first day of month is 1).
   final int day;
 
+  int get weekday => toDateTime().weekday;
+
   /// Returns this date as DateTime in local time zone.
   ///
   /// Values except year, month and day are set to 0.
@@ -80,6 +82,29 @@ class Date {
       month: month ?? this.month,
       day: day ?? this.day,
     );
+  }
+
+  Date lowerToFirstWeekday(int firstWeekday) {
+    Date date = this.copyWith();
+
+    while (date.weekday != firstWeekday) {
+      date = date.add(days: -1);
+    }
+
+    return date;
+  }
+
+  List<Date> daysOfWeek(int firstWeekday) {
+    List<Date> daysOfWeek = <Date>[];
+
+    Date firstDay = lowerToFirstWeekday(firstWeekday);
+    for (int i = 0; i < DateTime.daysPerWeek; i++) {
+      Date day = firstDay.add(days: i);
+
+      daysOfWeek.add(day);
+    }
+
+    return daysOfWeek;
   }
 
   /// Returns new Date with some values added.
