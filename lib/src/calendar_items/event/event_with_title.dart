@@ -2,20 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 import 'package:calendar_views/event.dart';
-
-import 'package:calendar_views/src/day_view/components/item_position.dart';
+import 'package:calendar_views/day_view.dart';
 
 Positioned eventWithTitleBuilder<T extends PositionableEvent>({
   @required BuildContext context,
   @required ItemPosition position,
-  @required Size size,
+  @required ItemSize size,
   @required T event,
 }) {
   return new Positioned(
     top: position.top,
     left: position.left,
     child: new EventWithTitle(
-      size: size,
+      size: new Size(size.width, size.height),
       title: (event as SimpleEvent).title,
     ),
   );
