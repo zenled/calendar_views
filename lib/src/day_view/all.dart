@@ -1,4 +1,5 @@
 export 'components/all.dart';
+export 'headers/all.dart';
 export 'positioning_assistant/all.dart';
 export 'properties/all.dart';
 

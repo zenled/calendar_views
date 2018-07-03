@@ -47,6 +47,25 @@ class Days {
     return dates[dayNumber];
   }
 
+  /// Returns the daySeparationNumber of a separation that belongs to a day with [dayNumber].
+  ///
+  /// If day does not have a separation it returns null.
+  int separationNumberBefore(int dayNumber) {
+    if (dayNumber <= 0 || dayNumber > numberOfDaySeparations) {
+      return null;
+    } else {
+      return dayNumber - 1;
+    }
+  }
+
+  int separationNumberAfter(int dayNumber) {
+    if (dayNumber < 0 || dayNumber >= numberOfDaySeparations) {
+      return null;
+    } else {
+      return dayNumber;
+    }
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
