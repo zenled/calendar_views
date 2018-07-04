@@ -9,10 +9,10 @@ typedef void AnimateToPage(
   @required Curve curve,
 });
 
-/// Communicator between [WeekPager] and [WeekPagerController].
+/// Communicator between [MonthPager] and [MonthPagerController].
 @immutable
-class PagerPosition {
-  PagerPosition({
+class PagerControllerCommunicator {
+  PagerControllerCommunicator({
     @required this.jumpToPage,
     @required this.animateToPage,
     @required this.getDisplayedPage,

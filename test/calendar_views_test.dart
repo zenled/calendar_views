@@ -1,7 +1,5 @@
-import 'package:test/test.dart';
-
-import 'package:calendar_views/calendar_views.dart';
+import 'internal_date_items/test_all.dart' as internal_date_items_test;
 
 void main() {
-
+  internal_date_items_test.main();
 }

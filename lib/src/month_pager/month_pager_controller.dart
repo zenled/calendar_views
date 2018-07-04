@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/src/internal_date_items/all.dart';
 
-import '_pager_position.dart';
+import '_pager_controller_communicator.dart';
 
 class MonthPagerController {
   static const _default_monthsDeltaFromInitialMonth = 1000;
@@ -32,8 +32,8 @@ class MonthPagerController {
     }
 
     // sets other properties
-    _initialPage = Month.getDifference(_minimumMonth, _initialMonth);
-    _numberOfPages = Month.getDifference(_initialMonth, _maximumMonth);
+    _initialPage = _minimumMonth.differenceInMonthsTo(_initialMonth);
+    _numberOfPages = _minimumMonth.differenceInMonthsTo(_maximumMonth) + 1;
   }
 
   factory MonthPagerController({
@@ -43,11 +43,13 @@ class MonthPagerController {
   }) {
     initialMonth ??= new DateTime.now();
 
-    minimumMonth ??= initialMonth
-        .add(new Duration(days: -(_default_monthsDeltaFromInitialMonth * 31)));
+    minimumMonth ??= initialMonth.add(
+      new Duration(days: -(_default_monthsDeltaFromInitialMonth * 31)),
+    );
 
-    maximumMonth ??= initialMonth
-        .add(new Duration(days: (_default_monthsDeltaFromInitialMonth * 31)));
+    maximumMonth ??= initialMonth.add(
+      new Duration(days: (_default_monthsDeltaFromInitialMonth * 31)),
+    );
 
     return new MonthPagerController.raw(
       initialMonth: initialMonth,
@@ -66,7 +68,7 @@ class MonthPagerController {
 
   int _numberOfPages;
 
-  PagerPosition _pagerPosition;
+  PagerControllerCommunicator _pagerPosition;
 
   DateTime get initialMonth => _initialMonth.toDateTime();
 
@@ -87,7 +89,7 @@ class MonthPagerController {
     if (m.isAfter(_maximumMonth)) {
       return numberOfPages - 1;
     }
-    return Month.getDifference(_minimumMonth, m);
+    return _minimumMonth.differenceInMonthsTo(m);
   }
 
   DateTime monthOf(int page) {
@@ -97,7 +99,7 @@ class MonthPagerController {
     return month.toDateTime();
   }
 
-  DateTime get displayedDays {
+  DateTime get displayedMonth {
     if (_pagerPosition == null) {
       return null;
     } else {
@@ -105,7 +107,7 @@ class MonthPagerController {
     }
   }
 
-  void attach(PagerPosition pagerPosition) {
+  void attach(PagerControllerCommunicator pagerPosition) {
     _pagerPosition = pagerPosition;
   }
 
