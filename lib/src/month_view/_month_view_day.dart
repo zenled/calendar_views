@@ -42,12 +42,11 @@ class _MonthViewDayState extends State<MonthViewDay> {
 
   @override
   void dispose() {
-    super.dispose();
-    _detachEventsChangedListener();
-
     if (widget.rebuildWhenEventsChange) {
       _detachEventsChangedListener();
     }
+
+    super.dispose();
   }
 
   @override
