@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/day_view.dart';
 
-import 'dummy_evets_fetcher.dart';
+import 'dummy_evets_retriever.dart';
 
 class DayViewExample extends StatefulWidget {
   @override
@@ -11,9 +11,13 @@ class DayViewExample extends StatefulWidget {
 }
 
 class _DayViewExampleState extends State<DayViewExample> {
+  DummyEventsRetriever _dummyEventsRetriever;
+
   @override
   void initState() {
     super.initState();
+
+    _dummyEventsRetriever = new DummyEventsRetriever();
   }
 
   @override
@@ -24,7 +28,7 @@ class _DayViewExampleState extends State<DayViewExample> {
       ),
       body: new Builder(builder: (BuildContext context) {
         return new CalendarEvents(
-          eventsFetcher: dummyEventsFetcher,
+          eventsRetriever: _dummyEventsRetriever,
           child: new Builder(
             builder: (BuildContext context) {
               return new DayViewResources(
@@ -56,9 +60,7 @@ class _DayViewExampleState extends State<DayViewExample> {
                           new RaisedButton(
                               child: new Text("Refresh events"),
                               onPressed: () {
-                                EventsRefresher
-                                    .of(context)
-                                    .refreshEventsOfAllDates();
+                                EventsRefresher.of(context).refreshAllEvents();
                               }),
                           new Container(
                             height: 20.0,
