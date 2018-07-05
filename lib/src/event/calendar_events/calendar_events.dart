@@ -3,7 +3,7 @@ library calendar_events;
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/event/events_manager/events_manager.dart';
+import 'package:calendar_views/src/event/events_manager/all.dart';
 import 'package:calendar_views/src/event/events/positionable_event.dart';
 
 part 'events_changed_notifier.dart';
@@ -14,15 +14,14 @@ part 'events_refresher.dart';
 
 class CalendarEvents extends StatefulWidget {
   CalendarEvents({
-    @required this.eventsFetcher,
+    @required this.eventsRetriever,
     @required this.child,
-  })  : assert(eventsFetcher != null),
+  })  : assert(eventsRetriever != null),
         assert(child != null);
 
-  final Widget child;
+  final EventsOfDayRetriever eventsRetriever;
 
-  /// Function that provides events to this widget.
-  final EventsFetcher eventsFetcher;
+  final Widget child;
 
   @override
   _CalendarEventsState createState() => new _CalendarEventsState();
@@ -36,7 +35,7 @@ class _CalendarEventsState extends State<CalendarEvents> {
     super.initState();
 
     _eventsManager = new EventsManager(
-      eventsFetcher: widget.eventsFetcher,
+      eventsRetriever: widget.eventsRetriever,
     );
   }
 
@@ -44,8 +43,8 @@ class _CalendarEventsState extends State<CalendarEvents> {
   void didUpdateWidget(CalendarEvents oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.eventsFetcher != widget.eventsFetcher) {
-      _eventsManager.updateEventsFetcher(widget.eventsFetcher);
+    if (widget.eventsRetriever != oldWidget.eventsRetriever) {
+      _eventsManager.changeEventsRetriever(widget.eventsRetriever);
     }
   }
 
@@ -55,7 +54,7 @@ class _CalendarEventsState extends State<CalendarEvents> {
       getEventsOf: _eventsManager.getEventsOf,
       child: new EventsRefresher(
         refreshEventsOf: _eventsManager.refreshEventsOf,
-        refreshEventsOfAllDates: _eventsManager.refreshEventsOfAllDates,
+        refreshAllEvents: _eventsManager.refreshAllEvents,
         child: new EventsChangedNotifier(
           attach: _eventsManager.attachEventsChangedListener,
           detach: _eventsManager.detachEventsChangedListener,

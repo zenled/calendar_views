@@ -1,24 +1,22 @@
 part of calendar_events;
 
-/// Function that forces the refresh of events of some [date].
-typedef RefreshEventsOfCallback({
-  @required DateTime date,
-});
+/// Function that forces the refresh of events of some [day].
+typedef void RefreshEventsOf(DateTime day);
 
 class EventsRefresher extends InheritedWidget {
   EventsRefresher({
     @required this.refreshEventsOf,
-    @required this.refreshEventsOfAllDates,
+    @required this.refreshAllEvents,
     @required Widget child,
   })  : assert(refreshEventsOf != null),
-        assert(refreshEventsOfAllDates != null),
+        assert(refreshAllEvents != null),
         super(child: child);
 
-  /// Forces a refresh of evens that happen on [date]
-  final RefreshEventsOfCallback refreshEventsOf;
+  /// Forces a refresh of evens that happen on [day]
+  final RefreshEventsOf refreshEventsOf;
 
   /// Forces a refresh of events of all dates of which data has been previously fetched.
-  final VoidCallback refreshEventsOfAllDates;
+  final VoidCallback refreshAllEvents;
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) {

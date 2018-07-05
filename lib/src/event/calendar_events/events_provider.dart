@@ -1,9 +1,7 @@
 part of calendar_events;
 
-/// Function that returns a set of events that happen on some [date].
-typedef Set<PositionableEvent> GetEventsOfCallback({
-  @required DateTime date,
-});
+/// Function that returns a set of events that happen on some [day].
+typedef Set<PositionableEvent> GetEventsOf(DateTime day);
 
 class EventsProvider extends InheritedWidget {
   EventsProvider({
@@ -12,8 +10,8 @@ class EventsProvider extends InheritedWidget {
   })  : assert(getEventsOf != null),
         super(child: child);
 
-  /// Returns a set of events that happen on [date].
-  final GetEventsOfCallback getEventsOf;
+  /// Returns a set of events that happen on [day].
+  final GetEventsOf getEventsOf;
 
   @override
   bool updateShouldNotify(EventsProvider oldWidget) {
