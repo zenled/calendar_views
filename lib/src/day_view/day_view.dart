@@ -52,7 +52,7 @@ class _DayViewState extends State<DayView> {
     return days.dates
         .map(
           (date) => new EventsChangedListener(
-              date: date,
+              day: date,
               onEventsChanged: () {
                 setState(() {});
               }),

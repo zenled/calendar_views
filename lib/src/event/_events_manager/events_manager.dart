@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 import 'package:calendar_views/src/internal_date_items/all.dart';
 import 'package:calendar_views/src/event/events/positionable_event.dart';
 import 'package:calendar_views/src/event/calendar_events/events_changed_listener.dart';
-import 'package:calendar_views/src/event/calendar_events/events_of_day_retriever.dart';
+import 'package:calendar_views/src/event/calendar_events/events_retriever.dart';
 
 import '_events_fetcher.dart';
 import '_events_storage.dart';
@@ -12,7 +12,7 @@ import '_listeners_handler.dart';
 /// Class that retrieves, stores and refreshes events and notifies listeners when changes happen.
 class EventsManager {
   EventsManager({
-    @required EventsOfDayRetriever eventsRetriever,
+    @required EventsRetriever eventsRetriever,
   }) {
     _fetcher = new EventsFetcher(
       eventsRetriever: eventsRetriever,
@@ -26,7 +26,7 @@ class EventsManager {
   EventsStorage _storage;
   ListenersHandler _listenersHandler;
 
-  void changeEventsRetriever(EventsOfDayRetriever retriever) {
+  void changeEventsRetriever(EventsRetriever retriever) {
     _fetcher.changeRetriever(retriever);
   }
 

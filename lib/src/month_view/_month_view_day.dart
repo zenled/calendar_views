@@ -64,7 +64,7 @@ class _MonthViewDayState extends State<MonthViewDay> {
 
   EventsChangedListener _createEventsChangedListener() {
     return new EventsChangedListener(
-      date: widget.properties.date,
+      day: widget.properties.date,
       onEventsChanged: () {
         setState(() {});
       },

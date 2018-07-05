@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/src/internal_date_items/all.dart';
 import 'package:calendar_views/src/event/events/positionable_event.dart';
-import 'package:calendar_views/src/event/calendar_events/events_of_day_retriever.dart';
+import 'package:calendar_views/src/event/calendar_events/events_retriever.dart';
 
 typedef void OnEventsFetchCompleted(
   Date date,
@@ -13,7 +13,7 @@ typedef void OnEventsFetchCompleted(
 
 class EventsFetcher {
   EventsFetcher({
-    @required EventsOfDayRetriever eventsRetriever,
+    @required EventsRetriever eventsRetriever,
     @required this.onFetchCompleted,
   })  : _daysForWhichCurrentlyFetching = new Set(),
         assert(eventsRetriever != null),
@@ -21,11 +21,11 @@ class EventsFetcher {
 
   final OnEventsFetchCompleted onFetchCompleted;
 
-  EventsOfDayRetriever _eventsRetriever;
+  EventsRetriever _eventsRetriever;
 
   final Set<Date> _daysForWhichCurrentlyFetching;
 
-  void changeRetriever(EventsOfDayRetriever newRetriever) {
+  void changeRetriever(EventsRetriever newRetriever) {
     _eventsRetriever = newRetriever;
   }
 
@@ -47,7 +47,7 @@ class EventsFetcher {
   Future _fetch(Date date) async {
     Set<PositionableEvent> fetchedEvents;
 
-    fetchedEvents = await _eventsRetriever.retrieveEventsOfDat(
+    fetchedEvents = await _eventsRetriever.retrieveEventsOf(
       date.toDateTime(),
     );
 

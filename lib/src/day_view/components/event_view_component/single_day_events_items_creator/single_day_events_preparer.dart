@@ -34,7 +34,7 @@ class SingleDayEventsPreparer {
   }
 
   Set<PositionableEvent> _retrieveEvents() {
-    return EventsProvider.of(context).getEventsOf(date: date);
+    return EventsProvider.of(context).getEventsOf(date);
   }
 
   Set<PositionableEvent> _removeAllDayEvents(

@@ -4,9 +4,9 @@ import 'package:meta/meta.dart';
 import 'package:calendar_views/src/event/_events_manager/events_manager.dart';
 
 import 'events_changed_notifier.dart';
-import 'events_of_day_retriever.dart';
 import 'events_provider.dart';
 import 'events_refresher.dart';
+import 'events_retriever.dart';
 
 class CalendarEvents extends StatefulWidget {
   CalendarEvents({
@@ -15,7 +15,7 @@ class CalendarEvents extends StatefulWidget {
   })  : assert(eventsRetriever != null),
         assert(child != null);
 
-  final EventsOfDayRetriever eventsRetriever;
+  final EventsRetriever eventsRetriever;
 
   final Widget child;
 
