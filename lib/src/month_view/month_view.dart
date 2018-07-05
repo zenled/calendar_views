@@ -13,15 +13,17 @@ class MonthView extends StatefulWidget {
     @required this.month,
     this.firstWeekday = DateTime.monday,
     @required this.dayOfMonthBuilder,
-    this.automaticallyRefresh = true,
-    this.showBeforeExtendedDays = true,
-    this.showAfterExtendedDays = true,
+    this.rebuildDayWhenEventsChange = false,
+    this.showExtendedDaysBefore = true,
+    this.showExtendedDaysAfter = true,
+    Key key,
   })  : assert(month != null),
         assert(firstWeekday != null && utils.isValidWeekday(firstWeekday)),
         assert(dayOfMonthBuilder != null),
-        assert(automaticallyRefresh != null),
-        assert(showBeforeExtendedDays != null),
-        assert(showAfterExtendedDays != null);
+        assert(rebuildDayWhenEventsChange != null),
+        assert(showExtendedDaysBefore != null),
+        assert(showExtendedDaysAfter != null),
+        super(key: key);
 
   final DateTime month;
 
@@ -29,17 +31,40 @@ class MonthView extends StatefulWidget {
 
   final DayOfMonthBuilder dayOfMonthBuilder;
 
-  final bool automaticallyRefresh;
+  final bool rebuildDayWhenEventsChange;
 
-  final bool showBeforeExtendedDays;
+  final bool showExtendedDaysBefore;
 
-  final bool showAfterExtendedDays;
+  final bool showExtendedDaysAfter;
 
   @override
   _MonthViewState createState() => new _MonthViewState();
 }
 
 class _MonthViewState extends State<MonthView> {
+  List<DayOfMonthProperties> _days;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _days = _generateExtendedDays();
+  }
+
+  @override
+  void didUpdateWidget(MonthView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (!utils.isSameYearAndMonth(widget.month, oldWidget.month) ||
+        widget.firstWeekday != oldWidget.firstWeekday) {
+      List<DayOfMonthProperties> newDays = _generateExtendedDays();
+
+      setState(() {
+        _days = newDays;
+      });
+    }
+  }
+
   List<DayOfMonthProperties> _generateExtendedDays() {
     ExtendedDaysOfMonthGenerator daysGenerator =
         new ExtendedDaysOfMonthGenerator(
@@ -61,15 +86,11 @@ class _MonthViewState extends State<MonthView> {
   List<Widget> _buildWeeks() {
     List<Widget> weeks = <Widget>[];
 
-    List<DayOfMonthProperties> allDays = _generateExtendedDays();
-    for (int i = 0; i < allDays.length; i += 7) {
-      List<DayOfMonthProperties> daysOfWeek =
-          allDays.getRange(i, i + 7).toList();
+    for (int i = 0; i < _days.length; i += 7) {
+      List<DayOfMonthProperties> daysOfWeek = _days.getRange(i, i + 7).toList();
 
       weeks.add(
-        new Expanded(
-          child: _buildWeek(daysOfWeek),
-        ),
+        _buildWeek(daysOfWeek),
       );
     }
 
@@ -77,43 +98,53 @@ class _MonthViewState extends State<MonthView> {
   }
 
   Widget _buildWeek(List<DayOfMonthProperties> daysOfWeek) {
-    return new Row(
-      children: daysOfWeek
-          .map(
-            (dayOfWeek) => new Row(
-                  children: daysOfWeek
-                      .map(
-                        (dayOfWeek) => new Expanded(
-                              child: _buildDay(dayOfWeek),
-                            ),
-                      )
-                      .toList(),
-                ),
-          )
-          .toList(),
+    return new Expanded(
+      child: new Row(
+        mainAxisSize: MainAxisSize.max,
+        children: daysOfWeek
+            .map(
+              (dayOfWeek) => _buildDay(dayOfWeek),
+            )
+            .toList(),
+      ),
     );
   }
 
   Widget _buildDay(DayOfMonthProperties day) {
+    return new Expanded(
+      child: _buildDayContents(day),
+    );
+  }
+
+  Widget _buildDayContents(DayOfMonthProperties day) {
     if (_shouldDayBeShown(day)) {
-      return new MonthViewDay(
-        automaticallyRefresh: widget.automaticallyRefresh,
-        builder: widget.dayOfMonthBuilder,
-        properties: day,
-      );
+      return _buildVisibleDay(day);
     } else {
-      return new Container(
-        constraints: new BoxConstraints.expand(),
-      );
+      return _buildInvisibleDay();
     }
+  }
+
+  Widget _buildVisibleDay(DayOfMonthProperties day) {
+    return new MonthViewDay(
+      properties: day,
+      rebuildWhenEventsChange: widget.rebuildDayWhenEventsChange,
+      builder: widget.dayOfMonthBuilder,
+      key: new ObjectKey(day),
+    );
+  }
+
+  Widget _buildInvisibleDay() {
+    return new Container(
+      constraints: new BoxConstraints.expand(),
+    );
   }
 
   bool _shouldDayBeShown(DayOfMonthProperties day) {
     if (!day.isExtended) {
       return true;
-    } else if (day.isExtendedBefore && widget.showBeforeExtendedDays) {
+    } else if (day.isExtendedBefore && widget.showExtendedDaysBefore) {
       return true;
-    } else if (day.isExtendedAfter && widget.showAfterExtendedDays) {
+    } else if (day.isExtendedAfter && widget.showExtendedDaysAfter) {
       return true;
     } else {
       return false;

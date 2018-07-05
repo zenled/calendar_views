@@ -1,5 +1,7 @@
 import 'package:meta/meta.dart';
 
+import 'package:calendar_views/src/utils/all.dart' as utils;
+
 @immutable
 class DayOfMonthProperties {
   DayOfMonthProperties._internal({
@@ -56,4 +58,23 @@ class DayOfMonthProperties {
       return false;
     }
   }
+
+  @override
+  String toString() {
+    return "DayOfMonthProperties"
+        "{date: ${date.year}.${date.month}.${date.day}, "
+        "isExtended: $isExtended, month: ${month.year}.${month.month}}";
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DayOfMonthProperties &&
+          runtimeType == other.runtimeType &&
+          utils.isSameDate(date, other.date) &&
+          isExtended == other.isExtended &&
+          utils.isSameYearAndMonth(date, other.date);
+
+  @override
+  int get hashCode => date.hashCode ^ isExtended.hashCode ^ month.hashCode;
 }
