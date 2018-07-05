@@ -1,5 +1,3 @@
-library events_manager;
-
 import 'dart:async';
 
 import 'package:meta/meta.dart';
@@ -7,107 +5,71 @@ import 'package:meta/meta.dart';
 import 'package:calendar_views/src/event/events/positionable_event.dart';
 import 'package:calendar_views/src/internal_date_items/all.dart';
 
-part 'events_changed_listener.dart';
+import '_events_fetcher.dart';
+import '_events_storage.dart';
+import '_listeners_handler.dart';
 
-part 'events_storage.dart';
-
-part 'listeners_handler.dart';
-
-/// Function that returns a Future with a set of events that happen on specific [date].
-typedef Future<Set<PositionableEvent>> EventsFetcher(DateTime date);
+import 'events_changed_listener.dart';
+import 'events_of_day_retriever.dart';
 
 /// Class that retrieves, stores and refreshes events and notifies listeners when changes happen.
 class EventsManager {
   EventsManager({
-    @required EventsFetcher eventsFetcher,
-  }) : assert(eventsFetcher != null) {
-    _eventsFetcher = eventsFetcher;
-
-    _eventsStorage = new _EventsStorage();
-    _listenersHandler = new _ListenersHandler();
-    _daysForWhichCurrentlyFetchingEvents = new Set();
-  }
-
-  EventsFetcher _eventsFetcher;
-
-  _EventsStorage _eventsStorage;
-
-  _ListenersHandler _listenersHandler;
-
-  Set<Date> _daysForWhichCurrentlyFetchingEvents;
-
-  void updateEventsFetcher(EventsFetcher fetcher) {
-    _eventsFetcher = fetcher;
-  }
-
-  /// Returns a set of [PositionableEvent]s that happen on specific [date].
-  Set<PositionableEvent> getEventsOf({
-    @required DateTime date,
+    @required EventsOfDayRetriever eventsRetriever,
   }) {
-    assert(date != null);
+    _fetcher = new EventsFetcher(
+      eventsRetriever: eventsRetriever,
+      onFetchCompleted: _onFetchCompleted,
+    );
+    _storage = new EventsStorage();
+    _listenersHandler = new ListenersHandler();
+  }
 
-    Date day = Date.fromDateTime(date);
+  EventsFetcher _fetcher;
+  EventsStorage _storage;
+  ListenersHandler _listenersHandler;
 
-    if (!_eventsStorage.haveEventOfDayBeenStored(day)) {
-      _handleRefreshOfEventsOf(day: day);
+  void changeEventsRetriever(EventsOfDayRetriever retriever) {
+    _fetcher.changeRetriever(retriever);
+  }
+
+  Set<PositionableEvent> getEventsOf(DateTime day) {
+    Date date = Date.fromDateTime(day);
+
+    if (!_storage.haveEventOfDayBeenStored(date)) {
+      _fetcher.fetchEventsOf(date);
     }
 
-    return _eventsStorage.retrieveEventsOf(day: day);
+    return _storage.retrieveOf(date);
   }
 
-  /// Refreshes events of a specific [date].
-  void refreshEventsOf({
-    @required DateTime date,
-  }) {
-    assert(date != null);
+  void refreshEventsOf(DateTime day) {
+    Date date = new Date.fromDateTime(day);
 
-    Date day = new Date.fromDateTime(date);
-
-    _handleRefreshOfEventsOf(day: day);
+    _fetcher.fetchEventsOf(date);
   }
 
   /// Refreshes events for all dates that have previously been fetched.
-  void refreshEventsOfAllDates() {
-    for (Date day in _eventsStorage.daysWhoseEventsHaveBeenStored()) {
-      _handleRefreshOfEventsOf(day: day);
+  void refreshAllEvents() {
+    for (Date date in _storage.daysWhoseEventsHaveBeenStored()) {
+      _fetcher.fetchEventsOf(date);
     }
   }
 
   void attachEventsChangedListener(EventsChangedListener listener) {
-    Date day = new Date.fromDateTime(listener.date);
+    Date date = new Date.fromDateTime(listener.day);
 
-    _listenersHandler.addListener(day: day, listener: listener);
+    _listenersHandler.addListener(date, listener);
   }
 
   void detachEventsChangedListener(EventsChangedListener listener) {
-    Date day = new Date.fromDateTime(listener.date);
+    Date date = new Date.fromDateTime(listener.day);
 
-    _listenersHandler.removeListener(day: day, listener: listener);
+    _listenersHandler.removeListener(date, listener);
   }
 
-  void _handleRefreshOfEventsOf({
-    @required Date day,
-  }) {
-    if (_daysForWhichCurrentlyFetchingEvents.contains(day)) {
-      return;
-    } else {
-      _daysForWhichCurrentlyFetchingEvents.add(day);
-      _refreshEventsOf(day: day);
-    }
-  }
-
-  Future<Set<PositionableEvent>> _fetchEvents(Date day) {
-    return _eventsFetcher(day.toDateTime());
-  }
-
-  Future _refreshEventsOf({
-    @required Date day,
-  }) async {
-    Set<PositionableEvent> eventsOfDay = await _fetchEvents(day);
-
-    _daysForWhichCurrentlyFetchingEvents.remove(day);
-
-    _eventsStorage.storeEvents(day: day, events: eventsOfDay);
-    _listenersHandler.invokeListenersOf(day: day);
+  void _onFetchCompleted(Date date, Set<PositionableEvent> events) {
+    _storage.store(date, events);
+    _listenersHandler.invokeListenersOf(date);
   }
 }

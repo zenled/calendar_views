@@ -1,20 +1,20 @@
-part of events_manager;
+import 'package:meta/meta.dart';
 
 typedef void EventsChangedListenerCallback(EventsChangedListener listener);
 
 typedef void OnEventsChangedCallback();
 
-/// Class for listening for changes of events of [date].
+/// Class for listening for changes of events of [day].
 class EventsChangedListener {
   EventsChangedListener({
-    @required this.date,
+    @required this.day,
     @required this.onEventsChanged,
-  })  : assert(date != null),
+  })  : assert(day != null),
         assert(onEventsChanged != null);
 
-  /// Listener is listening for change of events of this [date].
-  final DateTime date;
+  /// Listener is listening for change of events of this [day].
+  final DateTime day;
 
-  /// Function that fires when the set of events of [date] has changed.
+  /// Function that fires when the set of events of [day] has changed.
   final OnEventsChangedCallback onEventsChanged;
 }
