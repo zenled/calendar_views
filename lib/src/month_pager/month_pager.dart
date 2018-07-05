@@ -118,9 +118,11 @@ class _MonthPagerState extends State<MonthPager> {
         _createPagerPosition(),
       );
 
-      widget.onPageChanged(
-        widget.controller.monthOf(initialPageOnNewPageController),
-      );
+      if (widget.onPageChanged != null) {
+        widget.onPageChanged(
+          widget.controller.monthOf(initialPageOnNewPageController),
+        );
+      }
 
       setState(() {
         _pageView = _createPageView();
