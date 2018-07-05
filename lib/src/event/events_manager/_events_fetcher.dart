@@ -2,10 +2,9 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/event/events/positionable_event.dart';
 import 'package:calendar_views/src/internal_date_items/all.dart';
-
-import 'events_of_day_retriever.dart';
+import 'package:calendar_views/src/event/events/positionable_event.dart';
+import 'package:calendar_views/src/event/calendar_events/events_of_day_retriever.dart';
 
 typedef void OnEventsFetchCompleted(
   Date date,
