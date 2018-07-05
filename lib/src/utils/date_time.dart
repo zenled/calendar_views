@@ -16,6 +16,10 @@ bool isSameDate(DateTime date1, DateTime date2) {
       date1.day == date2.day;
 }
 
+bool isSameYearAndMonth(DateTime date1, DateTime date2) {
+  return date1.year == date2.year && date1.month == date2.month;
+}
+
 /// Returns true if all dates in [list1] and [list2] are the same (both lists must have same length).
 bool areListsOfDatesTheSame(List<DateTime> list1, List<DateTime> list2) {
   if (list1.length != list2.length) {

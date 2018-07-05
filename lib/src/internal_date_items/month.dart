@@ -1,5 +1,7 @@
 import 'package:meta/meta.dart';
 
+import 'date.dart';
+
 @immutable
 class Month {
   Month(
@@ -85,6 +87,10 @@ class Month {
 
   DateTime toDateTime() {
     return new DateTime(year, month);
+  }
+
+  Date toDateAsFirstDayOfMonth() {
+    return new Date(year: year, month: month, day: 1);
   }
 
   int differenceInMonthsTo(Month other) {

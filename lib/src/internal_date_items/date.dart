@@ -1,6 +1,8 @@
 import 'package:meta/meta.dart';
 import 'package:quiver/core.dart';
 
+import 'month.dart';
+
 /// Internal representation of a date (year.month.day)
 /// This class is intended only for use only by this library.
 class Date {
@@ -105,6 +107,10 @@ class Date {
     }
 
     return daysOfWeek;
+  }
+
+  bool isOfMonth(Month month) {
+    return this.year == month.year && this.month == month.month;
   }
 
   /// Returns new Date with some values added.
