@@ -1,4 +1,5 @@
-part of calendar_events;
+import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 
 /// Function that forces the refresh of events of some [day].
 typedef void RefreshEventsOf(DateTime day);

@@ -1,16 +1,12 @@
-library calendar_events;
-
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/event/events_manager/all.dart';
-import 'package:calendar_views/src/event/events/positionable_event.dart';
+import 'package:calendar_views/src/event/_events_manager/events_manager.dart';
 
-part 'events_changed_notifier.dart';
-
-part 'events_provider.dart';
-
-part 'events_refresher.dart';
+import 'events_changed_notifier.dart';
+import 'events_of_day_retriever.dart';
+import 'events_provider.dart';
+import 'events_refresher.dart';
 
 class CalendarEvents extends StatefulWidget {
   CalendarEvents({

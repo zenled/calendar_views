@@ -1,4 +1,7 @@
-part of calendar_events;
+import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
+
+import 'package:calendar_views/src/event/events/positionable_event.dart';
 
 /// Function that returns a set of events that happen on some [day].
 typedef Set<PositionableEvent> GetEventsOf(DateTime day);

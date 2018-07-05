@@ -1,4 +1,7 @@
-part of calendar_events;
+import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
+
+import 'events_changed_listener.dart';
 
 class EventsChangedNotifier extends InheritedWidget {
   EventsChangedNotifier({
