@@ -1,1 +1,3 @@
-export 'src/day_pager/day_pager.dart';
+library day_page_view;
+
+export 'src/day_page_view/all.dart';

@@ -1,175 +1,173 @@
-part of day_pager;
+import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 
-/// Controller for [DayPager].
-class DayPagerController {
-  static const _default_daysDelta_from_initialDate = 10000;
+import 'package:calendar_views/src/_calendar_page_view/all.dart';
+import 'package:calendar_views/src/_internal_date_items/all.dart';
 
-  /// Creates a controller for [DayPager], with all values required.
-  DayPagerController.raw({
-    @required DateTime initialDate,
-    @required DateTime minimumDate,
-    @required DateTime maximumDate,
-  })  : assert(initialDate != null),
-        assert(minimumDate != null),
-        assert(maximumDate != null),
-        this._initialDate = new Date.fromDateTime(initialDate),
-        this._minimumDate = new Date.fromDateTime(minimumDate),
-        this._maximumDate = new Date.fromDateTime(maximumDate) {
-    // validates minimum date
-    if (!(_minimumDate.isBefore(_initialDate) ||
-        _minimumDate == _initialDate)) {
-      throw new ArgumentError(
-        "MinimumDate should be before or same date as InitialDate.",
-      );
-    }
-    // validates maximum date
-    if (!(_maximumDate.isAfter(_initialDate) || _maximumDate == _initialDate)) {
-      throw new ArgumentError(
-        "MaximumDate should be afrer or same date as InitialDate.",
-      );
-    }
+import 'day_page_view.dart';
 
-    // sets other properties
-    _initialPage = _minimumDate.daysBetween(_initialDate);
-    _numberOfPages = _minimumDate.daysBetween(_maximumDate) + 1;
-  }
+/// Controller for [DayPageView].
+class DayPageController extends CalendarPageController<DateTime> {
+  static const default_daysDeltaFromInitialDate = 10000;
 
-  /// Creates a controller for [DayPager].
+  DayPageController._internal({
+    @required Date initialDay,
+    @required Date minimumDay,
+    @required Date maximumDay,
+  })  : assert(initialDay != null),
+        assert(minimumDay != null),
+        assert(maximumDay != null),
+        _initialDay = initialDay,
+        _minimumDay = minimumDay,
+        _maximumDay = maximumDay,
+        super(
+          initialPage: minimumDay.daysBetween(initialDay),
+          numberOfPages: minimumDay.daysBetween(maximumDay) + 1,
+        );
+
+  /// Creates a controller for [DayPageView].
   ///
-  /// Both [minimumDate] and [maximumDate] are inclusive.
+  /// If [initialDay] is set to null,
+  /// today will be set as [initialDay].
   ///
-  /// If [initialDate] is not provided, it will be set to today's date.
+  /// If [minimumDay] is set to null,
+  /// a day [default_daysDeltaFromInitialDate] before [initialDay] will be set as [minimumDay].
   ///
-  /// If [minimumDate] is not provided, the controlled [DayPager]
-  /// will be virtually infinite in the direction before [initialDate].
   ///
-  /// If [maximumDate] is not provided, the controlled [DayPager]
-  /// will be virtually infinite in the direction after [initialDate].
-  factory DayPagerController({
-    DateTime initialDate,
-    DateTime minimumDate,
-    DateTime maximumDate,
+  /// If [maximumDay] is set to null,
+  /// a day [default_daysDeltaFromInitialDate] after [initialDay] will be set as [maximumDay].
+  factory DayPageController({
+    DateTime initialDay,
+    DateTime minimumDay,
+    DateTime maximumDay,
   }) {
-    initialDate ??= new DateTime.now();
+    // Converts to internal representation of date
+    Date initial;
+    Date minimum;
+    Date maximum;
 
-    minimumDate ??= initialDate.add(
-      new Duration(days: -_default_daysDelta_from_initialDate),
-    );
-
-    maximumDate ??= initialDate.add(
-      new Duration(days: _default_daysDelta_from_initialDate),
-    );
-
-    return new DayPagerController.raw(
-      initialDate: initialDate,
-      minimumDate: minimumDate,
-      maximumDate: maximumDate,
-    );
-  }
-
-  final Date _minimumDate;
-
-  final Date _maximumDate;
-
-  final Date _initialDate;
-
-  int _initialPage;
-
-  int _numberOfPages;
-
-  /// Connector for controlling the attached pager.
-  _PagerPosition _pagerPosition;
-
-  /// Minimum date that the attached pager should display (inclusive).
-  DateTime get minimumDate => _maximumDate.toDateTime();
-
-  /// Maximum date that the attached pager should display (inclusive).
-  DateTime get maximumDate => _maximumDate.toDateTime();
-
-  /// Date which the attached pager should display when first built.
-  DateTime get initialDate => _initialDate.toDateTime();
-
-  /// Index of the initial page that the attached pager should display.
-  int get initialPage => _initialPage;
-
-  /// Number of pages that the attached pager should be able to display.
-  int get numberOfPages => _numberOfPages;
-
-  /// Returns displayed date (page) in the attached [DayPager].
-  ///
-  /// If no [DayPager] is attached it returns null.
-  DateTime get displayedDate {
-    if (_pagerPosition == null) {
-      return null;
+    if (initialDay != null) {
+      initial = new Date.fromDateTime(initialDay);
     } else {
-      return dateOf(_pagerPosition.getDisplayedPage());
+      initial = new Date.today();
     }
+
+    if (minimumDay != null) {
+      minimum = new Date.fromDateTime(minimumDay);
+    } else {
+      minimum = initial.add(days: -default_daysDeltaFromInitialDate);
+    }
+
+    if (maximumDay != null) {
+      maximum = new Date.fromDateTime(maximumDay);
+    } else {
+      maximum = initial.add(days: default_daysDeltaFromInitialDate);
+    }
+
+    // validates
+    if (!(minimum.isBefore(initial) || minimum == initial)) {
+      throw new ArgumentError(
+        "minimumDate should be before or same date as initialDate.",
+      );
+    }
+    if (!(maximum.isAfter(initial) || maximum == initial)) {
+      throw new ArgumentError(
+        "maximumDate should be after or same date as initialDate.",
+      );
+    }
+
+    return new DayPageController._internal(
+      initialDay: initial,
+      minimumDay: minimum,
+      maximumDay: maximum,
+    );
   }
 
-  /// Returns page (page index) that represents a [date] in the attached [DayPager].
-  ///
-  /// If [date] if before [minimumDate], first page is returned.
-  /// If [date] is after [maximumDate], last page is returned.
-  int pageOf(DateTime date) {
-    Date d = new Date.fromDateTime(date);
+  final Date _initialDay;
+  final Date _minimumDay;
+  final Date _maximumDay;
 
-    if (d.isBefore(_minimumDate)) {
+  /// Day shown when first creating the controlled [DayPageView].
+  DateTime get initialDay => _initialDay.toDateTime();
+
+  /// Minimum day shown in the controlled [DayPageView] (inclusive).
+  DateTime get minimumDay => _minimumDay.toDateTime();
+
+  /// Maximum day shown in the controlled [DayPageView] (inclusive).
+  DateTime get maximumDay => _maximumDay.toDateTime();
+
+  @override
+  DateTime representationOfCurrentPage() {
+    return displayedDay();
+  }
+
+  @override
+  int indexOfPageThatRepresents(DateTime pageRepresentation) {
+    return pageOf(pageRepresentation);
+  }
+
+  /// Returns index of page that displays [day].
+  ///
+  /// If [day] is before [minimumDay], index of first page is returned.
+  ///
+  /// If [day] is after [maximumDay], index of last page is returned.
+  int pageOf(DateTime day) {
+    Date d = new Date.fromDateTime(day);
+
+    if (d.isBefore(_minimumDay)) {
       return 0;
     }
-    if (d.isAfter(_maximumDate)) {
+    if (d.isAfter(_maximumDay)) {
       return numberOfPages - 1;
     }
-    return _minimumDate.daysBetween(d);
+    return _minimumDay.daysBetween(d);
   }
 
-  /// Returns date that should be displayed on specified [page] (page index) in the attached [DayPager].
-  DateTime dateOf(int page) {
+  /// Returns day displayed on [page].
+  ///
+  /// Values of returned day except year and month and day are set to their default values.
+  DateTime dayOf(int page) {
     int deltaFromInitialPage = page - initialPage;
 
-    return _initialDate
-        .add(
-          days: deltaFromInitialPage,
-        )
-        .toDateTime();
+    return _initialDay.add(days: deltaFromInitialPage).toDateTime();
   }
 
-  /// Registers the given [_PagerPosition] with the controller.
+  /// Returns currently displayed day in the controlled [DayPageView].
   ///
-  /// If a previous [_PagerPosition] is registered, it is replaced with the new one.
-  void attach(_PagerPosition pagerPosition) {
-    _pagerPosition = pagerPosition;
-  }
+  /// If no [DayPageView] is attached it returns null.
+  ///
+  /// Values of returned [DateTime] except for year, month and day are set to their default values.
+  DateTime displayedDay() {
+    int displayedPage = super.displayedPage();
 
-  /// Unregisters the previously attached [_PagerPosition].
-  void detach() {
-    _pagerPosition = null;
-  }
-
-  /// Forces the attached [DayPager] to jump to specified [date].
-  void jumpTo(DateTime date) {
-    if (_pagerPosition == null) {
-      print("No DayPager attached");
-      return;
+    if (displayedPage == null) {
+      return null;
+    } else {
+      return dayOf(displayedPage);
     }
-
-    _pagerPosition.jumpToPage(
-      pageOf(date),
-    );
   }
 
-  /// Forces the attached [DayPager] to animate to specified [date].
+  /// Changes which [day] is displayed in the controlled [DayPageView].
+  ///
+  /// If no [DayPageView] is attached it does nothing.
+  void jumpTo(DateTime day) {
+    int pageOfDay = pageOf(day);
+
+    super.jumpToPage(pageOfDay);
+  }
+
+  /// Animates the controlled [DayPageView] to the given [day].
+  ///
+  /// If no [DayPageView] is attached it does nothing.
   void animateTo(
-    DateTime date, {
+    DateTime day, {
     @required Duration duration,
     @required Curve curve,
   }) {
-    if (_pagerPosition == null) {
-      print("No DayPager attached");
-      return;
-    }
+    int pageOfDay = pageOf(day);
 
-    _pagerPosition.animateToPage(
-      pageOf(date),
+    super.animateToPage(
+      pageOfDay,
       duration: duration,
       curve: curve,
     );

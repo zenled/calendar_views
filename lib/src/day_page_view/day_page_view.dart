@@ -1,190 +1,87 @@
-library day_pager;
-
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/_internal_date_items/all.dart';
+import 'package:calendar_views/src/_calendar_page_view/all.dart';
 
-part 'day_pager_controller.dart';
+import 'day_page_builder.dart';
+import 'day_page_controller.dart';
 
-part '_pager_position.dart';
-
-/// Signature for a function that builds a widget for a given [date].
-///
-/// Values of [date] except for year and month and day are set to their default values.
-typedef Widget DayPagerPageBuilder(BuildContext context, DateTime date);
-
-/// Widget similar to [PageView], each page has an assigned date.
-class DayPager extends StatefulWidget {
-  DayPager._internal({
+/// Custom pageView in which each page represents a day.
+class DayPageView extends CalendarPageView {
+  DayPageView._internal({
     @required this.controller,
     @required this.pageBuilder,
-    this.onPageChanged,
-    @required this.scrollDirection,
+    @required this.onDayChanged,
+    @required Axis scrollDirection,
+    @required bool reverse,
+    @required ScrollPhysics physics,
+    @required bool pageSnapping,
   })  : assert(controller != null),
         assert(pageBuilder != null),
-        assert(scrollDirection != null);
+        super(
+          scrollDirection: scrollDirection,
+          reverse: reverse,
+          physics: physics,
+          pageSnapping: pageSnapping,
+        );
 
-  /// Creates a scrollable list, that gives each item a date.
-  factory DayPager({
-    DayPagerController controller,
-    @required DayPagerPageBuilder pageBuilder,
-    ValueChanged<DateTime> onPageChanged,
+  /// Creates pageView with each page representing a day.
+  factory DayPageView({
+    DayPageController controller,
+    @required DayPageBuilder pageBuilder,
+    ValueChanged<DateTime> onDayChanged,
     Axis scrollDirection = Axis.horizontal,
+    bool reverse = false,
+    ScrollPhysics scrollPhysics,
+    bool pageSnapping = true,
   }) {
-    controller ??= new DayPagerController();
+    controller ??= new DayPageController();
 
-    return new DayPager._internal(
+    return new DayPageView._internal(
       controller: controller,
       pageBuilder: pageBuilder,
-      onPageChanged: onPageChanged,
+      onDayChanged: onDayChanged,
       scrollDirection: scrollDirection,
+      reverse: reverse,
+      physics: scrollPhysics,
+      pageSnapping: pageSnapping,
     );
   }
 
-  /// Object that is used to control this [DayPager].
-  ///
-  /// If controller is changed during runtime (eg. new controller with different minimumDate),
-  /// all pages will be rebuilt and the widget will try to stay on the same date.
-  final DayPagerController controller;
+  /// Object in charge of controlling this [DayPageView].
+  final DayPageController controller;
 
-  /// Function that builds the widgets displayed inside this [DayPager].
-  final DayPagerPageBuilder pageBuilder;
+  /// Function that builds a page.
+  final DayPageBuilder pageBuilder;
 
-  /// Called whenever the displayed page changes.
-  final ValueChanged<DateTime> onPageChanged;
-
-  /// The axis along which this [DayPager] scrolls.
-  final Axis scrollDirection;
+  /// Called whenever displayed day in this [DayPageView] changes.
+  final ValueChanged<DateTime> onDayChanged;
 
   @override
-  State createState() => new _DayPagerState();
+  _DayPageViewState createState() => new _DayPageViewState();
 }
 
-class _DayPagerState extends State<DayPager> {
-  /// For displaying the contents for each day.
-  PageView _pageView;
-
-  /// Controller for the internal [_pageView].
-  PageController _pageController;
-
+class _DayPageViewState extends CalendarPageViewState<DayPageView> {
   @override
-  void initState() {
-    super.initState();
-
-    _pageController = _createPageController(
-      initialPage: widget.controller.initialPage,
-    );
-    _pageView = _createPageView();
-
-    widget.controller.attach(
-      _createDayPagerPosition(),
-    );
+  bool hasAnythingChanged(DayPageView oldWidget) {
+    return widget.controller != oldWidget.controller ||
+        widget.pageBuilder != oldWidget.pageBuilder ||
+        widget.onDayChanged != oldWidget.onDayChanged;
   }
 
   @override
-  void didUpdateWidget(DayPager oldWidget) {
-    super.didUpdateWidget(oldWidget);
+  void onPageChanged(int page) {
+    if (widget.onDayChanged != null) {
+      DateTime day = widget.controller.dayOf(page);
 
-    bool recreatePageView = false;
-
-    if (oldWidget.controller != widget.controller) {
-      DateTime dateOnOldWidget = oldWidget.controller.displayedDate;
-      int initialPageOnNewPageController;
-
-      if (dateOnOldWidget != null) {
-        initialPageOnNewPageController =
-            widget.controller.pageOf(dateOnOldWidget);
-      } else {
-        initialPageOnNewPageController = widget.controller.initialPage;
-      }
-
-      _pageController = _createPageController(
-        initialPage: initialPageOnNewPageController,
-      );
-
-      oldWidget.controller.detach();
-      widget.controller.attach(
-        _createDayPagerPosition(),
-      );
-
-      widget.onPageChanged(
-        widget.controller.dateOf(initialPageOnNewPageController),
-      );
-
-      recreatePageView = true;
+      widget.onDayChanged(day);
     }
-    if (oldWidget.scrollDirection != widget.scrollDirection) {
-      recreatePageView = true;
-    }
-    if (oldWidget.pageBuilder != widget.pageBuilder) {
-      recreatePageView = true;
-    }
-
-    if (recreatePageView) {
-      setState(() {
-        _pageView = _createPageView();
-      });
-    }
-  }
-
-  PageController _createPageController({
-    @required int initialPage,
-  }) {
-    assert(initialPage != null);
-
-    return new PageController(
-      initialPage: initialPage,
-    );
-  }
-
-  _PagerPosition _createDayPagerPosition() {
-    return new _PagerPosition(
-      jumpToPage: _pageController.jumpToPage,
-      animateToPage: _pageController.animateToPage,
-      getDisplayedPage: () {
-        return _pageController.page.round();
-      },
-    );
-  }
-
-  PageView _createPageView() {
-    return new PageView.builder(
-      controller: _pageController,
-      scrollDirection: widget.scrollDirection,
-      itemCount: widget.controller.numberOfPages,
-      itemBuilder: (BuildContext context, int page) {
-        DateTime date = widget.controller.dateOf(page);
-
-        return widget.pageBuilder(context, date);
-      },
-      key: new ObjectKey(widget.controller),
-    );
   }
 
   @override
-  void dispose() {
-    widget.controller?.detach();
+  Widget pageBuilder(BuildContext context, int page) {
+    DateTime day = widget.controller.dayOf(page);
 
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return new NotificationListener<ScrollNotification>(
-      onNotification: (ScrollNotification scrollNotification) {
-        if (scrollNotification is ScrollEndNotification) {
-          if (widget.onPageChanged != null) {
-            int displayedPage = _pageController.page.round();
-
-            DateTime dateOfDisplayedPage =
-                widget.controller.dateOf(displayedPage);
-
-            widget.onPageChanged(dateOfDisplayedPage);
-          }
-        }
-      },
-      child: _pageView,
-    );
+    return widget.pageBuilder(context, day);
   }
 }
