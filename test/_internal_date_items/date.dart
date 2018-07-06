@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 
-import 'package:calendar_views/src/internal_date_items/all.dart';
+import 'package:calendar_views/src/_internal_date_items/date.dart';
 
 void main() {
   group("test Date", () {

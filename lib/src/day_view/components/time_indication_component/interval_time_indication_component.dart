@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 import 'package:calendar_views/calendar_items.dart';
 import 'package:calendar_views/src/day_view/positioning_assistant/all.dart';
 import 'package:calendar_views/src/day_view/properties/all.dart';
-import 'package:calendar_views/src/utils/all.dart' as utils;
+import 'package:calendar_views/src/_utils/all.dart' as utils;
 
 import '../component.dart';
 import 'time_indicator_item_builder.dart';

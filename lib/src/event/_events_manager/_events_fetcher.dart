@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/internal_date_items/all.dart';
+import 'package:calendar_views/src/_internal_date_items/all.dart';
 import 'package:calendar_views/src/event/events/positionable_event.dart';
 import 'package:calendar_views/src/event/calendar_events/events_retriever.dart';
 

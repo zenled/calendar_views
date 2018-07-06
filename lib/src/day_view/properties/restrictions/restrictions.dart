@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/utils/all.dart' as utils;
+import 'package:calendar_views/src/_utils/all.dart' as utils;
 
 /// Restrictions placed upon a DayView.
 @immutable

@@ -3,8 +3,8 @@ library week_pager;
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/utils/all.dart' as utils;
-import 'package:calendar_views/src/internal_date_items/all.dart';
+import 'package:calendar_views/src/_utils/all.dart' as utils;
+import 'package:calendar_views/src/_internal_date_items/all.dart';
 
 part '_pager_position.dart';
 

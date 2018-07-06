@@ -6,7 +6,7 @@ import '_month_view_day.dart';
 import 'day_of_month_properties.dart';
 import 'day_of_month_builder.dart';
 
-import 'package:calendar_views/src/utils/all.dart' as utils;
+import 'package:calendar_views/src/_utils/all.dart' as utils;
 
 class MonthView extends StatefulWidget {
   MonthView({

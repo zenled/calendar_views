@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/utils/all.dart';
+import 'package:calendar_views/src/_utils/all.dart';
 
 import 'positionable_event.dart';
 
