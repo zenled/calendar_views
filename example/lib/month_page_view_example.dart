@@ -1,32 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
-import 'package:calendar_views/month_pager.dart';
+import 'package:calendar_views/month_page_view.dart';
 
-class MonthPagerExample extends StatefulWidget {
+import 'axis_to_string.dart';
+
+class MonthPageViewExample extends StatefulWidget {
   @override
-  _MonthPagerExampleState createState() => new _MonthPagerExampleState();
+  _MonthPageViewExampleState createState() => new _MonthPageViewExampleState();
 }
 
-class _MonthPagerExampleState extends State<MonthPagerExample> {
-  bool _useInfiniteMonthPagerController;
+class _MonthPageViewExampleState extends State<MonthPageViewExample> {
+  bool _useInfiniteMonthPageController;
 
-  MonthPagerController _finiteMonthPagerController;
+  MonthPageController _finiteMonthPageController;
 
-  MonthPagerController _infiniteMonthPagerController;
+  MonthPageController _infiniteMonthPageController;
 
   Axis _scrollDirection;
-
   bool _pageSnapping;
 
   @override
   void initState() {
     super.initState();
 
-    _useInfiniteMonthPagerController = false;
+    _useInfiniteMonthPageController = false;
 
     _scrollDirection = Axis.horizontal;
-
     _pageSnapping = true;
 
     DateTime now = new DateTime.now();
@@ -36,41 +35,41 @@ class _MonthPagerExampleState extends State<MonthPagerExample> {
 
     DateTime twoMonthsAfterNow = _addMonths(nowMonth, 2);
 
-    _finiteMonthPagerController = new MonthPagerController(
+    _finiteMonthPageController = new MonthPageController(
       initialMonth: nowMonth,
       minimumMonth: twoMonthsBeforeNow,
       maximumMonth: twoMonthsAfterNow,
     );
 
-    _infiniteMonthPagerController = new MonthPagerController();
+    _infiniteMonthPageController = new MonthPageController();
   }
 
-  MonthPagerController get _monthPagerController =>
-      _useInfiniteMonthPagerController
-          ? _infiniteMonthPagerController
-          : _finiteMonthPagerController;
+  MonthPageController get _monthPageController =>
+      _useInfiniteMonthPageController
+          ? _infiniteMonthPageController
+          : _finiteMonthPageController;
 
-  void _onMonthPageChanged(DateTime month) {
-    print("Displaying ${month.year}.${month.month}");
+  void _onPageChanged(DateTime month) {
+    print("Displaying: ${month.year}.${month.month}");
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text("MonthPager Example"),
+        title: new Text("MonthPageView Example"),
       ),
       body: new Column(
         children: <Widget>[
           new Expanded(
             child: new Container(
-              color: Colors.blue.shade200,
-              child: new MonthPager(
-                controller: _monthPagerController,
-                scrollDirection: _scrollDirection,
-                onPageChanged: _onMonthPageChanged,
-                pageBuilder: _monthPagerPageBuilder,
+              color: Colors.green.shade200,
+              child: new MonthPageView(
+                controller: _monthPageController,
                 pageSnapping: _pageSnapping,
+                scrollDirection: _scrollDirection,
+                onPageChanged: _onPageChanged,
+                pageBuilder: _monthPageBuilder,
               ),
             ),
           ),
@@ -83,14 +82,14 @@ class _MonthPagerExampleState extends State<MonthPagerExample> {
                     new RaisedButton(
                       child: new Text("Jump to today-month"),
                       onPressed: () {
-                        _monthPagerController.jumpTo(
+                        _monthPageController.jumpToMonth(
                           new DateTime.now(),
                         );
                       },
                     ),
                     new Divider(),
                     new CheckboxListTile(
-                      value: _useInfiniteMonthPagerController,
+                      value: _useInfiniteMonthPageController,
                       title: new Text("Infinite MonthPager"),
                       subtitle: new Text(
                         "If true MonthPager will be infinite.\n"
@@ -98,7 +97,7 @@ class _MonthPagerExampleState extends State<MonthPagerExample> {
                       ),
                       onChanged: (value) {
                         setState(() {
-                          _useInfiniteMonthPagerController = value;
+                          _useInfiniteMonthPageController = value;
                         });
                       },
                     ),
@@ -111,7 +110,7 @@ class _MonthPagerExampleState extends State<MonthPagerExample> {
                               .map(
                                 (axis) => new DropdownMenuItem<Axis>(
                                       value: axis,
-                                      child: new Text("${_axisToString(axis)}"),
+                                      child: new Text("${axisToString(axis)}"),
                                     ),
                               )
                               .toList(),
@@ -142,7 +141,7 @@ class _MonthPagerExampleState extends State<MonthPagerExample> {
     );
   }
 
-  Widget _monthPagerPageBuilder(BuildContext context, DateTime month) {
+  Widget _monthPageBuilder(BuildContext context, DateTime month) {
     return new Center(
       child: new Text("${month.year}.${month.month}"),
     );
@@ -155,23 +154,16 @@ DateTime _addMonths(DateTime date, int numOfMonths) {
 
   int newYear = date.year + yearChange;
   int newMonthBase0 = (date.month - 1) + monthChange;
-  if (newMonthBase0 > 11) newYear++;
-  if (newMonthBase0 < 0) newYear--;
+  if (newMonthBase0 > 11) {
+    newYear++;
+  }
+  if (newMonthBase0 < 0) {
+    newYear--;
+  }
   newMonthBase0 = newMonthBase0 % 12;
 
   return new DateTime(
     newYear,
     newMonthBase0 + 1,
   );
-}
-
-String _axisToString(Axis axis) {
-  switch (axis) {
-    case Axis.horizontal:
-      return "Horizontal";
-    case Axis.vertical:
-      return "Vertical";
-    default:
-      return "Error";
-  }
 }

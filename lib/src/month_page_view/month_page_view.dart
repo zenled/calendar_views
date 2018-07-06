@@ -1,183 +1,87 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/_shared_calendar_page_view/calendar_page_view_communicator.dart';
-import 'month_pager_controller.dart';
-import 'month_pager_page_builder.dart';
+import 'package:calendar_views/src/_calendar_page_view/all.dart';
 
-class MonthPager extends StatefulWidget {
-  MonthPager._internal({
+import 'month_page_controller.dart';
+import 'month_page_builder.dart';
+
+/// Custom pageView in which each page represents a month.
+class MonthPageView extends CalendarPageView {
+  MonthPageView._internal({
     @required this.controller,
     @required this.pageBuilder,
     @required this.onPageChanged,
-    @required this.scrollDirection,
-    @required this.reverse,
-    @required this.scrollPhysics,
-    @required this.pageSnapping,
+    @required Axis scrollDirection,
+    @required bool reverse,
+    @required ScrollPhysics physics,
+    @required bool pageSnapping,
   })  : assert(controller != null),
         assert(pageBuilder != null),
-        assert(scrollDirection != null),
-        assert(reverse != null),
-        assert(pageSnapping != null);
+        super(
+          scrollDirection: scrollDirection,
+          reverse: reverse,
+          physics: physics,
+          pageSnapping: pageSnapping,
+        );
 
-  factory MonthPager({
-    MonthPagerController controller,
-    @required MonthPagerPageBuilder pageBuilder,
+  /// Creates pageView with each page representing a month.
+  factory MonthPageView({
+    MonthPageController controller,
+    @required MonthPageBuilder pageBuilder,
     ValueChanged<DateTime> onPageChanged,
     Axis scrollDirection = Axis.horizontal,
     bool reverse = false,
     ScrollPhysics scrollPhysics,
     bool pageSnapping = true,
   }) {
-    controller ??= new MonthPagerController();
+    controller ??= new MonthPageController();
 
-    return new MonthPager._internal(
+    return new MonthPageView._internal(
       controller: controller,
       pageBuilder: pageBuilder,
       onPageChanged: onPageChanged,
       scrollDirection: scrollDirection,
       reverse: reverse,
-      scrollPhysics: scrollPhysics,
+      physics: scrollPhysics,
       pageSnapping: pageSnapping,
     );
   }
 
-  final MonthPagerController controller;
+  /// Object in charge of controlling this [MonthPageView].
+  final MonthPageController controller;
 
-  final MonthPagerPageBuilder pageBuilder;
+  /// Function that builds a page.
+  final MonthPageBuilder pageBuilder;
 
+  /// Called whenever displayed month in this [MonthPageView] changes.
   final ValueChanged<DateTime> onPageChanged;
 
-  final Axis scrollDirection;
-
-  final bool reverse;
-
-  final ScrollPhysics scrollPhysics;
-
-  final bool pageSnapping;
-
   @override
-  _MonthPagerState createState() => new _MonthPagerState();
+  _MonthPageViewState createState() => new _MonthPageViewState();
 }
 
-class _MonthPagerState extends State<MonthPager> {
-  PageView _pageView;
-
-  PageController _pageController;
-
+class _MonthPageViewState extends CalendarPageViewState<MonthPageView> {
   @override
-  void initState() {
-    super.initState();
-
-    _pageController = _createPageController(
-      initialPage: widget.controller.initialPage,
-    );
-
-    _pageView = _createPageView();
-
-    widget.controller.attach(
-      _createPagerPosition(),
-    );
-  }
-
-  @override
-  void dispose() {
-    widget.controller?.detach();
-
-    super.dispose();
-  }
-
-  @override
-  void didUpdateWidget(MonthPager oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (widget.controller != oldWidget.controller ||
+  bool hasAnythingChanged(MonthPageView oldWidget) {
+    return widget.controller != oldWidget.controller ||
         widget.pageBuilder != oldWidget.pageBuilder ||
-        widget.onPageChanged != oldWidget.onPageChanged ||
-        widget.scrollDirection != oldWidget.scrollDirection ||
-        widget.reverse != oldWidget.reverse ||
-        widget.scrollPhysics != oldWidget.scrollPhysics ||
-        widget.pageSnapping != oldWidget.pageSnapping) {
-      DateTime monthOnOldWidget = oldWidget.controller.displayedMonth;
-      int initialPageOnNewPageController;
-
-      if (monthOnOldWidget != null) {
-        initialPageOnNewPageController = widget.controller.pageOf(
-          monthOnOldWidget,
-        );
-      } else {
-        initialPageOnNewPageController = widget.controller.initialPage;
-      }
-
-      _pageController = _createPageController(
-        initialPage: initialPageOnNewPageController,
-      );
-
-      oldWidget.controller.detach();
-      widget.controller.attach(
-        _createPagerPosition(),
-      );
-
-      if (widget.onPageChanged != null) {
-        widget.onPageChanged(
-          widget.controller.monthOf(initialPageOnNewPageController),
-        );
-      }
-
-      setState(() {
-        _pageView = _createPageView();
-      });
-    }
-  }
-
-  PageController _createPageController({
-    @required int initialPage,
-  }) {
-    assert(initialPage != null);
-
-    return new PageController(
-      initialPage: initialPage,
-    );
-  }
-
-  PageView _createPageView() {
-    return new PageView.builder(
-      controller: _pageController,
-      itemCount: widget.controller.numberOfPages,
-      itemBuilder: (BuildContext context, int page) {
-        DateTime month = widget.controller.monthOf(page);
-
-        return widget.pageBuilder(context, month);
-      },
-      onPageChanged: _onPageViewPageChanged,
-      scrollDirection: widget.scrollDirection,
-      reverse: widget.reverse,
-      physics: widget.scrollPhysics,
-      pageSnapping: widget.pageSnapping,
-      key: new UniqueKey(),
-    );
-  }
-
-  CalendarPageViewCommunicator _createPagerPosition() {
-    return new CalendarPageViewCommunicator(
-      jumpToPage: _pageController.jumpToPage,
-      animateToPage: _pageController.animateToPage,
-      displayedPage: () {
-        return _pageController.page.round();
-      },
-    );
-  }
-
-  void _onPageViewPageChanged(int page) {
-    if (widget.onPageChanged != null) {
-      DateTime monthOfPage = widget.controller.monthOf(page);
-
-      widget.onPageChanged(monthOfPage);
-    }
+        widget.onPageChanged != oldWidget.onPageChanged;
   }
 
   @override
-  Widget build(BuildContext context) {
-    return _pageView;
+  Widget pageBuilder(BuildContext context, int page) {
+    DateTime month = widget.controller.monthOf(page);
+
+    return widget.pageBuilder(context, month);
+  }
+
+  @override
+  void onPageChanged(int page) {
+    if (widget.onPageChanged != null) {
+      DateTime month = widget.controller.monthOf(page);
+
+      widget.onPageChanged(month);
+    }
   }
 }

@@ -1,85 +1,115 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
+import 'package:calendar_views/src/_calendar_page_view/all.dart';
 import 'package:calendar_views/src/_internal_date_items/all.dart';
 
-import 'package:calendar_views/src/_shared_calendar_page_view/calendar_page_view_communicator.dart';
+import 'month_page_view.dart';
 
-class MonthPagerController {
-  static const _default_monthsDeltaFromInitialMonth = 1000;
+/// Controller for a [MonthPageView].
+class MonthPageController extends CalendarPageController<DateTime> {
+  static const default_monthsDeltaFromInitialMonth = 1000;
 
-  MonthPagerController.raw({
-    @required DateTime initialMonth,
-    @required DateTime minimumMonth,
-    @required DateTime maximumMonth,
-  })  : // converts DateTime to Month
-        _initialMonth = new Month.fromDateTime(initialMonth),
-        _minimumMonth = new Month.fromDateTime(minimumMonth),
-        _maximumMonth = new Month.fromDateTime(maximumMonth) {
-    // validates _minimumMonth
-    if (!(_minimumMonth.isBefore(_initialMonth) ||
-        _minimumMonth == _initialMonth)) {
-      throw new ArgumentError(
-        "MinimumMonth should be before or same month as initialMonth.",
-      );
-    }
-    // validates _maximumMonth
-    if (!(_maximumMonth.isAfter(_initialMonth) ||
-        _maximumMonth == _initialMonth)) {
-      throw new ArgumentError(
-        "MaximumMonth should be after or same month as initialMonth.",
-      );
-    }
+  MonthPageController._internal({
+    @required Month initialMonth,
+    @required Month minimumMonth,
+    @required Month maximumMonth,
+  })  : _initialMonth = initialMonth,
+        _minimumMonth = minimumMonth,
+        _maximumMonth = maximumMonth,
+        super(
+          initialPage: minimumMonth.differenceInMonthsTo(initialMonth),
+          numberOfPages: minimumMonth.differenceInMonthsTo(maximumMonth) + 1,
+        );
 
-    // sets other properties
-    _initialPage = _minimumMonth.differenceInMonthsTo(_initialMonth);
-    _numberOfPages = _minimumMonth.differenceInMonthsTo(_maximumMonth) + 1;
-  }
-
-  factory MonthPagerController({
+  /// Creates the controller.
+  ///
+  /// If [initialMonth] is set to null,
+  /// today-month will be set as initial month.
+  ///
+  /// If [minimumMonth] is set to null,
+  /// a month [default_monthsDeltaFromInitialMonth] before [initialMonth] will be set as [minimumMonth].
+  ///
+  ///
+  /// If [maximumMonth] is set to null,
+  /// a mont [default_monthsDeltaFromInitialMonth] after [initialMonth] will be set as [maximumMonth].
+  factory MonthPageController({
     DateTime initialMonth,
     DateTime minimumMonth,
     DateTime maximumMonth,
   }) {
-    initialMonth ??= new DateTime.now();
+    // Converts to internal representation of months
+    Month initial;
+    Month minimum;
+    Month maximum;
 
-    minimumMonth ??= initialMonth.add(
-      new Duration(days: -(_default_monthsDeltaFromInitialMonth * 31)),
-    );
+    if (initialMonth != null) {
+      initial = new Month.fromDateTime(initialMonth);
+    } else {
+      initial = new Month.now();
+    }
 
-    maximumMonth ??= initialMonth.add(
-      new Duration(days: (_default_monthsDeltaFromInitialMonth * 31)),
-    );
+    if (minimumMonth != null) {
+      minimum = new Month.fromDateTime(minimumMonth);
+    } else {
+      minimum = initial.add(-default_monthsDeltaFromInitialMonth);
+    }
 
-    return new MonthPagerController.raw(
-      initialMonth: initialMonth,
-      minimumMonth: minimumMonth,
-      maximumMonth: maximumMonth,
+    if (maximumMonth != null) {
+      maximum = new Month.fromDateTime(maximumMonth);
+    } else {
+      maximum = initial.add(default_monthsDeltaFromInitialMonth);
+    }
+
+    // validates
+    if (!(minimum.isBefore(initial)) || minimum == initial) {
+      throw new ArgumentError(
+        "minimumMonth should be before or same month as initialMonth",
+      );
+    }
+    if (!(maximum.isAfter(initial) || maximum == initial)) {
+      throw new ArgumentError(
+        "maximumMonth should be before or same month as initialMonth",
+      );
+    }
+
+    return new MonthPageController._internal(
+      initialMonth: initial,
+      minimumMonth: minimum,
+      maximumMonth: maximum,
     );
   }
 
   final Month _initialMonth;
-
   final Month _minimumMonth;
-
   final Month _maximumMonth;
 
-  int _initialPage;
-
-  int _numberOfPages;
-
-  CalendarPageViewCommunicator _pagerPosition;
-
+  /// Month shown when first creating the controlled [MonthPageView].
   DateTime get initialMonth => _initialMonth.toDateTime();
 
+  /// Minimum month shown in the controlled [MonthPageView] (inclusive).
   DateTime get minimumMonth => _minimumMonth.toDateTime();
 
+  /// Maximum month shown in the controlled [MonthPageView] (inclusive).
   DateTime get maximumMonth => _maximumMonth.toDateTime();
 
-  int get initialPage => _initialPage;
+  @override
+  DateTime representationOfCurrentPage() {
+    return displayedMonth();
+  }
 
-  int get numberOfPages => _numberOfPages;
+  @override
+  int indexOfPageThatRepresents(DateTime pageRepresentation) {
+    return pageOf(pageRepresentation);
+  }
 
+  /// Returns index of page that displays [month].
+  ///
+  /// If [month] is before [minimumMonth], index of first page is returned.
+  ///
+  /// If [month] is after [maximumMonth], index of last page is returned.
   int pageOf(DateTime month) {
     Month m = new Month.fromDateTime(month);
 
@@ -92,6 +122,9 @@ class MonthPagerController {
     return _minimumMonth.differenceInMonthsTo(m);
   }
 
+  /// Returns month displayed on [page].
+  ///
+  /// Values of returned month except year and month are set to their default values.
   DateTime monthOf(int page) {
     int deltaFromInitialPage = page - initialPage;
 
@@ -99,45 +132,40 @@ class MonthPagerController {
     return month.toDateTime();
   }
 
-  DateTime get displayedMonth {
-    if (_pagerPosition == null) {
+  /// Returns currently displayed month in the controlled [MonthPageView].
+  ///
+  /// If no [MonthPageView] is attached it returns null.
+  DateTime displayedMonth() {
+    int displayedPage = super.displayedPage();
+
+    if (displayedPage == null) {
       return null;
     } else {
-      return monthOf(_pagerPosition.displayedPage());
+      return monthOf(displayedPage);
     }
   }
 
-  void attach(CalendarPageViewCommunicator pagerPosition) {
-    _pagerPosition = pagerPosition;
+  /// Changes which [month] is displayed in the controlled [MonthPageView].
+  ///
+  /// If no [MonthPageView] is attached it does nothing.
+  void jumpToMonth(DateTime month) {
+    int pageOfMonth = pageOf(month);
+
+    super.jumpToPage(pageOfMonth);
   }
 
-  void detach() {
-    _pagerPosition = null;
-  }
-
-  void jumpTo(DateTime week) {
-    if (_pagerPosition == null) {
-      print("Error: no WeekPager attached");
-      return;
-    }
-
-    _pagerPosition.jumpToPage(
-      pageOf(week),
-    );
-  }
-
-  void animateTo(
-    DateTime week, {
+  /// Animates the controlled [MonthPageView] to the given [month].
+  ///
+  /// If no [MonthPageView] is attached it does nothing.
+  Future<Null> animateTo(
+    DateTime month, {
     @required Duration duration,
     @required Curve curve,
   }) {
-    if (_pagerPosition == null) {
-      print("Error: no WeekPager attached");
-      return;
-    }
+    int pageOfMonth = pageOf(month);
 
-    _pagerPosition.animateToPage(
-      pageOf(week),
+    return super.animateToPage(
+      pageOfMonth,
       duration: duration,
       curve: curve,
     );
