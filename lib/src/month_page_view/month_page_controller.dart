@@ -16,7 +16,10 @@ class MonthPageController extends CalendarPageController<DateTime> {
     @required Month initialMonth,
     @required Month minimumMonth,
     @required Month maximumMonth,
-  })  : _initialMonth = initialMonth,
+  })  : assert(initialMonth != null),
+        assert(minimumMonth != null),
+        assert(maximumMonth != null),
+        _initialMonth = initialMonth,
         _minimumMonth = minimumMonth,
         _maximumMonth = maximumMonth,
         super(
@@ -24,10 +27,10 @@ class MonthPageController extends CalendarPageController<DateTime> {
           numberOfPages: minimumMonth.differenceInMonthsTo(maximumMonth) + 1,
         );
 
-  /// Creates the controller.
+  /// Creates a controller for [MonthPageView].
   ///
   /// If [initialMonth] is set to null,
-  /// today-month will be set as initial month.
+  /// today-month will be set as [initialMonth].
   ///
   /// If [minimumMonth] is set to null,
   /// a month [default_monthsDeltaFromInitialMonth] before [initialMonth] will be set as [minimumMonth].
@@ -135,6 +138,8 @@ class MonthPageController extends CalendarPageController<DateTime> {
   /// Returns currently displayed month in the controlled [MonthPageView].
   ///
   /// If no [MonthPageView] is attached it returns null.
+  ///
+  /// Values of returned [DateTime] except for year and month are set to their default values.
   DateTime displayedMonth() {
     int displayedPage = super.displayedPage();
 
