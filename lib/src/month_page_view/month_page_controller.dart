@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/src/_internal_date_items/all.dart';
 
-import '_pager_controller_communicator.dart';
+import 'package:calendar_views/src/_shared_calendar_page_view/calendar_page_view_communicator.dart';
 
 class MonthPagerController {
   static const _default_monthsDeltaFromInitialMonth = 1000;
@@ -68,7 +68,7 @@ class MonthPagerController {
 
   int _numberOfPages;
 
-  PagerControllerCommunicator _pagerPosition;
+  CalendarPageViewCommunicator _pagerPosition;
 
   DateTime get initialMonth => _initialMonth.toDateTime();
 
@@ -103,11 +103,11 @@ class MonthPagerController {
     if (_pagerPosition == null) {
       return null;
     } else {
-      return monthOf(_pagerPosition.getDisplayedPage());
+      return monthOf(_pagerPosition.displayedPage());
     }
   }
 
-  void attach(PagerControllerCommunicator pagerPosition) {
+  void attach(CalendarPageViewCommunicator pagerPosition) {
     _pagerPosition = pagerPosition;
   }
 

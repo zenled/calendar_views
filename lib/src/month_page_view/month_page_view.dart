@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import '_pager_controller_communicator.dart';
+import 'package:calendar_views/src/_shared_calendar_page_view/calendar_page_view_communicator.dart';
 import 'month_pager_controller.dart';
 import 'month_pager_page_builder.dart';
 
@@ -158,11 +158,11 @@ class _MonthPagerState extends State<MonthPager> {
     );
   }
 
-  PagerControllerCommunicator _createPagerPosition() {
-    return new PagerControllerCommunicator(
+  CalendarPageViewCommunicator _createPagerPosition() {
+    return new CalendarPageViewCommunicator(
       jumpToPage: _pageController.jumpToPage,
       animateToPage: _pageController.animateToPage,
-      getDisplayedPage: () {
+      displayedPage: () {
         return _pageController.page.round();
       },
     );
