@@ -1,124 +1,146 @@
 import 'package:flutter/material.dart';
 
-import 'package:calendar_views/day_pager.dart';
+import 'package:calendar_views/day_page_view.dart';
 
-class DayPagerExample extends StatefulWidget {
+import 'axis_to_string.dart';
+
+class DayPageViewExample extends StatefulWidget {
   @override
-  State createState() => new _DayPagerExampleState();
+  State createState() => new _DayPageViewExampleState();
 }
 
-class _DayPagerExampleState extends State<DayPagerExample> {
-  bool _useInfiniteDayPagerController;
+class _DayPageViewExampleState extends State<DayPageViewExample> {
+  bool _useInfiniteDayPageController;
 
-  DayPagerController _finiteDayPagerController;
+  DayPageController _finiteDayPagerController;
+  DayPageController _infiniteDayPagerController;
 
-  DayPagerController _infiniteDayPagerController;
+  Axis _scrollDirection;
+  bool _pageSnapping;
 
   @override
   void initState() {
     super.initState();
 
+    _useInfiniteDayPageController = false;
+
+    _scrollDirection = Axis.horizontal;
+    _pageSnapping = true;
+
     DateTime initialDate = new DateTime.now();
 
-    _useInfiniteDayPagerController = false;
-
-    _finiteDayPagerController = new DayPagerController(
-      initialDate: initialDate,
-      minimumDate: initialDate.add(new Duration(days: -2)),
-      maximumDate: initialDate.add(new Duration(days: 2)),
+    _finiteDayPagerController = new DayPageController(
+      initialDay: initialDate,
+      minimumDay: initialDate.add(new Duration(days: -2)),
+      maximumDay: initialDate.add(new Duration(days: 2)),
     );
 
-    _infiniteDayPagerController = new DayPagerController();
+    _infiniteDayPagerController = new DayPageController();
   }
 
-  DayPagerController get _dayPagerController => _useInfiniteDayPagerController
+  DayPageController get _dayPagerController => _useInfiniteDayPageController
       ? _infiniteDayPagerController
       : _finiteDayPagerController;
+
+  void _onDayChanged(DateTime day) {
+    print("${day.year}.${day.month}.${day.day}");
+  }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text("DayPager Example"),
+        title: new Text("DayPageView Example"),
       ),
       body: new Builder(builder: (BuildContext context) {
         return new Column(
           children: <Widget>[
             new Expanded(
-              child: new DayPager(
-                controller: _dayPagerController,
-                onPageChanged: (DateTime date) {
-                  print("Displaying: ${date.year}.${date.month}.${date.day}");
-                },
-                pageBuilder: _pageBuilder,
+              child: new Container(
+                color: Colors.green.shade200,
+                child: new DayPageView(
+                  controller: _dayPagerController,
+                  pageSnapping: _pageSnapping,
+                  scrollDirection: _scrollDirection,
+                  onDayChanged: _onDayChanged,
+                  pageBuilder: _dayPageBuilder,
+                ),
               ),
             ),
-            new Container(
-              margin: new EdgeInsets.symmetric(vertical: 16.0),
-              child: new RaisedButton(
-                child: new Text("Jump to today"),
-                onPressed: () {
-                  _dayPagerController.jumpTo(
-                    new DateTime.now(),
-                  );
-                },
+            new Expanded(
+              child: new SingleChildScrollView(
+                child: new Container(
+                  padding: new EdgeInsets.all(16.0),
+                  child: new Column(
+                    children: <Widget>[
+                      new RaisedButton(
+                        child: new Text("Jump To Today"),
+                        onPressed: () {
+                          _dayPagerController.jumpToDay(
+                            new DateTime.now(),
+                          );
+                        },
+                      ),
+                      new Divider(),
+                      new CheckboxListTile(
+                        value: _useInfiniteDayPageController,
+                        title: new Text("Infinite DayPageView"),
+                        subtitle: new Text(
+                          "If true DayPageView will be infinite.\n"
+                              "If false it will be restricted to two days from today.",
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            _useInfiniteDayPageController = value;
+                          });
+                        },
+                      ),
+                      new Divider(),
+                      new ListTile(
+                        title: new Text("Scroll Direction"),
+                        trailing: new DropdownButton<Axis>(
+                            value: _scrollDirection,
+                            items: <Axis>[Axis.horizontal, Axis.vertical]
+                                .map(
+                                  (axis) => new DropdownMenuItem<Axis>(
+                                        value: axis,
+                                        child:
+                                            new Text("${axisToString(axis)}"),
+                                      ),
+                                )
+                                .toList(),
+                            onChanged: (Axis value) {
+                              setState(() {
+                                this._scrollDirection = value;
+                              });
+                            }),
+                      ),
+                      new Divider(),
+                      new CheckboxListTile(
+                        title: new Text("Page snapping"),
+                        value: _pageSnapping,
+                        onChanged: (value) {
+                          setState(() {
+                            _pageSnapping = value;
+                          });
+                        },
+                      ),
+                      new Divider(),
+                    ],
+                  ),
+                ),
               ),
             ),
-            new Container(
-              child: new Column(
-                children: <Widget>[
-                  new CheckboxListTile(
-                    title: new Text("Infinite DayPager"),
-                    subtitle: new Text(
-                      "If true DayPager will be infinite.\n"
-                          "If false it will be restricted to two days from today.",
-                    ),
-                    value: _useInfiniteDayPagerController,
-                    onChanged: (_) {
-                      setState(() {
-                        _useInfiniteDayPagerController =
-                            !_useInfiniteDayPagerController;
-                      });
-                    },
-                  )
-                ],
-              ),
-            ),
-            new Container(
-              margin: new EdgeInsets.symmetric(vertical: 16.0),
-              child: new RaisedButton(
-                child: new Text("Print displayed date"),
-                onPressed: () {
-                  DateTime displayedDate = _dayPagerController.displayedDate;
-
-                  print("Displaying: ${displayedDate.year}.${displayedDate
-                      .month}.${displayedDate.day}");
-
-                  Scaffold.of(context).showSnackBar(new SnackBar(
-                        content: new Text(
-                            "Displaying: ${displayedDate.year}.${displayedDate
-                            .month}.${displayedDate.day}"),
-                      ));
-                },
-              ),
-            )
           ],
         );
       }),
     );
   }
 
-  Widget _pageBuilder(BuildContext context, DateTime date) {
-    print("Building: ${date.year}.${date.month}.${date.day}");
-
-    return new Container(
-      constraints: new BoxConstraints.expand(),
-      color: Colors.green.shade200,
-      child: new Center(
-        child: new Text(
-          "${date.year}.${date.month}.${date.day}",
-          style: Theme.of(context).textTheme.title,
-        ),
+  Widget _dayPageBuilder(BuildContext context, DateTime day) {
+    return new Center(
+      child: new Text(
+        "${day.year}.${day.month}.${day.day}",
       ),
     );
   }

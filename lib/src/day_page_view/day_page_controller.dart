@@ -103,7 +103,7 @@ class DayPageController extends CalendarPageController<DateTime> {
 
   @override
   int indexOfPageThatRepresents(DateTime pageRepresentation) {
-    return pageOf(pageRepresentation);
+    return pageOfDay(pageRepresentation);
   }
 
   /// Returns index of page that displays [day].
@@ -111,7 +111,7 @@ class DayPageController extends CalendarPageController<DateTime> {
   /// If [day] is before [minimumDay], index of first page is returned.
   ///
   /// If [day] is after [maximumDay], index of last page is returned.
-  int pageOf(DateTime day) {
+  int pageOfDay(DateTime day) {
     Date d = new Date.fromDateTime(day);
 
     if (d.isBefore(_minimumDay)) {
@@ -126,7 +126,7 @@ class DayPageController extends CalendarPageController<DateTime> {
   /// Returns day displayed on [page].
   ///
   /// Values of returned day except year and month and day are set to their default values.
-  DateTime dayOf(int page) {
+  DateTime dayOfPage(int page) {
     int deltaFromInitialPage = page - initialPage;
 
     return _initialDay.add(days: deltaFromInitialPage).toDateTime();
@@ -143,31 +143,31 @@ class DayPageController extends CalendarPageController<DateTime> {
     if (displayedPage == null) {
       return null;
     } else {
-      return dayOf(displayedPage);
+      return dayOfPage(displayedPage);
     }
   }
 
   /// Changes which [day] is displayed in the controlled [DayPageView].
   ///
   /// If no [DayPageView] is attached it does nothing.
-  void jumpTo(DateTime day) {
-    int pageOfDay = pageOf(day);
+  void jumpToDay(DateTime day) {
+    int page = pageOfDay(day);
 
-    super.jumpToPage(pageOfDay);
+    super.jumpToPage(page);
   }
 
   /// Animates the controlled [DayPageView] to the given [day].
   ///
   /// If no [DayPageView] is attached it does nothing.
-  void animateTo(
+  void animateToDay(
     DateTime day, {
     @required Duration duration,
     @required Curve curve,
   }) {
-    int pageOfDay = pageOf(day);
+    int page = pageOfDay(day);
 
     super.animateToPage(
-      pageOfDay,
+      page,
       duration: duration,
       curve: curve,
     );

@@ -72,7 +72,7 @@ class _DayPageViewState extends CalendarPageViewState<DayPageView> {
   @override
   void onPageChanged(int page) {
     if (widget.onDayChanged != null) {
-      DateTime day = widget.controller.dayOf(page);
+      DateTime day = widget.controller.dayOfPage(page);
 
       widget.onDayChanged(day);
     }
@@ -80,7 +80,7 @@ class _DayPageViewState extends CalendarPageViewState<DayPageView> {
 
   @override
   Widget pageBuilder(BuildContext context, int page) {
-    DateTime day = widget.controller.dayOf(page);
+    DateTime day = widget.controller.dayOfPage(page);
 
     return widget.pageBuilder(context, day);
   }
