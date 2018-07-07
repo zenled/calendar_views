@@ -5,6 +5,13 @@ import '_calendar_page_view_communicator.dart';
 import 'calendar_page_controller.dart';
 
 /// Base class for for a pageView that can be controlled with [CalendarPageController].
+///
+/// **Important**
+///
+/// The working of this widget is a bodge.
+/// I could not find another way to keep the same page (actual page not page number as does [PageView])
+/// There also might be a bug in [PageView] that prevents it from correctly changing scrollDirection,
+/// I tried to make a workaround [bug issue](https://github.com/flutter/flutter/issues/16481).
 abstract class CalendarPageView extends StatefulWidget {
   CalendarPageView({
     @required this.scrollDirection,
@@ -36,6 +43,8 @@ abstract class CalendarPageViewState<T extends CalendarPageView>
   PageView _pageView;
   PageController _pageController;
 
+  Key _keyOfPageView;
+
   @override
   void initState() {
     super.initState();
@@ -44,7 +53,9 @@ abstract class CalendarPageViewState<T extends CalendarPageView>
       initialPage: widget.controller.initialPage,
     );
 
-    _pageView = _createPageView();
+    _pageView = _createPageView(
+      withUniqueKey: false,
+    );
 
     _attachToController();
   }
@@ -86,8 +97,14 @@ abstract class CalendarPageViewState<T extends CalendarPageView>
 
       onPageChanged(initialPageOnNewPageController);
 
+      bool createPageViewWithUniqueKey =
+          widget.scrollDirection != oldWidget.scrollDirection ||
+              widget.controller != oldWidget.controller;
+
       setState(() {
-        _pageView = _createPageView();
+        _pageView = _createPageView(
+          withUniqueKey: createPageViewWithUniqueKey,
+        );
       });
     }
   }
@@ -107,7 +124,13 @@ abstract class CalendarPageViewState<T extends CalendarPageView>
     );
   }
 
-  PageView _createPageView() {
+  PageView _createPageView({
+    @required bool withUniqueKey,
+  }) {
+    if (withUniqueKey || _keyOfPageView == null){
+      _keyOfPageView = new UniqueKey();
+    }
+
     return new PageView.builder(
       controller: _pageController,
       itemCount: widget.controller.numberOfPages,
@@ -117,7 +140,7 @@ abstract class CalendarPageViewState<T extends CalendarPageView>
       reverse: widget.reverse,
       physics: widget.physics,
       pageSnapping: widget.pageSnapping,
-      key: new UniqueKey(),
+      key: _keyOfPageView,
     );
   }
 

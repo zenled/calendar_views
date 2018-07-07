@@ -19,10 +19,10 @@ abstract class CalendarPageController<T> {
   CalendarPageViewCommunicator _attachedCommunicator;
 
   /// Initial page that the controlled [CalendarPageView] should display.
-  final initialPage;
+  final int initialPage;
 
   /// Number of pages that the controlled [CalendarPageView] should be able to display.
-  final numberOfPages;
+  final int numberOfPages;
 
   /// Registers the given [communicator] (provided by [CalendarPageView]) with this controller.
   ///
