@@ -17,15 +17,21 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
 
   Axis _scrollDirection;
   bool _pageSnapping;
+  bool _reverse;
+
+  bool _bigText;
 
   @override
   void initState() {
     super.initState();
 
+    _bigText = false;
+
     _useInfiniteMonthPageController = false;
 
     _scrollDirection = Axis.horizontal;
     _pageSnapping = true;
+    _reverse = false;
 
     DateTime now = new DateTime.now();
     DateTime nowMonth = new DateTime(now.year, now.month);
@@ -67,6 +73,7 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
                 controller: _monthPageController,
                 pageSnapping: _pageSnapping,
                 scrollDirection: _scrollDirection,
+                reverse: _reverse,
                 onMonthChanged: _onMonthChanged,
                 pageBuilder: _monthPageBuilder,
               ),
@@ -86,6 +93,18 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
                         );
                       },
                     ),
+                    new Divider(),
+                    new CheckboxListTile(
+                        title: new Text("Big Text"),
+                        subtitle: new Text(
+                          "This is to demonstrate that inner widgets of DayPageView can be properly changed.",
+                        ),
+                        value: _bigText,
+                        onChanged: (value) {
+                          setState(() {
+                            _bigText = value;
+                          });
+                        }),
                     new Divider(),
                     new CheckboxListTile(
                       value: _useInfiniteMonthPageController,
@@ -130,6 +149,16 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
                       },
                     ),
                     new Divider(),
+                    new CheckboxListTile(
+                      title: new Text("Reverse"),
+                      value: _reverse,
+                      onChanged: (value) {
+                        setState(() {
+                          _reverse = value;
+                        });
+                      },
+                    ),
+                    new Divider(),
                   ],
                 ),
               ),
@@ -142,7 +171,10 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
 
   Widget _monthPageBuilder(BuildContext context, DateTime month) {
     return new Center(
-      child: new Text("${month.year}.${month.month}"),
+      child: new Text(
+        "${month.year}.${month.month}",
+        style: _bigText ? new TextStyle(fontSize: 50.0) : new TextStyle(),
+      ),
     );
   }
 }

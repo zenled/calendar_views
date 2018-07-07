@@ -65,8 +65,8 @@ class _MonthPageViewState extends CalendarPageViewState<MonthPageView> {
   @override
   bool hasAnythingChanged(MonthPageView oldWidget) {
     return widget.controller != oldWidget.controller ||
-        widget.pageBuilder != oldWidget.pageBuilder ||
-        widget.onMonthChanged != oldWidget.onMonthChanged;
+        !identical(widget.pageBuilder, oldWidget.pageBuilder) ||
+        !identical(widget.onMonthChanged, oldWidget.onMonthChanged);
   }
 
   @override
