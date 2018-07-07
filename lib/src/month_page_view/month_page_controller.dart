@@ -105,7 +105,7 @@ class MonthPageController extends CalendarPageController<DateTime> {
 
   @override
   int indexOfPageThatRepresents(DateTime pageRepresentation) {
-    return pageOf(pageRepresentation);
+    return pageOfMonth(pageRepresentation);
   }
 
   /// Returns index of page that displays [month].
@@ -113,7 +113,7 @@ class MonthPageController extends CalendarPageController<DateTime> {
   /// If [month] is before [minimumMonth], index of first page is returned.
   ///
   /// If [month] is after [maximumMonth], index of last page is returned.
-  int pageOf(DateTime month) {
+  int pageOfMonth(DateTime month) {
     Month m = new Month.fromDateTime(month);
 
     if (m.isBefore(_minimumMonth)) {
@@ -128,7 +128,7 @@ class MonthPageController extends CalendarPageController<DateTime> {
   /// Returns month displayed on [page].
   ///
   /// Values of returned month except year and month are set to their default values.
-  DateTime monthOf(int page) {
+  DateTime monthOfPage(int page) {
     int deltaFromInitialPage = page - initialPage;
 
     Month month = _initialMonth.add(deltaFromInitialPage);
@@ -146,7 +146,7 @@ class MonthPageController extends CalendarPageController<DateTime> {
     if (displayedPage == null) {
       return null;
     } else {
-      return monthOf(displayedPage);
+      return monthOfPage(displayedPage);
     }
   }
 
@@ -154,23 +154,23 @@ class MonthPageController extends CalendarPageController<DateTime> {
   ///
   /// If no [MonthPageView] is attached it does nothing.
   void jumpToMonth(DateTime month) {
-    int pageOfMonth = pageOf(month);
+    int page = pageOfMonth(month);
 
-    super.jumpToPage(pageOfMonth);
+    super.jumpToPage(page);
   }
 
   /// Animates the controlled [MonthPageView] to the given [month].
   ///
   /// If no [MonthPageView] is attached it does nothing.
-  Future<Null> animateTo(
+  Future<Null> animateToMonth(
     DateTime month, {
     @required Duration duration,
     @required Curve curve,
   }) {
-    int pageOfMonth = pageOf(month);
+    int page = pageOfMonth(month);
 
     return super.animateToPage(
-      pageOfMonth,
+      page,
       duration: duration,
       curve: curve,
     );

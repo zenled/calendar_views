@@ -72,7 +72,7 @@ class _MonthPageViewState extends CalendarPageViewState<MonthPageView> {
   @override
   void onPageChanged(int page) {
     if (widget.onMonthChanged != null) {
-      DateTime month = widget.controller.monthOf(page);
+      DateTime month = widget.controller.monthOfPage(page);
 
       widget.onMonthChanged(month);
     }
@@ -80,7 +80,7 @@ class _MonthPageViewState extends CalendarPageViewState<MonthPageView> {
 
   @override
   Widget pageBuilder(BuildContext context, int page) {
-    DateTime month = widget.controller.monthOf(page);
+    DateTime month = widget.controller.monthOfPage(page);
 
     return widget.pageBuilder(context, month);
   }

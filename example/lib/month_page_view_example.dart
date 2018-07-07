@@ -13,7 +13,6 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
   bool _useInfiniteMonthPageController;
 
   MonthPageController _finiteMonthPageController;
-
   MonthPageController _infiniteMonthPageController;
 
   Axis _scrollDirection;
@@ -49,7 +48,7 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
           ? _infiniteMonthPageController
           : _finiteMonthPageController;
 
-  void _onPageChanged(DateTime month) {
+  void _onMonthChanged(DateTime month) {
     print("Displaying: ${month.year}.${month.month}");
   }
 
@@ -68,7 +67,7 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
                 controller: _monthPageController,
                 pageSnapping: _pageSnapping,
                 scrollDirection: _scrollDirection,
-                onPageChanged: _onPageChanged,
+                onMonthChanged: _onMonthChanged,
                 pageBuilder: _monthPageBuilder,
               ),
             ),
@@ -80,7 +79,7 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
                 child: new Column(
                   children: <Widget>[
                     new RaisedButton(
-                      child: new Text("Jump to today-month"),
+                      child: new Text("Jump To Today-Month"),
                       onPressed: () {
                         _monthPageController.jumpToMonth(
                           new DateTime.now(),
@@ -90,9 +89,9 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
                     new Divider(),
                     new CheckboxListTile(
                       value: _useInfiniteMonthPageController,
-                      title: new Text("Infinite MonthPager"),
+                      title: new Text("Infinite MonthPageView"),
                       subtitle: new Text(
-                        "If true MonthPager will be infinite.\n"
+                        "If true MonthPageView will be infinite.\n"
                             "If false it will be restricted to two months from today-month.",
                       ),
                       onChanged: (value) {
