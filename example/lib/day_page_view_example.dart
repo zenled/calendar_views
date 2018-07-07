@@ -17,15 +17,21 @@ class _DayPageViewExampleState extends State<DayPageViewExample> {
 
   Axis _scrollDirection;
   bool _pageSnapping;
+  bool _reverse;
+
+  bool _bigText;
 
   @override
   void initState() {
     super.initState();
 
+    _bigText = false;
+
     _useInfiniteDayPageController = false;
 
     _scrollDirection = Axis.horizontal;
     _pageSnapping = true;
+    _reverse = false;
 
     DateTime initialDate = new DateTime.now();
 
@@ -62,6 +68,7 @@ class _DayPageViewExampleState extends State<DayPageViewExample> {
                   controller: _dayPagerController,
                   pageSnapping: _pageSnapping,
                   scrollDirection: _scrollDirection,
+                  reverse: _reverse,
                   onDayChanged: _onDayChanged,
                   pageBuilder: _dayPageBuilder,
                 ),
@@ -81,6 +88,18 @@ class _DayPageViewExampleState extends State<DayPageViewExample> {
                           );
                         },
                       ),
+                      new Divider(),
+                      new CheckboxListTile(
+                          title: new Text("Big Text"),
+                          subtitle: new Text(
+                            "This is to demonstrate that inner widgets of DayPageView can be properly changed.",
+                          ),
+                          value: _bigText,
+                          onChanged: (value) {
+                            setState(() {
+                              _bigText = value;
+                            });
+                          }),
                       new Divider(),
                       new CheckboxListTile(
                         value: _useInfiniteDayPageController,
@@ -117,11 +136,21 @@ class _DayPageViewExampleState extends State<DayPageViewExample> {
                       ),
                       new Divider(),
                       new CheckboxListTile(
-                        title: new Text("Page snapping"),
+                        title: new Text("Page Snapping"),
                         value: _pageSnapping,
                         onChanged: (value) {
                           setState(() {
                             _pageSnapping = value;
+                          });
+                        },
+                      ),
+                      new Divider(),
+                      new CheckboxListTile(
+                        title: new Text("Reverse"),
+                        value: _reverse,
+                        onChanged: (value) {
+                          setState(() {
+                            _reverse = value;
                           });
                         },
                       ),
@@ -139,8 +168,11 @@ class _DayPageViewExampleState extends State<DayPageViewExample> {
 
   Widget _dayPageBuilder(BuildContext context, DateTime day) {
     return new Center(
-      child: new Text(
-        "${day.year}.${day.month}.${day.day}",
+      child: new Container(
+        child: new Text(
+          "${day.year}.${day.month}.${day.day}",
+          style: _bigText ? new TextStyle(fontSize: 50.0) : new TextStyle(),
+        ),
       ),
     );
   }

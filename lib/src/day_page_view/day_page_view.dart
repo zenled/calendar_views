@@ -65,8 +65,8 @@ class _DayPageViewState extends CalendarPageViewState<DayPageView> {
   @override
   bool hasAnythingChanged(DayPageView oldWidget) {
     return widget.controller != oldWidget.controller ||
-        widget.pageBuilder != oldWidget.pageBuilder ||
-        widget.onDayChanged != oldWidget.onDayChanged;
+        !identical(widget.pageBuilder, oldWidget.pageBuilder) ||
+        !identical(widget.onDayChanged, oldWidget.onDayChanged);
   }
 
   @override
