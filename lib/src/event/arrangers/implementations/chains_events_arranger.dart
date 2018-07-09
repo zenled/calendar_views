@@ -1,16 +1,22 @@
 import 'package:meta/meta.dart';
 
 import 'package:calendar_views/src/event/events/positionable_event.dart';
+
 import '../arranged_event.dart';
 import '../arranger_constraints.dart';
 import '../events_arranger.dart';
 
+/// [EventsArranger] that tries to equally separate overlapping events.
+@immutable
 class ChainsEventsArranger implements EventsArranger {
+  /// Creates a new instance of this class.
+  ///
+  /// Using some other [eventsSorter] might produce different results.
   const ChainsEventsArranger({
-    this.positionableEventsSorter = sortPositionableEvents,
-  }) : assert(positionableEventsSorter != null);
+    this.eventsSorter = sortPositionableEvents,
+  }) : assert(eventsSorter != null);
 
-  final PositionableEventsSorter positionableEventsSorter;
+  final PositionableEventsSorter eventsSorter;
 
   @override
   List<ArrangedEvent> arrangeEvents({
@@ -20,7 +26,7 @@ class ChainsEventsArranger implements EventsArranger {
     // sorts events
     List<PositionableEvent> sortedEvents;
     sortedEvents = events.toList();
-    positionableEventsSorter(sortedEvents);
+    eventsSorter(sortedEvents);
 
     // makes all the items
     List<_Item> items = _makeItems(

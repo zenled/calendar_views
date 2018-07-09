@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 
 import 'events_changed_listener.dart';
 
+/// Widget that can be subscribed, to be notified when evens change.
 class EventsChangedNotifier extends InheritedWidget {
   EventsChangedNotifier({
     @required this.attach,

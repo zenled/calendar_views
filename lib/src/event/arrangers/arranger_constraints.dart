@@ -19,15 +19,15 @@ class ArrangerConstraints {
         assert(positionTopOf != null),
         assert(heightOf != null);
 
-  /// Width of the are in which events must be arranged.
+  /// Width of the area inside of which events should be arranged.
   final double areaWidth;
 
-  /// Height of the area in which events must be arranged.
+  /// Height of the area inside of which events should be arranged.
   final double areaHeight;
 
   /// Callback thar returns a position of some minute of day from top.
   final ArrangerConstraintsPositionTopOfCallback positionTopOf;
 
-  /// Callback that returns the recommended height of some item, depending on the item duration.
+  /// Callback that returns the recommended height of some item, depending on its duration.
   final ArrangerConstraintsHeightOfCallback heightOf;
 }

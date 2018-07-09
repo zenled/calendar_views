@@ -5,13 +5,18 @@ import '../arranged_event.dart';
 import '../arranger_constraints.dart';
 import '../events_arranger.dart';
 
+/// [EventsArranger] that arranges events into columns.
 @immutable
 class ColumnsEventsArranger implements EventsArranger {
+  /// Creates a new instance of this class.
+  ///
+  /// If [extendColumns] is true events will be horizontally extended into neighbouring columns
+  /// to fill the available space.
   const ColumnsEventsArranger({
     this.extendColumns = true,
   }) : assert(extendColumns != null);
 
-  /// If true event in column will be extended (horizontally) to fill the available space.
+  /// If true events will be horizontally extended to fill the available space.
   final bool extendColumns;
 
   @override

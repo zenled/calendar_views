@@ -2,6 +2,7 @@ import 'package:meta/meta.dart';
 
 import 'event_base.dart';
 
+/// Event that has a title and optionally some details.
 class SimpleEvent extends EventBase {
   SimpleEvent.allDay({
     @required DateTime date,

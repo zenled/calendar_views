@@ -4,8 +4,8 @@ import 'package:calendar_views/src/_utils/all.dart';
 
 import 'positionable_event.dart';
 
-/// A base class that implements [PositionableEvent], for easier creation of custom events.
-abstract class EventBase implements PositionableEvent {
+/// Convenience class that implements [PositionableEvent], for easier creation of custom events.
+abstract class EventBase extends PositionableEvent {
   EventBase.allDay({
     @required DateTime date,
   })  : assert(date != null),
@@ -13,7 +13,6 @@ abstract class EventBase implements PositionableEvent {
         year = date.year,
         month = date.month,
         day = date.day,
-        weekday = date.weekday,
         beginMinuteOfDay = null,
         duration = null;
 
@@ -22,16 +21,14 @@ abstract class EventBase implements PositionableEvent {
     @required this.beginMinuteOfDay,
     @required this.duration,
   })  : assert(date != null),
-        assert(beginMinuteOfDay != null &&
-            beginMinuteOfDay >= minimum_minute_of_day &&
-            beginMinuteOfDay <= maximum_minute_of_day),
+        assert(
+            beginMinuteOfDay != null && isValidMinuteOfDay(beginMinuteOfDay)),
         assert(duration != null &&
             (beginMinuteOfDay + duration) <= maximum_minute_of_day),
         isAllDay = false,
         year = date.year,
         month = date.month,
-        day = date.day,
-        weekday = date.weekday;
+        day = date.day;
 
   final bool isAllDay;
 
@@ -41,11 +38,7 @@ abstract class EventBase implements PositionableEvent {
 
   final int day;
 
-  final int weekday;
-
   final int beginMinuteOfDay;
 
   final int duration;
-
-  int get endMinuteOfDay => beginMinuteOfDay + duration;
 }

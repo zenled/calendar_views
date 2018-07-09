@@ -1,10 +1,12 @@
 import 'package:meta/meta.dart';
 
+/// Signature for a function thar receives an [EventsChangedListener].
 typedef void EventsChangedListenerCallback(EventsChangedListener listener);
 
+/// Signature for a function that fires when events change.
 typedef void OnEventsChangedCallback();
 
-/// Class for listening for changes of events of [day].
+/// Class for listening when events of [day] change.
 class EventsChangedListener {
   EventsChangedListener({
     @required this.day,
@@ -15,6 +17,6 @@ class EventsChangedListener {
   /// Listener is listening for change of events of this [day].
   final DateTime day;
 
-  /// Function that fires when the set of events of [day] has changed.
+  /// Function that fires when events of [day] change.
   final OnEventsChangedCallback onEventsChanged;
 }

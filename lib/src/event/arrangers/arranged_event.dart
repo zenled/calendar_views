@@ -2,7 +2,9 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/event.dart';
 
-/// Item that is returned by [EventsArranger]. It contains an event it's position and size.
+/// Item returned by [EventsArranger].
+///
+/// It contains an event it's position and size.
 @immutable
 class ArrangedEvent<I extends PositionableEvent> {
   ArrangedEvent({

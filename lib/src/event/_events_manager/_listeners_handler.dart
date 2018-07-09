@@ -1,12 +1,14 @@
+import 'package:meta/meta.dart';
+
 import 'package:calendar_views/src/_internal_date_items/all.dart';
 import 'package:calendar_views/src/event/calendar_events/events_changed_listener.dart';
 
+/// Class that handles [EventsChangedListener]s.
+@immutable
 class ListenersHandler {
-  ListenersHandler() {
-    _dateToListenersMap = new Map();
-  }
+  ListenersHandler() : _dateToListenersMap = new Map();
 
-  Map<Date, Set<EventsChangedListener>> _dateToListenersMap;
+  final Map<Date, Set<EventsChangedListener>> _dateToListenersMap;
 
   void addListener(Date date, EventsChangedListener listener) {
     _initialiseDateIfNeeded(date);
@@ -30,8 +32,8 @@ class ListenersHandler {
     }
   }
 
-  bool _hasDateBeenInitialised(Date day) {
-    return _dateToListenersMap.containsKey(day);
+  bool _hasDateBeenInitialised(Date date) {
+    return _dateToListenersMap.containsKey(date);
   }
 
   void _invokeListener(EventsChangedListener listener) {

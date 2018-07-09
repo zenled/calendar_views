@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 import 'package:calendar_views/src/_internal_date_items/all.dart';
 import 'package:calendar_views/src/event/events/positionable_event.dart';
 import 'package:calendar_views/src/event/calendar_events/events_changed_listener.dart';
-import 'package:calendar_views/src/event/calendar_events/events_retriever.dart';
+import 'package:calendar_views/src/event/calendar_events/events_generator.dart';
 
 import '_events_fetcher.dart';
 import '_events_storage.dart';
@@ -12,7 +12,7 @@ import '_listeners_handler.dart';
 /// Class that retrieves, stores and refreshes events and notifies listeners when changes happen.
 class EventsManager {
   EventsManager({
-    @required EventsRetriever eventsRetriever,
+    @required EventsGenerator eventsRetriever,
   }) {
     _fetcher = new EventsFetcher(
       eventsRetriever: eventsRetriever,
@@ -26,7 +26,7 @@ class EventsManager {
   EventsStorage _storage;
   ListenersHandler _listenersHandler;
 
-  void changeEventsRetriever(EventsRetriever retriever) {
+  void changeEventsRetriever(EventsGenerator retriever) {
     _fetcher.changeRetriever(retriever);
   }
 
@@ -46,9 +46,9 @@ class EventsManager {
     _fetcher.fetchEventsOf(date);
   }
 
-  /// Refreshes events for all dates that have previously been fetched.
+  /// Refreshes events of all days that have previously been fetched.
   void refreshAllEvents() {
-    for (Date date in _storage.daysWhoseEventsHaveBeenStored()) {
+    for (Date date in _storage.daysWhichEventsHaveBeenStored()) {
       _fetcher.fetchEventsOf(date);
     }
   }

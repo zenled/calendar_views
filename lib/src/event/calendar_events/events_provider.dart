@@ -6,6 +6,7 @@ import 'package:calendar_views/src/event/events/positionable_event.dart';
 /// Function that returns a set of events that happen on some [day].
 typedef Set<PositionableEvent> GetEventsOf(DateTime day);
 
+/// Widget that provides events down the widget tree.
 class EventsProvider extends InheritedWidget {
   EventsProvider({
     @required this.getEventsOf,

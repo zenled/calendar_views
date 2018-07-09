@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-/// Function that forces the refresh of events of some [day].
+/// Function that forces refresh of events of some [day].
 typedef void RefreshEventsOf(DateTime day);
 
+/// Widget that can be prompted to refresh the events.
 class EventsRefresher extends InheritedWidget {
   EventsRefresher({
     @required this.refreshEventsOf,
@@ -16,7 +17,7 @@ class EventsRefresher extends InheritedWidget {
   /// Forces a refresh of evens that happen on [day]
   final RefreshEventsOf refreshEventsOf;
 
-  /// Forces a refresh of events of all dates of which data has been previously fetched.
+  /// Forces a refresh of events of all days for which data has been previously fetched.
   final VoidCallback refreshAllEvents;
 
   @override

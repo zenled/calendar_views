@@ -5,9 +5,17 @@ import 'package:calendar_views/src/event/_events_manager/events_manager.dart';
 
 import 'events_changed_notifier.dart';
 import 'events_provider.dart';
+import 'events_generator.dart';
 import 'events_refresher.dart';
-import 'events_retriever.dart';
 
+/// Widget that manages events.
+///
+/// This widget should preferably be set near the start of the widget tree.
+///
+/// Following widgets are automatically created as children of this widget:
+/// * [EventsChangedNotifier]
+/// * [EventsProvider]
+/// * [EventsRefresher]
 class CalendarEvents extends StatefulWidget {
   CalendarEvents({
     @required this.eventsRetriever,
@@ -15,7 +23,8 @@ class CalendarEvents extends StatefulWidget {
   })  : assert(eventsRetriever != null),
         assert(child != null);
 
-  final EventsRetriever eventsRetriever;
+  ///
+  final EventsGenerator eventsRetriever;
 
   final Widget child;
 
@@ -46,14 +55,14 @@ class _CalendarEventsState extends State<CalendarEvents> {
 
   @override
   Widget build(BuildContext context) {
-    return new EventsProvider(
-      getEventsOf: _eventsManager.getEventsOf,
-      child: new EventsRefresher(
-        refreshEventsOf: _eventsManager.refreshEventsOf,
-        refreshAllEvents: _eventsManager.refreshAllEvents,
-        child: new EventsChangedNotifier(
-          attach: _eventsManager.attachEventsChangedListener,
-          detach: _eventsManager.detachEventsChangedListener,
+    return new EventsChangedNotifier(
+      attach: _eventsManager.attachEventsChangedListener,
+      detach: _eventsManager.detachEventsChangedListener,
+      child: new EventsProvider(
+        getEventsOf: _eventsManager.getEventsOf,
+        child: new EventsRefresher(
+          refreshEventsOf: _eventsManager.refreshEventsOf,
+          refreshAllEvents: _eventsManager.refreshAllEvents,
           child: widget.child,
         ),
       ),
