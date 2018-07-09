@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
@@ -64,7 +66,7 @@ class DayPageController extends CalendarPageController<DateTime> {
       maximum = initial.add(days: default_daysDeltaFromInitialDate);
     }
 
-    // validates
+    // Validates
     if (!(minimum.isBefore(initial) || minimum == initial)) {
       throw new ArgumentError(
         "minimumDate should be before or same date as initialDate.",
@@ -159,14 +161,14 @@ class DayPageController extends CalendarPageController<DateTime> {
   /// Animates the controlled [DayPageView] to the given [day].
   ///
   /// If no [DayPageView] is attached it does nothing.
-  void animateToDay(
+  Future<Null> animateToDay(
     DateTime day, {
     @required Duration duration,
     @required Curve curve,
   }) {
     int page = pageOfDay(day);
 
-    super.animateToPage(
+    return super.animateToPage(
       page,
       duration: duration,
       curve: curve,
