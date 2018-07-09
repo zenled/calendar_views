@@ -66,7 +66,7 @@ class MonthPageController extends CalendarPageController<DateTime> {
       maximum = initial.add(default_monthsDeltaFromInitialMonth);
     }
 
-    // validates
+    // Validates
     if (!(minimum.isBefore(initial)) || minimum == initial) {
       throw new ArgumentError(
         "minimumMonth should be before or same month as initialMonth",
@@ -74,7 +74,7 @@ class MonthPageController extends CalendarPageController<DateTime> {
     }
     if (!(maximum.isAfter(initial) || maximum == initial)) {
       throw new ArgumentError(
-        "maximumMonth should be before or same month as initialMonth",
+        "maximumMonth should be after or same month as initialMonth",
       );
     }
 
