@@ -108,8 +108,6 @@ abstract class CalendarPageViewState<T extends CalendarPageView>
       oldWidget.controller.detach();
       _attachToController();
 
-      onPageChanged(initialPageOnNewPageController);
-
       bool createPageViewWithUniqueKey =
           widget.scrollDirection != oldWidget.scrollDirection ||
               widget.controller != oldWidget.controller;
@@ -175,6 +173,9 @@ abstract class CalendarPageViewState<T extends CalendarPageView>
 
   Widget pageBuilder(BuildContext context, int page);
 
+  /// Called whenever the page changes.
+  ///
+  /// This method is not called if page is changed because of new [constraints].
   void onPageChanged(int page);
 
   @override
