@@ -6,4 +6,4 @@ export 'day_view.dart';
 export 'event.dart';
 export 'month_page_view.dart';
 export 'month_view.dart';
-export 'week_pager.dart';
+export 'consecutive_days_page_view.dart';

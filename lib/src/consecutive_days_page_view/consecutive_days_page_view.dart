@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/_calendar_page_view/all.dart';
+import 'package:calendar_views/src/calendar_page_view/all.dart';
 
 import 'consecutive_days_page_builder.dart';
 import 'consecutive_days_page_controller.dart';
 
+/// Custom pageView in which each page represents some consecutive days.
 class ConsecutiveDaysPageView extends CalendarPageView {
   ConsecutiveDaysPageView._internal({
     @required this.controller,

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/_calendar_page_view/all.dart';
+import 'package:calendar_views/src/calendar_page_view/all.dart';
 import 'package:calendar_views/src/_internal_date_items/all.dart';
 
 import 'day_page_view.dart';
