@@ -8,33 +8,35 @@ import 'day_of_month_builder.dart';
 
 import 'package:calendar_views/src/_utils/all.dart' as utils;
 
+/// Widget for displaying a grid of consecutive days all belonging or extended from [month].
 class MonthView extends StatefulWidget {
   MonthView({
     @required this.month,
     this.firstWeekday = DateTime.monday,
     @required this.dayOfMonthBuilder,
-    this.rebuildDayWhenEventsChange = false,
     this.showExtendedDaysBefore = true,
     this.showExtendedDaysAfter = true,
     Key key,
   })  : assert(month != null),
         assert(firstWeekday != null && utils.isValidWeekday(firstWeekday)),
         assert(dayOfMonthBuilder != null),
-        assert(rebuildDayWhenEventsChange != null),
         assert(showExtendedDaysBefore != null),
         assert(showExtendedDaysAfter != null),
         super(key: key);
 
+  /// Month days or extended days of which this widget is displaying.
   final DateTime month;
 
+  /// Day of week on which the week start.
   final int firstWeekday;
 
+  /// Function that builds a day of month.
   final DayOfMonthBuilder dayOfMonthBuilder;
 
-  final bool rebuildDayWhenEventsChange;
-
+  /// If true days that don't belong to [month] but do belong to week that is before and on [month] will be shown.
   final bool showExtendedDaysBefore;
 
+  /// If true days that don't belong to [month] but do belong to week that is after and on [month] will be shown.
   final bool showExtendedDaysAfter;
 
   @override
@@ -75,10 +77,25 @@ class _MonthViewState extends State<MonthView> {
     return daysGenerator.generate();
   }
 
+  List<List<DayOfMonthProperties>> _makeWeeksFrom(
+    List<DayOfMonthProperties> days,
+  ) {
+    assert(days.length % 7 == 0);
+
+    List<List<DayOfMonthProperties>> weeks = new List();
+
+    for (int i = 0; i < days.length; i += DateTime.daysPerWeek) {
+      weeks.add(
+        days.getRange(i, i + DateTime.daysPerWeek).toList(),
+      );
+    }
+
+    return weeks;
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Column(
-      mainAxisSize: MainAxisSize.max,
       children: _buildWeeks(),
     );
   }
@@ -86,9 +103,7 @@ class _MonthViewState extends State<MonthView> {
   List<Widget> _buildWeeks() {
     List<Widget> weeks = <Widget>[];
 
-    for (int i = 0; i < _days.length; i += 7) {
-      List<DayOfMonthProperties> daysOfWeek = _days.getRange(i, i + 7).toList();
-
+    for (List<DayOfMonthProperties> daysOfWeek in _makeWeeksFrom(_days)) {
       weeks.add(
         _buildWeek(daysOfWeek),
       );
@@ -100,7 +115,6 @@ class _MonthViewState extends State<MonthView> {
   Widget _buildWeek(List<DayOfMonthProperties> daysOfWeek) {
     return new Expanded(
       child: new Row(
-        mainAxisSize: MainAxisSize.max,
         children: daysOfWeek
             .map(
               (dayOfWeek) => _buildDay(dayOfWeek),
@@ -127,7 +141,6 @@ class _MonthViewState extends State<MonthView> {
   Widget _buildVisibleDay(DayOfMonthProperties day) {
     return new MonthViewDay(
       properties: day,
-      rebuildWhenEventsChange: widget.rebuildDayWhenEventsChange,
       builder: widget.dayOfMonthBuilder,
       key: new ObjectKey(day),
     );

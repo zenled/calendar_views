@@ -1,7 +1,11 @@
 import 'package:meta/meta.dart';
+import 'package:quiver/core.dart';
 
 import 'package:calendar_views/src/_utils/all.dart' as utils;
 
+import 'month_view.dart';
+
+/// Properties of day displayed inside [MonthView].
 @immutable
 class DayOfMonthProperties {
   DayOfMonthProperties._internal({
@@ -12,6 +16,7 @@ class DayOfMonthProperties {
         assert(isExtended != null),
         assert(month != null);
 
+  /// Returns properties of a non-extended day.
   factory DayOfMonthProperties({
     @required DateTime date,
   }) {
@@ -24,7 +29,8 @@ class DayOfMonthProperties {
     );
   }
 
-  factory DayOfMonthProperties.forExtendedDay({
+  /// Returns properties of day that is extended from some month.
+  factory DayOfMonthProperties.ofExtendedDay({
     @required DateTime date,
     @required DateTime extendedFromMonth,
   }) {
@@ -37,12 +43,20 @@ class DayOfMonthProperties {
     );
   }
 
+  /// Date to which this properties apply to.
+  ///
+  /// Values of [date] except for year, month and day should be set to their default values.
   final DateTime date;
 
+  /// If true, this day does not belong to month that [MonthView] is displaying.
   final bool isExtended;
 
+  /// Month for which day of extended day this properties belong to.
+  ///
+  /// Values of [month] except for year and month should be se to their default values.
   final DateTime month;
 
+  /// If true this day is extended before the [month].
   bool get isExtendedBefore {
     if (isExtended) {
       return date.isBefore(month);
@@ -51,6 +65,7 @@ class DayOfMonthProperties {
     }
   }
 
+  /// If true this day is extended after the [month].
   bool get isExtendedAfter {
     if (isExtended) {
       return date.isAfter(month);
@@ -76,5 +91,9 @@ class DayOfMonthProperties {
           utils.isSameYearAndMonth(date, other.date);
 
   @override
-  int get hashCode => date.hashCode ^ isExtended.hashCode ^ month.hashCode;
+  int get hashCode => hash3(
+        date,
+        isExtended,
+        month,
+      );
 }
