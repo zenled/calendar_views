@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:calendar_views/month_page_view.dart';
 
 import 'axis_to_string.dart';
+import 'page.dart';
 
 class MonthPageViewExample extends StatefulWidget {
   @override
@@ -10,29 +11,34 @@ class MonthPageViewExample extends StatefulWidget {
 }
 
 class _MonthPageViewExampleState extends State<MonthPageViewExample> {
-  bool _useInfiniteMonthPageController;
-
-  MonthPageController _finiteMonthPageController;
-
-  MonthPageController _infiniteMonthPageController;
+  bool _bigText;
 
   Axis _scrollDirection;
   bool _pageSnapping;
+  bool _reverse;
+
+  bool _useInfiniteMonthPageController;
+  MonthPageController _finiteMonthPageController;
+  MonthPageController _infiniteMonthPageController;
 
   @override
   void initState() {
     super.initState();
 
-    _useInfiniteMonthPageController = false;
+    _bigText = false;
 
     _scrollDirection = Axis.horizontal;
     _pageSnapping = true;
+    _reverse = false;
+
+    _useInfiniteMonthPageController = false;
+
+    // initialise MonthPageController-s
 
     DateTime now = new DateTime.now();
     DateTime nowMonth = new DateTime(now.year, now.month);
 
     DateTime twoMonthsBeforeNow = _addMonths(nowMonth, -2);
-
     DateTime twoMonthsAfterNow = _addMonths(nowMonth, 2);
 
     _finiteMonthPageController = new MonthPageController(
@@ -49,8 +55,12 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
           ? _infiniteMonthPageController
           : _finiteMonthPageController;
 
-  void _onPageChanged(DateTime month) {
-    print("Displaying: ${month.year}.${month.month}");
+  void _onMonthChanged(DateTime month) {
+    print(
+      "Displaying: "
+          "${month.year.toString().padLeft(4, "0")}.${month.month
+          .toString().padLeft(2, "0")}",
+    );
   }
 
   @override
@@ -65,10 +75,11 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
             child: new Container(
               color: Colors.green.shade200,
               child: new MonthPageView(
-                controller: _monthPageController,
-                pageSnapping: _pageSnapping,
                 scrollDirection: _scrollDirection,
-                onPageChanged: _onPageChanged,
+                pageSnapping: _pageSnapping,
+                reverse: _reverse,
+                controller: _monthPageController,
+                onMonthChanged: _onMonthChanged,
                 pageBuilder: _monthPageBuilder,
               ),
             ),
@@ -80,7 +91,7 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
                 child: new Column(
                   children: <Widget>[
                     new RaisedButton(
-                      child: new Text("Jump to today-month"),
+                      child: new Text("Jump To Today-Month"),
                       onPressed: () {
                         _monthPageController.jumpToMonth(
                           new DateTime.now(),
@@ -89,10 +100,23 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
                     ),
                     new Divider(),
                     new CheckboxListTile(
-                      value: _useInfiniteMonthPageController,
-                      title: new Text("Infinite MonthPager"),
+                      title: new Text("Big Text"),
                       subtitle: new Text(
-                        "If true MonthPager will be infinite.\n"
+                        "This is to demonstrate the that inner widgets of MonthPageView can be properly changed.",
+                      ),
+                      value: _bigText,
+                      onChanged: (value) {
+                        setState(() {
+                          _bigText = value;
+                        });
+                      },
+                    ),
+                    new Divider(),
+                    new CheckboxListTile(
+                      value: _useInfiniteMonthPageController,
+                      title: new Text("Infinite MonthPageView"),
+                      subtitle: new Text(
+                        "If true MonthPageView will be infinite.\n"
                             "If false it will be restricted to two months from today-month.",
                       ),
                       onChanged: (value) {
@@ -105,20 +129,19 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
                     new ListTile(
                       title: new Text("Scroll Direction"),
                       trailing: new DropdownButton<Axis>(
-                          value: _scrollDirection,
-                          items: <Axis>[Axis.horizontal, Axis.vertical]
-                              .map(
-                                (axis) => new DropdownMenuItem<Axis>(
-                                      value: axis,
-                                      child: new Text("${axisToString(axis)}"),
-                                    ),
-                              )
-                              .toList(),
-                          onChanged: (Axis value) {
-                            setState(() {
-                              this._scrollDirection = value;
-                            });
-                          }),
+                        value: _scrollDirection,
+                        items: <Axis>[Axis.horizontal, Axis.vertical]
+                            .map((axis) => new DropdownMenuItem<Axis>(
+                                  value: axis,
+                                  child: new Text("${axisToString(axis)}"),
+                                ))
+                            .toList(),
+                        onChanged: (Axis value) {
+                          setState(() {
+                            this._scrollDirection = value;
+                          });
+                        },
+                      ),
                     ),
                     new Divider(),
                     new CheckboxListTile(
@@ -127,6 +150,16 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
                       onChanged: (value) {
                         setState(() {
                           _pageSnapping = value;
+                        });
+                      },
+                    ),
+                    new Divider(),
+                    new CheckboxListTile(
+                      title: new Text("Reverse"),
+                      value: _reverse,
+                      onChanged: (value) {
+                        setState(() {
+                          _reverse = value;
                         });
                       },
                     ),
@@ -142,8 +175,9 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
   }
 
   Widget _monthPageBuilder(BuildContext context, DateTime month) {
-    return new Center(
-      child: new Text("${month.year}.${month.month}"),
+    return new Page.forMonth(
+      bigText: _bigText,
+      month: month,
     );
   }
 }

@@ -5,6 +5,26 @@ import '_calendar_page_view_communicator.dart';
 import 'calendar_page_controller.dart';
 
 /// Base class for for a pageView that can be controlled with [CalendarPageController].
+///
+/// Internally this is a wrapper around a [PageView],
+/// so behaviour and properties might sometimes be similar.
+///
+/// **Important**
+///
+/// The working of this widget is a bodge.
+/// I could not find another way to keep the same page
+/// (eg. same date, not just page number as does [PageView]),
+/// when changing properties of internal [PageView].
+/// There might also be a bug in [PageView] that prevents it from correctly changing scrollDirection at runtime
+/// [bug issue](https://github.com/flutter/flutter/issues/16481).
+/// I tried to make a workaround.
+///
+/// Due to this workaround
+/// state of all pages will be lost if [controller] or [scrollDirection] is changed at runtime.
+/// State will be lost even when using [PageStorage] or [AutomaticKeepAliveClientMixin]
+/// or similar state-storing solutions.
+/// This is because internally an entirely new (with new State) [PageView]
+/// is created when changing those properties.
 abstract class CalendarPageView extends StatefulWidget {
   CalendarPageView({
     @required this.scrollDirection,
@@ -36,6 +56,8 @@ abstract class CalendarPageViewState<T extends CalendarPageView>
   PageView _pageView;
   PageController _pageController;
 
+  Key _keyOfPageView;
+
   @override
   void initState() {
     super.initState();
@@ -44,7 +66,9 @@ abstract class CalendarPageViewState<T extends CalendarPageView>
       initialPage: widget.controller.initialPage,
     );
 
-    _pageView = _createPageView();
+    _pageView = _createPageView(
+      withUniqueKey: false,
+    );
 
     _attachToController();
   }
@@ -86,8 +110,14 @@ abstract class CalendarPageViewState<T extends CalendarPageView>
 
       onPageChanged(initialPageOnNewPageController);
 
+      bool createPageViewWithUniqueKey =
+          widget.scrollDirection != oldWidget.scrollDirection ||
+              widget.controller != oldWidget.controller;
+
       setState(() {
-        _pageView = _createPageView();
+        _pageView = _createPageView(
+          withUniqueKey: createPageViewWithUniqueKey,
+        );
       });
     }
   }
@@ -107,7 +137,13 @@ abstract class CalendarPageViewState<T extends CalendarPageView>
     );
   }
 
-  PageView _createPageView() {
+  PageView _createPageView({
+    @required bool withUniqueKey,
+  }) {
+    if (withUniqueKey || _keyOfPageView == null) {
+      _keyOfPageView = new UniqueKey();
+    }
+
     return new PageView.builder(
       controller: _pageController,
       itemCount: widget.controller.numberOfPages,
@@ -117,7 +153,7 @@ abstract class CalendarPageViewState<T extends CalendarPageView>
       reverse: widget.reverse,
       physics: widget.physics,
       pageSnapping: widget.pageSnapping,
-      key: new UniqueKey(),
+      key: _keyOfPageView,
     );
   }
 

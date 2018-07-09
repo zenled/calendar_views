@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/_calendar_page_view/all.dart';
+import 'package:calendar_views/src/calendar_page_view/all.dart';
 import 'package:calendar_views/src/_internal_date_items/all.dart';
 
 import 'month_page_view.dart';
@@ -16,7 +16,10 @@ class MonthPageController extends CalendarPageController<DateTime> {
     @required Month initialMonth,
     @required Month minimumMonth,
     @required Month maximumMonth,
-  })  : _initialMonth = initialMonth,
+  })  : assert(initialMonth != null),
+        assert(minimumMonth != null),
+        assert(maximumMonth != null),
+        _initialMonth = initialMonth,
         _minimumMonth = minimumMonth,
         _maximumMonth = maximumMonth,
         super(
@@ -24,10 +27,10 @@ class MonthPageController extends CalendarPageController<DateTime> {
           numberOfPages: minimumMonth.differenceInMonthsTo(maximumMonth) + 1,
         );
 
-  /// Creates the controller.
+  /// Creates a controller for [MonthPageView].
   ///
   /// If [initialMonth] is set to null,
-  /// today-month will be set as initial month.
+  /// today-month will be set as [initialMonth].
   ///
   /// If [minimumMonth] is set to null,
   /// a month [default_monthsDeltaFromInitialMonth] before [initialMonth] will be set as [minimumMonth].
@@ -63,7 +66,7 @@ class MonthPageController extends CalendarPageController<DateTime> {
       maximum = initial.add(default_monthsDeltaFromInitialMonth);
     }
 
-    // validates
+    // Validates
     if (!(minimum.isBefore(initial)) || minimum == initial) {
       throw new ArgumentError(
         "minimumMonth should be before or same month as initialMonth",
@@ -71,7 +74,7 @@ class MonthPageController extends CalendarPageController<DateTime> {
     }
     if (!(maximum.isAfter(initial) || maximum == initial)) {
       throw new ArgumentError(
-        "maximumMonth should be before or same month as initialMonth",
+        "maximumMonth should be after or same month as initialMonth",
       );
     }
 
@@ -102,7 +105,7 @@ class MonthPageController extends CalendarPageController<DateTime> {
 
   @override
   int indexOfPageThatRepresents(DateTime pageRepresentation) {
-    return pageOf(pageRepresentation);
+    return pageOfMonth(pageRepresentation);
   }
 
   /// Returns index of page that displays [month].
@@ -110,7 +113,7 @@ class MonthPageController extends CalendarPageController<DateTime> {
   /// If [month] is before [minimumMonth], index of first page is returned.
   ///
   /// If [month] is after [maximumMonth], index of last page is returned.
-  int pageOf(DateTime month) {
+  int pageOfMonth(DateTime month) {
     Month m = new Month.fromDateTime(month);
 
     if (m.isBefore(_minimumMonth)) {
@@ -125,7 +128,7 @@ class MonthPageController extends CalendarPageController<DateTime> {
   /// Returns month displayed on [page].
   ///
   /// Values of returned month except year and month are set to their default values.
-  DateTime monthOf(int page) {
+  DateTime monthOfPage(int page) {
     int deltaFromInitialPage = page - initialPage;
 
     Month month = _initialMonth.add(deltaFromInitialPage);
@@ -135,13 +138,15 @@ class MonthPageController extends CalendarPageController<DateTime> {
   /// Returns currently displayed month in the controlled [MonthPageView].
   ///
   /// If no [MonthPageView] is attached it returns null.
+  ///
+  /// Values of returned [DateTime] except for year and month are set to their default values.
   DateTime displayedMonth() {
     int displayedPage = super.displayedPage();
 
     if (displayedPage == null) {
       return null;
     } else {
-      return monthOf(displayedPage);
+      return monthOfPage(displayedPage);
     }
   }
 
@@ -149,23 +154,23 @@ class MonthPageController extends CalendarPageController<DateTime> {
   ///
   /// If no [MonthPageView] is attached it does nothing.
   void jumpToMonth(DateTime month) {
-    int pageOfMonth = pageOf(month);
+    int page = pageOfMonth(month);
 
-    super.jumpToPage(pageOfMonth);
+    super.jumpToPage(page);
   }
 
   /// Animates the controlled [MonthPageView] to the given [month].
   ///
   /// If no [MonthPageView] is attached it does nothing.
-  Future<Null> animateTo(
+  Future<Null> animateToMonth(
     DateTime month, {
     @required Duration duration,
     @required Curve curve,
   }) {
-    int pageOfMonth = pageOf(month);
+    int page = pageOfMonth(month);
 
     return super.animateToPage(
-      pageOfMonth,
+      page,
       duration: duration,
       curve: curve,
     );
