@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
+import 'package:calendar_views/month_page_view.dart';
 import 'package:calendar_views/month_view.dart';
 
 import 'weekday_drop_down_button.dart';
 
-class MonthViewExample extends StatefulWidget {
+class MonthExample extends StatefulWidget {
   @override
-  _MonthViewExampleState createState() => new _MonthViewExampleState();
+  _MonthExampleState createState() => new _MonthExampleState();
 }
 
-class _MonthViewExampleState extends State<MonthViewExample> {
-  DateTime _month;
+class _MonthExampleState extends State<MonthExample> {
+  String _monthString;
+
+  MonthPageController _monthPageController;
+
   int _firstWeekday;
 
   bool _showExtendedDaysBefore;
@@ -21,26 +24,39 @@ class _MonthViewExampleState extends State<MonthViewExample> {
   void initState() {
     super.initState();
 
-    _month = new DateTime.now();
+    _monthPageController = new MonthPageController(
+      initialMonth: new DateTime.now(),
+    );
+
     _firstWeekday = DateTime.monday;
 
     _showExtendedDaysBefore = true;
     _showExtendedDaysAfter = true;
+
+    _monthString = _monthToString(_monthPageController.initialMonth);
+  }
+
+  String _monthToString(DateTime month) {
+    return "${month.year}.${month.month.toString().padLeft(2, "0")}";
+  }
+
+  void _onMonthChanged(DateTime month) {
+    setState(() {
+      _monthString = _monthToString(month);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text("MonthView Example"),
+        title: new Text("Month Example"),
       ),
       body: new Column(
         children: <Widget>[
           new Container(
             padding: new EdgeInsets.symmetric(vertical: 8.0),
-            child: new Text(
-              "${_month.year}.${_month.month.toString().padLeft(2, "0")}",
-            ),
+            child: new Text(_monthString),
           ),
           new Divider(
             height: 0.0,
@@ -48,20 +64,30 @@ class _MonthViewExampleState extends State<MonthViewExample> {
           new Expanded(
             child: new Container(
               color: Colors.green.shade200,
-              child: new MonthView(
-                showExtendedDaysBefore: _showExtendedDaysBefore,
-                showExtendedDaysAfter: _showExtendedDaysAfter,
-                month: _month,
-                firstWeekday: _firstWeekday,
-                dayOfMonthBuilder: _dayOfMonthBuilder,
+              child: new MonthPageView(
+                controller: _monthPageController,
+                onMonthChanged: _onMonthChanged,
+                pageBuilder: _monthPageBuilder,
               ),
             ),
           ),
-          new Divider(),
           new Expanded(
             child: new SingleChildScrollView(
               child: new Column(
                 children: <Widget>[
+                  new Container(
+                    padding: new EdgeInsets.only(top: 4.0, bottom: 8.0),
+                    child: new RaisedButton(
+                        child: new Text("To Today"),
+                        onPressed: () {
+                          _monthPageController.animateToMonth(
+                            new DateTime.now(),
+                            duration: new Duration(milliseconds: 300),
+                            curve: Curves.ease,
+                          );
+                        }),
+                  ),
+                  new Divider(height: 0.0),
                   new ListTile(
                     title: new Text("First Day of Month"),
                     trailing: new WeekdayDropDownButton(
@@ -99,6 +125,16 @@ class _MonthViewExampleState extends State<MonthViewExample> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _monthPageBuilder(BuildContext context, DateTime month) {
+    return new MonthView(
+      showExtendedDaysBefore: _showExtendedDaysBefore,
+      showExtendedDaysAfter: _showExtendedDaysAfter,
+      month: month,
+      firstWeekday: _firstWeekday,
+      dayOfMonthBuilder: _dayOfMonthBuilder,
     );
   }
 
