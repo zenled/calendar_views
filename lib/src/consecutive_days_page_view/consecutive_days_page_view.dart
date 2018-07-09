@@ -3,14 +3,14 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/src/_calendar_page_view/all.dart';
 
-import 'week_page_builder.dart';
-import 'week_page_controller.dart';
+import 'consecutive_days_page_builder.dart';
+import 'consecutive_days_page_controller.dart';
 
-class WeekPageView extends CalendarPageView {
-  WeekPageView._internal({
+class ConsecutiveDaysPageView extends CalendarPageView {
+  ConsecutiveDaysPageView._internal({
     @required this.controller,
     @required this.pageBuilder,
-    @required this.onWeekChanged,
+    @required this.onDaysChanged,
     @required Axis scrollDirection,
     @required bool reverse,
     @required ScrollPhysics physics,
@@ -25,21 +25,21 @@ class WeekPageView extends CalendarPageView {
         );
 
   /// Creates pageView with each page representing a week.
-  factory WeekPageView({
-    WeekPageController controller,
-    @required WeekPageBuilder pageBuilder,
-    ValueChanged<DateTime> onWeekChanged,
+  factory ConsecutiveDaysPageView({
+    ConsecutiveDaysPageController controller,
+    @required ConsecutiveDaysPageBuilder pageBuilder,
+    ValueChanged<List<DateTime>> onDaysChanged,
     Axis scrollDirection = Axis.horizontal,
     bool reverse = false,
     ScrollPhysics scrollPhysics,
     bool pageSnapping = true,
   }) {
-    controller ??= new WeekPageController();
+    controller ??= new ConsecutiveDaysPageController();
 
-    return new WeekPageView._internal(
+    return new ConsecutiveDaysPageView._internal(
       controller: controller,
       pageBuilder: pageBuilder,
-      onWeekChanged: onWeekChanged,
+      onDaysChanged: onDaysChanged,
       scrollDirection: scrollDirection,
       reverse: reverse,
       physics: scrollPhysics,
@@ -47,33 +47,34 @@ class WeekPageView extends CalendarPageView {
     );
   }
 
-  /// Object in charge of controlling this [WeekPageView].
-  final WeekPageController controller;
+  /// Object in charge of controlling this [ConsecutiveDaysPageView].
+  final ConsecutiveDaysPageController controller;
 
   /// Function that builds a page.
-  final WeekPageBuilder pageBuilder;
+  final ConsecutiveDaysPageBuilder pageBuilder;
 
-  /// Called whenever displayed week in this [WeekPageView] changes.
-  final ValueChanged<DateTime> onWeekChanged;
+  /// Called whenever displayed days in this [ConsecutiveDaysPageView] changes.
+  final ValueChanged<List<DateTime>> onDaysChanged;
 
   @override
-  _WeekPageViewState createState() => new _WeekPageViewState();
+  _ConsecutiveDaysPageView createState() => new _ConsecutiveDaysPageView();
 }
 
-class _WeekPageViewState extends CalendarPageViewState<WeekPageView> {
+class _ConsecutiveDaysPageView
+    extends CalendarPageViewState<ConsecutiveDaysPageView> {
   @override
-  bool hasAnythingChanged(WeekPageView oldWidget) {
+  bool hasAnythingChanged(ConsecutiveDaysPageView oldWidget) {
     return widget.controller != oldWidget.controller ||
         !identical(widget.pageBuilder, oldWidget.pageBuilder) ||
-        !identical(widget.onWeekChanged, oldWidget.onWeekChanged);
+        !identical(widget.onDaysChanged, oldWidget.onDaysChanged);
   }
 
   @override
   void onPageChanged(int page) {
-    if (widget.onWeekChanged != null) {
-      DateTime week = widget.controller.weekOfPage(page);
+    if (widget.onDaysChanged != null) {
+      List<DateTime> days = widget.controller.daysOfPage(page);
 
-      widget.onWeekChanged(week);
+      widget.onDaysChanged(days);
     }
   }
 

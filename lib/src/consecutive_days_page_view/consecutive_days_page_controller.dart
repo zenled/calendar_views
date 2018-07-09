@@ -5,174 +5,214 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/src/_calendar_page_view/all.dart';
 import 'package:calendar_views/src/_internal_date_items/all.dart';
-import 'package:calendar_views/src/_utils/all.dart' as utils;
 
-import 'week_page_view.dart';
+import 'consecutive_days_page_view.dart';
 
-/// Controller for a [WeekPageView].
-class WeekPageController extends CalendarPageController<DateTime> {
-  static const default_weeksDeltaFromInitialWeek = 1000;
+/// Controller for a [ConsecutiveDaysPageView].
+class ConsecutiveDaysPageController extends CalendarPageController<DateTime> {
+  static const default_pagesDeltaFromInitialDay = 1000;
 
-  WeekPageController._internal({
-    @required this.firstWeekday,
-    @required Date initialWeek,
-    @required Date minimumWeek,
-    @required Date maximumWeek,
-  })  : assert(firstWeekday != null && utils.isValidWeekday(firstWeekday)),
-        assert(initialWeek != null),
-        assert(minimumWeek != null),
-        assert(maximumWeek != null),
-        _initialWeek = initialWeek,
-        _minimumWeek = minimumWeek,
-        _maximumWeek = maximumWeek,
+  ConsecutiveDaysPageController._internal({
+    @required this.daysPerPage,
+    @required Date initialDay,
+    @required Date minimumDay,
+    @required Date maximumDay,
+  })  : assert(daysPerPage != null && daysPerPage > 0),
+        assert(initialDay != null),
+        assert(minimumDay != null),
+        assert(maximumDay != null),
+        _initialDay = initialDay,
+        _minimumDay = minimumDay,
+        _maximumDay = maximumDay,
         super(
-          initialPage: utils.weeksBetween(minimumWeek, initialWeek),
-          numberOfPages: utils.weeksBetween(minimumWeek, maximumWeek) + 1,
+          initialPage: minimumDay.daysBetween(initialDay) ~/ daysPerPage,
+          numberOfPages:
+              (minimumDay.daysBetween(maximumDay) ~/ daysPerPage) + 1,
         );
 
-  /// Creates a controller for [WeekPageView].
+  /// Creates a controller for [ConsecutiveDaysPageView].
   ///
-  /// Default value for [firstWeekday] is Monday.
+  /// Default value for [daysPerPage] is [DateTime.daysPerWeek] (7, a day for every day of week).
   ///
-  /// If [initialWeek] is set to null,
-  /// today-week will be set as [initialWeek].
+  /// If [initialDay] is set to null,
+  /// today will be set as [initialDay].
   ///
-  /// If [minimumWeek] is set to null,
-  /// a week [default_weeksDeltaFromInitialWeek] before [initialWeek] will be set as [minimumWeek].
+  /// If [minimumDay] is set to null,
+  /// a day [default_pagesDeltaFromInitialDay] before [initialDay] will be set as [minimumDay].
+  ///
+  /// [minimumDay] is automatically decreased,
+  /// to ensure there are always [daysPerPage] days displayed on every page.
   ///
   ///
-  /// If [maximumWeek] is set to null,
-  /// a week [default_weeksDeltaFromInitialWeek] after [initialWeek] will be set as [maximumWeek].
-  factory WeekPageController({
-    int firstWeekday = DateTime.monday,
-    DateTime initialWeek,
-    DateTime minimumWeek,
-    DateTime maximumWeek,
+  /// If [maximumDay] is set to null,
+  /// a week [default_pagesDeltaFromInitialDay] after [initialDay] will be set as [maximumDay].
+  ///
+  /// [maximumDay] is automatically increased,
+  /// to ensure there are always [daysPerPage] days displayed on every page.
+  factory ConsecutiveDaysPageController({
+    int daysPerPage = DateTime.daysPerWeek,
+    DateTime initialDay,
+    DateTime minimumDay,
+    DateTime maximumDay,
   }) {
-    assert(firstWeekday != null);
+    assert(daysPerPage != null && daysPerPage > 0);
 
     // Converts to internal representation of weeks
     Date initial;
     Date minimum;
     Date maximum;
 
-    if (initialWeek != null) {
-      initial = utils.dateTimeToWeek(firstWeekday, initialWeek);
+    if (initialDay != null) {
+      initial = new Date.fromDateTime(initialDay);
     } else {
-      initial = utils.dateTimeToWeek(firstWeekday, new DateTime.now());
+      initial = new Date.today();
     }
 
-    if (minimumWeek != null) {
-      minimum = utils.dateTimeToWeek(firstWeekday, minimumWeek);
+    if (minimumDay != null) {
+      minimum = new Date.fromDateTime(minimumDay);
+
+      if (daysPerPage != 1) {
+        // lowers minimum so there is always [daysPerPage] days displayed on each page.
+        while (minimum.daysBetween(initial) % daysPerPage == 0) {
+          minimum = minimum.add(days: -1);
+        }
+      }
     } else {
       minimum = initial.add(
-        days: -(default_weeksDeltaFromInitialWeek * DateTime.daysPerWeek),
+        days: -(default_pagesDeltaFromInitialDay * daysPerPage),
       );
     }
 
-    if (maximumWeek != null) {
-      maximum = utils.dateTimeToWeek(firstWeekday, maximumWeek);
+    if (maximumDay != null) {
+      maximum = new Date.fromDateTime(maximumDay);
+
+      if (daysPerPage != 1) {
+        // increases maximum so there is always [daysPerPage] days displayed on each page.
+        while (maximum.daysBetween(initial) % daysPerPage == 0) {
+          maximum = maximum.add(days: -1);
+        }
+      }
     } else {
       maximum = initial.add(
-        days: (default_weeksDeltaFromInitialWeek * DateTime.daysPerWeek),
+        days: (default_pagesDeltaFromInitialDay * daysPerPage),
       );
     }
 
     // Validates
     if (!(minimum.isBefore(initial) || minimum == initial)) {
       throw new ArgumentError(
-        "minimumWeek should be before or same week as initialWeek",
+        "minimumDay should be before or same day as initialDay",
       );
     }
     if (!(maximum.isAfter(initial) || maximum == initial)) {
       throw new ArgumentError(
-        "maximumWeek should be before or same month as initialWeek",
+        "mamumumDay should be after or same day as initialDay",
       );
     }
 
-    return new WeekPageController._internal(
-      firstWeekday: firstWeekday,
-      initialWeek: initial,
-      minimumWeek: minimum,
-      maximumWeek: maximum,
+    return new ConsecutiveDaysPageController._internal(
+      daysPerPage: daysPerPage,
+      initialDay: initial,
+      minimumDay: minimum,
+      maximumDay: maximum,
     );
   }
 
-  /// Day of week of first day in the displayed week.
-  final int firstWeekday;
+  /// Number of consecutive days displayed per page.
+  final int daysPerPage;
 
-  final Date _initialWeek;
-  final Date _minimumWeek;
-  final Date _maximumWeek;
+  final Date _initialDay;
+  final Date _minimumDay;
+  final Date _maximumDay;
 
-  /// Week shown when first creating the controlled [WeekPageView].
-  DateTime get initialWeek => _initialWeek.toDateTime();
+  /// Day shown when first creating the controlled [ConsecutiveDaysPageView].
+  DateTime get initialDay => _initialDay.toDateTime();
 
-  /// Minimum week shown in the controlled [WeekPageView] (inclusive).
-  DateTime get minimumWeek => _minimumWeek.toDateTime();
+  /// Minimum day shown in the controlled [ConsecutiveDaysPageView] (inclusive).
+  DateTime get minimumDay => _minimumDay.toDateTime();
 
-  /// Maximum week shown in the controlled [WeekPageView] (inclusive).
-  DateTime get maximumWeek => _maximumWeek.toDateTime();
+  /// Maximum day shown in the controlled [ConsecutiveDaysPageView] (inclusive).
+  DateTime get maximumDay => _maximumDay.toDateTime();
 
   @override
   DateTime representationOfCurrentPage() {
-    return displayedWeek();
+    return displayedFirstDay();
   }
 
   @override
   int indexOfPageThatRepresents(DateTime pageRepresentation) {
-    return pageOfWeek(pageRepresentation);
+    return pageOfDay(pageRepresentation);
   }
 
-  /// Returns index of page that displays [week].
+  /// Returns index of page that displays [day].
   ///
-  /// If [week] is before [minimumWeek], index of first page is returned.
+  /// If [day] is before [minimumDay], index of first page is returned.
   ///
-  /// If [week] is after [maximumWeek], index of last page is returned.
-  int pageOfWeek(DateTime week) {
-    Date w = utils.dateTimeToWeek(firstWeekday, week);
+  /// If [day] is after [maximumDay], index of last page is returned.
+  int pageOfDay(DateTime day) {
+    Date d = new Date.fromDateTime(day);
 
-    if (w.isBefore(_minimumWeek)) {
+    if (d.isBefore(_minimumDay)) {
       return 0;
     }
-    if (w.isAfter(_maximumWeek)) {
+    if (d.isAfter(_maximumDay)) {
       return numberOfPages - 1;
     }
-    return utils.weeksBetween(_minimumWeek, w);
+
+    int daysFromMinimumDay = _minimumDay.daysBetween(d);
+    return daysFromMinimumDay ~/ daysPerPage;
+  }
+
+  /// Returns the first day in the list of days displayed on [page].
+  ///
+  /// Values of returned day except for year, month and day are set to their default values.
+  DateTime firstDayOfPage(int page) {
+    int pagesDeltaFromInitialPage = page - initialPage;
+
+    Date day = _initialDay.add(
+      days: (pagesDeltaFromInitialPage * daysPerPage),
+    );
+
+    return day.toDateTime();
   }
 
   /// Returns a list of days displayed on [page].
   ///
   /// Values of returned days except for year, month and day are set to their default values.
   List<DateTime> daysOfPage(int page) {
-    DateTime week = weekOfPage(page);
+    List<DateTime> days = <DateTime>[];
 
-    Date w = utils.dateTimeToWeek(firstWeekday, week);
-
-    return w
-        .daysOfWeek(firstWeekday)
-        .map(
-          (date) => date.toDateTime(),
-        )
-        .toList();
-  }
-
-  /// Returns the first day in the set of days displayed on [page].
-  ///
-  /// Values of returned day except for year, month and day are set to their default values.
-  DateTime weekOfPage(int page) {
-    int deltaFromInitialPage = page - initialPage;
-
-    Date week = _initialWeek.add(
-      days: (deltaFromInitialPage * DateTime.daysPerWeek),
+    Date firstDay = new Date.fromDateTime(
+      firstDayOfPage(page),
     );
 
-    return week.toDateTime();
+    for (int i = 0; i < daysPerPage; i++) {
+      days.add(
+        firstDay.add(days: i).toDateTime(),
+      );
+    }
+
+    return days;
   }
 
-  /// Returns currently displayed days of week in the controlled [WeekPageView].
+  /// Returns the first day of days displayed on the current page in the controlled [ConsecutiveDaysPageView].
   ///
-  /// If no [WeekPageView] is attached it returns null.
+  /// If no [ConsecutiveDaysPageView] is attached it returns null.
+  ///
+  /// Values of returned [DateTime]s except for year, month and day are set to their default values.
+  DateTime displayedFirstDay() {
+    int displayedPage = super.displayedPage();
+
+    if (displayedPage != null) {
+      return firstDayOfPage(displayedPage);
+    } else {
+      return null;
+    }
+  }
+
+  /// Returns a list of days of the current page in the controlled [ConsecutiveDaysPageView].
+  ///
+  /// If no [ConsecutiveDaysPageView] is attached it returns null.
   ///
   /// Values of returned [DateTime]s except for year, month and day are set to their default values.
   List<DateTime> displayedDays() {
@@ -185,39 +225,26 @@ class WeekPageController extends CalendarPageController<DateTime> {
     }
   }
 
-  /// Returns the first day of the set of days that are currently displayed in the controlled [WeekPageView].
+  /// Changes which set of consecutive days is displayed in the controlled [ConsecutiveDaysPageView].
   ///
-  /// If no [WeekPageView] is attached it returns null.
+  /// It jumps to page of which [day] is a member of.
   ///
-  /// Values of returned [DateTime]s except for year, month and day are set to their default values.
-  DateTime displayedWeek() {
-    int displayedPage = super.displayedPage();
-
-    if (displayedPage != null) {
-      return weekOfPage(displayedPage);
-    } else {
-      return null;
-    }
-  }
-
-  /// Changes which [week] is displayed in the controlled [WeekPageView].
-  ///
-  /// If no [WeekPageView] is attached it does nothing.
-  void jumpToWeek(DateTime week) {
-    int page = pageOfWeek(week);
+  /// If no [ConsecutiveDaysPageView] is attached it does nothing.
+  void jumpToDay(DateTime day) {
+    int page = pageOfDay(day);
 
     super.jumpToPage(page);
   }
 
-  /// Animates the controlled [WeekPageView] to the given [week].
+  /// Animates the controlled [ConsecutiveDaysPageView] to the given [day].
   ///
-  /// If no [WeekPageView] is attached it does nothing.
-  Future<Null> animateToWeek(
-    DateTime week, {
+  /// If no [ConsecutiveDaysPageView] is attached it does nothing.
+  Future<Null> animateToDay(
+    DateTime day, {
     @required Duration duration,
     @required Curve curve,
   }) {
-    int page = pageOfWeek(week);
+    int page = pageOfDay(day);
 
     return super.animateToPage(
       page,
