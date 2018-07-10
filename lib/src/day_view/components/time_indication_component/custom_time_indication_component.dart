@@ -48,8 +48,8 @@ class CustomTimeIndicationComponent implements Component {
     return builtItems;
   }
 
-  Restrictions _getRestrictions(BuildContext context) {
-    return RestrictionsProvider.of(context);
+  RestrictionsData _getRestrictions(BuildContext context) {
+    return Restrictions.of(context);
   }
 
   PositioningAssistant _getPositioningAssistant(BuildContext context) {

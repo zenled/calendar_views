@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:calendar_views/event.dart';
 
-class DummyEventsRetriever implements EventsRetriever {
+class DummyEventsGenerator implements EventsGenerator {
   @override
-  Future<Set<PositionableEvent>> retrieveEventsOf(DateTime day) async {
+  Future<Set<PositionableEvent>> generateEventsOf(DateTime day) async {
     await new Future.delayed(new Duration(seconds: 1));
 
     if (_isSameDate(day, new DateTime.now())) {

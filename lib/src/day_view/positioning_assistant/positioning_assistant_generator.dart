@@ -4,37 +4,53 @@ import 'package:calendar_views/src/day_view/properties/all.dart';
 
 import 'positioning_assistant.dart';
 
-class PositioningAssistantGenerator extends InheritedWidget {
-  const PositioningAssistantGenerator({
-    @required Widget child,
-  }) : super(child: child);
+/// Class that can generate a positioning assistant from a given [BuildContext].
+class PositioningAssistantGenerator {
+  /// Generates a [PositioningAssistant] using the given [context].
+  static PositioningAssistant generateFromContext(BuildContext context) {
+    DaysData daysData = _getDaysData(context);
+    if (daysData == null) {
+      _throwErrorIfDataCouldNotBeGet("DaysData", "Days");
+    }
 
-  PositioningAssistant generatePositioningAssistant(BuildContext context) {
+    DimensionsData dimensionsData = _getDimensionsData(context);
+    if (dimensionsData == null) {
+      _throwErrorIfDataCouldNotBeGet("DimensionsData", "Dimenstions");
+    }
+
+    RestrictionsData restrictionsData = _getRestrictionsData(context);
+    if (restrictionsData == null) {
+      _throwErrorIfDataCouldNotBeGet("RestrictionsData", "Restrictions");
+    }
+
+    SizeConstraintsData sizeConstraintsData = _getSizeConstraintsData(context);
+    if (sizeConstraintsData == null) {
+      _throwErrorIfDataCouldNotBeGet("SizeConstraintsData", "SizeConstraints");
+    }
+
     return new PositioningAssistant(
-      days: _getDays(context),
-      dimensions: _getDimensions(context),
-      restrictions: _getRestrictions(context),
-      sizeConstraints: _getSizeConstraints(context),
+      daysData: daysData,
+      dimensionsData: dimensionsData,
+      restrictionsData: restrictionsData,
+      sizeConstraintsData: sizeConstraintsData,
     );
   }
 
-  Days _getDays(BuildContext context) => DaysProvider.of(context);
+  static DaysData _getDaysData(BuildContext context) => Days.of(context);
 
-  Dimensions _getDimensions(BuildContext context) =>
-      DimensionsProvider.of(context);
+  static DimensionsData _getDimensionsData(BuildContext context) =>
+      Dimensions.of(context);
 
-  Restrictions _getRestrictions(BuildContext context) =>
-      RestrictionsProvider.of(context);
+  static RestrictionsData _getRestrictionsData(BuildContext context) =>
+      Restrictions.of(context);
 
-  SizeConstraints _getSizeConstraints(BuildContext context) =>
-      SizeConstraintsProvider.of(context);
+  static SizeConstraintsData _getSizeConstraintsData(BuildContext context) =>
+      SizeConstraints.of(context);
 
-  @override
-  bool updateShouldNotify(InheritedWidget oldWidget) {
-    return false;
-  }
-
-  static PositioningAssistantGenerator of(BuildContext context) {
-    return context.inheritFromWidgetOfExactType(PositioningAssistantGenerator);
+  static _throwErrorIfDataCouldNotBeGet(String dataName, String providerName) {
+    throw new ArgumentError(
+      "Could not get \"$dataName\" from context. "
+          "This probably means that there is no \"$providerName\" widget up the widget tree.",
+    );
   }
 }

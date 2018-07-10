@@ -15,7 +15,7 @@ class EventsManager {
     @required EventsGenerator eventsRetriever,
   }) {
     _fetcher = new EventsFetcher(
-      eventsRetriever: eventsRetriever,
+      eventsGenerator: eventsRetriever,
       onFetchCompleted: _onFetchCompleted,
     );
     _storage = new EventsStorage();

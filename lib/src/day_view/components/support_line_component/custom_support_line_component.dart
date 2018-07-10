@@ -49,8 +49,8 @@ class CustomSupportLineComponent extends Component {
     return items;
   }
 
-  Restrictions _getRestrictions(BuildContext context) {
-    return RestrictionsProvider.of(context);
+  RestrictionsData _getRestrictions(BuildContext context) {
+    return Restrictions.of(context);
   }
 
   PositioningAssistant _getPositioningAssistant(BuildContext context) {

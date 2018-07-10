@@ -6,7 +6,7 @@ import 'package:calendar_views/src/day_view/positioning_assistant/all.dart';
 import 'package:calendar_views/src/day_view/properties/all.dart';
 
 import '../component.dart';
-import 'single_day_events_items_creator/single_day_event_items_creator.dart';
+import '_single_day_events_items_creator/single_day_event_items_creator.dart';
 import 'event_item_builder.dart';
 
 /// [Component] that builds events.
@@ -32,24 +32,22 @@ class EventViewComponent extends Component {
   List<Positioned> buildItems(BuildContext context) {
     List<Positioned> builtItems = <Positioned>[];
 
-    Restrictions restrictions = _getRestrictions(context);
-
+    DaysData daysData = _getDaysData(context);
+    RestrictionsData restrictionsData = _getRestrictionsData(context);
     PositioningAssistant positioningAssistant =
         _getPositioningAssistant(context);
 
-    Days days = _getDays(context);
-    for (int dayNumber in days.dayNumbers) {
-      DateTime date = days.getDate(dayNumber);
+    for (int dayNumber in daysData.dayNumbers) {
+      DateTime day = daysData.dayOf(dayNumber);
 
       SingleDayEventItemsCreator itemsCreator = new SingleDayEventItemsCreator(
         context: context,
-        restrictions: restrictions,
+        day: day,
+        builder: eventBuilder,
+        restrictions: restrictionsData,
         filter: eventsFilter,
         arranger: eventsArranger,
-        positioningAssistant: positioningAssistant,
-        builder: eventBuilder,
-        date: date,
-        dayNumber: dayNumber,
+        area: positioningAssistant.dayArea(dayNumber),
       );
 
       builtItems.addAll(
@@ -60,12 +58,12 @@ class EventViewComponent extends Component {
     return builtItems;
   }
 
-  Days _getDays(BuildContext context) {
-    return DaysProvider.of(context);
+  DaysData _getDaysData(BuildContext context) {
+    return Days.of(context);
   }
 
-  Restrictions _getRestrictions(BuildContext context) {
-    return RestrictionsProvider.of(context);
+  RestrictionsData _getRestrictionsData(BuildContext context) {
+    return Restrictions.of(context);
   }
 
   PositioningAssistant _getPositioningAssistant(BuildContext context) {

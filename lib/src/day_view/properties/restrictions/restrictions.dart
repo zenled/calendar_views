@@ -1,41 +1,25 @@
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/_utils/all.dart' as utils;
+import 'restrictions_data.dart';
 
-/// Restrictions placed upon a DayView.
-@immutable
-class Restrictions {
-  static const default_minimumMinuteOfDay = 0;
-  static const default_maximumMinuteOfDay = 1440;
+/// Widget that propagates [RestrictionsData].
+class Restrictions extends InheritedWidget {
+  Restrictions({
+    @required this.restrictionsData,
+    @required Widget child,
+  })  : assert(restrictionsData != null),
+        super(child: child);
 
-  const Restrictions({
-    this.minimumMinuteOfDay = default_minimumMinuteOfDay,
-    this.maximumMinuteOfDay = default_maximumMinuteOfDay,
-  })  : assert(minimumMinuteOfDay >= utils.minimum_minute_of_day),
-        assert(maximumMinuteOfDay <= utils.maximum_minute_of_day),
-        assert(minimumMinuteOfDay <= maximumMinuteOfDay);
-
-  /// Minimum minute of day that a DayView is allowed to display (inclusive).
-  final int minimumMinuteOfDay;
-
-  /// Maximum minute of day that a DayView is allowed to display (inclusive).
-  final int maximumMinuteOfDay;
-
-  int get totalNumberOfMinutes => maximumMinuteOfDay - minimumMinuteOfDay;
+  final RestrictionsData restrictionsData;
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Restrictions &&
-          runtimeType == other.runtimeType &&
-          minimumMinuteOfDay == other.minimumMinuteOfDay &&
-          maximumMinuteOfDay == other.maximumMinuteOfDay;
+  bool updateShouldNotify(Restrictions oldWidget) {
+    return restrictionsData != oldWidget.restrictionsData;
+  }
 
-  @override
-  int get hashCode => minimumMinuteOfDay.hashCode ^ maximumMinuteOfDay.hashCode;
-
-  @override
-  String toString() {
-    return 'Restrictions{minimumMinuteOfDay: $minimumMinuteOfDay, maximumMinuteOfDay: $maximumMinuteOfDay}';
+  static RestrictionsData of(BuildContext context) {
+    return (context.inheritFromWidgetOfExactType(Restrictions) as Restrictions)
+        .restrictionsData;
   }
 }

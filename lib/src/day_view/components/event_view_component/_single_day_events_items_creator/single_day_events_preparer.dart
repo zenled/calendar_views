@@ -4,23 +4,23 @@ import 'package:meta/meta.dart';
 import 'package:calendar_views/event.dart';
 import 'package:calendar_views/src/day_view/properties/all.dart';
 
-/// Utility that prepares events of some [date].
+/// Utility that prepares events of some [day].
 class SingleDayEventsPreparer {
   SingleDayEventsPreparer({
     @required this.context,
+    @required this.day,
     @required this.restrictions,
     @required this.filter,
-    @required this.date,
   })  : assert(context != null),
         assert(restrictions != null),
-        assert(date != null);
+        assert(day != null);
 
   final BuildContext context;
 
-  final Restrictions restrictions;
-  final EventsFilter filter;
+  final DateTime day;
 
-  final DateTime date;
+  final RestrictionsData restrictions;
+  final EventsFilter filter;
 
   Set<PositionableEvent> getAndPrepareEvents() {
     Set<PositionableEvent> events;
@@ -34,7 +34,7 @@ class SingleDayEventsPreparer {
   }
 
   Set<PositionableEvent> _retrieveEvents() {
-    return EventsProvider.of(context).getEventsOf(date);
+    return EventsProvider.of(context).getEventsOf(day);
   }
 
   Set<PositionableEvent> _removeAllDayEvents(

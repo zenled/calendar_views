@@ -1,78 +1,24 @@
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/_utils/all.dart' as utils;
+import 'days_data.dart';
 
-/// Item with a list of dates that a DayView is  displaying.
-@immutable
-class Days {
+/// Widget that propagates [Days].
+class Days extends InheritedWidget {
   const Days({
-    @required this.dates,
-  }) : assert(dates != null);
+    @required this.daysData,
+    @required Widget child,
+  })  : assert(daysData != null),
+        super(child: child);
 
-  factory Days.forASingleDay({
-    @required DateTime date,
-  }) {
-    return new Days(
-      dates: <DateTime>[date],
-    );
-  }
-
-  final List<DateTime> dates;
-
-  int get numberOfDays => dates.length;
-
-  List<int> get dayNumbers {
-    List<int> dayNumbers = <int>[];
-
-    for (int i = 0; i < dates.length; i++) {
-      dayNumbers.add(i);
-    }
-
-    return dayNumbers;
-  }
-
-  int get numberOfDaySeparations => numberOfDays - 1;
-
-  List<int> get daySeparationNumbers {
-    List<int> daySeparationNumbers = <int>[];
-
-    for (int i = 0; i < numberOfDaySeparations; i++) {
-      daySeparationNumbers.add(i);
-    }
-
-    return daySeparationNumbers;
-  }
-
-  DateTime getDate(int dayNumber) {
-    return dates[dayNumber];
-  }
-
-  /// Returns the daySeparationNumber of a separation that belongs to a day with [dayNumber].
-  ///
-  /// If day does not have a separation it returns null.
-  int separationNumberBefore(int dayNumber) {
-    if (dayNumber <= 0 || dayNumber > numberOfDaySeparations) {
-      return null;
-    } else {
-      return dayNumber - 1;
-    }
-  }
-
-  int separationNumberAfter(int dayNumber) {
-    if (dayNumber < 0 || dayNumber >= numberOfDaySeparations) {
-      return null;
-    } else {
-      return dayNumber;
-    }
-  }
+  final DaysData daysData;
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Days &&
-          runtimeType == other.runtimeType &&
-          utils.areListsOfDatesTheSame(dates, other.dates);
+  bool updateShouldNotify(Days oldWidget) {
+    return daysData != oldWidget.daysData;
+  }
 
-  @override
-  int get hashCode => dates.hashCode;
+  static DaysData of(BuildContext context) {
+    return (context.inheritFromWidgetOfExactType(Days) as Days).daysData;
+  }
 }

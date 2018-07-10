@@ -1,25 +1,26 @@
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-@immutable
-class SizeConstraints {
+import 'size_constraints_data.dart';
+
+/// Widget that propagates [SizeConstraintsData].
+class SizeConstraints extends InheritedWidget {
   const SizeConstraints({
-    @required this.availableWidth,
-  }) : assert(availableWidth != null && availableWidth > 0);
+    @required this.sizeConstraintsData,
+    @required Widget child,
+  })  : assert(sizeConstraintsData != null),
+        super(child: child);
 
-  final double availableWidth;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is SizeConstraints &&
-          runtimeType == other.runtimeType &&
-          availableWidth == other.availableWidth;
+  final SizeConstraintsData sizeConstraintsData;
 
   @override
-  int get hashCode => availableWidth.hashCode;
+  bool updateShouldNotify(SizeConstraints oldWidget) {
+    return sizeConstraintsData != oldWidget.sizeConstraintsData;
+  }
 
-  @override
-  String toString() {
-    return 'SizeConstraints{availableWidth: $availableWidth}';
+  static SizeConstraintsData of(BuildContext context) {
+    return (context.inheritFromWidgetOfExactType(SizeConstraints)
+            as SizeConstraints)
+        .sizeConstraintsData;
   }
 }

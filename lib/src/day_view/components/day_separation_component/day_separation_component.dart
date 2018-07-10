@@ -50,7 +50,7 @@ class DaySeparationComponent extends Component {
   }
 
   List<int> _getDaySeparationNumbers(BuildContext context) {
-    return DaysProvider.of(context).daySeparationNumbers;
+    return Days.of(context).daySeparationNumbers;
   }
 
   DaySeparationProperties _createItemProperties({

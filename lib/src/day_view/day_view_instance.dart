@@ -4,25 +4,28 @@ import 'package:meta/meta.dart';
 import 'positioning_assistant/all.dart';
 import 'properties/all.dart';
 
+/// Convenience widget that builds [DaysData], [SizeConstraints] and [PositioningAssistantProvider].
 class DayViewInstance extends StatefulWidget {
   const DayViewInstance({
-    @required this.days,
+    @required this.daysData,
     @required this.child,
-  })  : assert(days != null),
+  })  : assert(daysData != null),
         assert(child != null);
 
-  factory DayViewInstance.fromAListOfDates({
-    @required List<DateTime> dates,
+  /// Returns a [DayViewInstance] made from a list of days.
+  factory DayViewInstance.fromListOfDays({
+    @required List<DateTime> days,
     @required Widget child,
   }) {
-    assert(dates != null);
+    assert(days != null);
 
     return new DayViewInstance(
-      days: new Days(dates: dates),
+      daysData: new DaysData(days: days),
       child: child,
     );
   }
 
+  /// Returns a [DayViewInstance] made from a single day
   factory DayViewInstance.forASingleDay({
     @required DateTime day,
     @required Widget child,
@@ -30,13 +33,13 @@ class DayViewInstance extends StatefulWidget {
     assert(day != null);
 
     return new DayViewInstance(
-      days: new Days(dates: <DateTime>[day]),
+      daysData: new DaysData(days: <DateTime>[day]),
       child: child,
     );
   }
 
-  /// Dates of which events are displayed by this DayView.
-  final Days days;
+  /// Days events of which should be displayed by child [DayView]s.
+  final DaysData daysData;
 
   final Widget child;
 
@@ -46,29 +49,30 @@ class DayViewInstance extends StatefulWidget {
 
 class _DayViewInstanceState extends State<DayViewInstance> {
   PositioningAssistant _createPositioningAssistant(BuildContext context) {
-    return PositioningAssistantGenerator
-        .of(context)
-        .generatePositioningAssistant(context);
+    return PositioningAssistantGenerator.generateFromContext(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return new DaysProvider(
-      days: widget.days,
+    return new Days(
+      daysData: widget.daysData,
       child: new LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-        return new SizeConstraintsProvider(
-          sizeConstraints: new SizeConstraints(
-            availableWidth: constraints.maxWidth,
-          ),
-          child: new Builder(builder: (BuildContext context) {
-            return new PositioningAssistantProvider(
-              positioningAssistant: _createPositioningAssistant(context),
-              child: widget.child,
-            );
-          }),
-        );
-      }),
+        builder: (BuildContext context, BoxConstraints constraints) {
+          return new SizeConstraints(
+            sizeConstraintsData: new SizeConstraintsData(
+              availableWidth: constraints.maxWidth,
+            ),
+            child: new Builder(builder: (BuildContext context) {
+              // A Builder is needed so PositioningAssistantGenerator can access SizeConstraints.
+
+              return new PositioningAssistantProvider(
+                positioningAssistant: _createPositioningAssistant(context),
+                child: widget.child,
+              );
+            }),
+          );
+        },
+      ),
     );
   }
 }
