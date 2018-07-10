@@ -3,16 +3,18 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/src/day_view/positioning_assistant/all.dart';
 import 'package:calendar_views/src/day_view/properties/all.dart';
-import 'day_header_builder.dart';
-import '_day_maker.dart';
-import '_day_separation_maker.dart';
+
+import '_day_builder.dart';
+import '_day_separation_builder.dart';
+
+import 'days_header_item_builder.dart';
 
 @immutable
-class OneTimeMaker {
-  OneTimeMaker({
+class OneTimeBuilder {
+  OneTimeBuilder({
     @required this.context,
     @required this.positioningAssistant,
-    @required this.days,
+    @required this.daysData,
     @required this.verticalAlignment,
     @required this.extendOverDaySeparation,
     @required this.extendOverEventsAreaStartMargin,
@@ -25,7 +27,7 @@ class OneTimeMaker {
 
   final PositioningAssistant positioningAssistant;
 
-  final Days days;
+  final DaysData daysData;
 
   final CrossAxisAlignment verticalAlignment;
 
@@ -37,9 +39,9 @@ class OneTimeMaker {
 
   final List<Widget> items;
 
-  final DayHeaderBuilder itemBuilder;
+  final DaysHeaderItemBuilder itemBuilder;
 
-  Widget make() {
+  Widget build() {
     return new Container(
       width: positioningAssistant.totalAreaWidth,
       child: new Row(
@@ -71,7 +73,7 @@ class OneTimeMaker {
     double width = 0.0;
     width += positioningAssistant.contentAreaLeft;
     if (!extendOverEventsAreaStartMargin) {
-      width += positioningAssistant.dimensions.eventsAreaStartMargin;
+      width += positioningAssistant.dimensionsData.eventsAreaStartMargin;
     }
 
     return new Container(
@@ -82,15 +84,21 @@ class OneTimeMaker {
   List<Widget> _buildDaysAndSeparations() {
     List<Widget> daysAndSeparations = <Widget>[];
 
-    for (int dayNumber in days.dayNumbers) {
-      DateTime date = days.getDate(dayNumber);
-      int separationNumberBefore = days.separationNumberBefore(dayNumber);
-      int separationNumberAfter = days.separationNumberAfter(dayNumber);
+    for (int dayNumber in daysData.dayNumbers) {
+      DateTime day = daysData.dayOf(dayNumber);
+      int separationNumberBefore = daysData.daySeparatorNumberBefore(dayNumber);
+      int separationNumberAfter = daysData.daySeparatorNumberAfter(dayNumber);
+
+      if (separationNumberBefore != null) {
+        daysAndSeparations.add(
+          _buildDaySeparation(separationNumberBefore),
+        );
+      }
 
       daysAndSeparations.add(
         _buildDay(
           dayNumber: dayNumber,
-          date: date,
+          day: day,
           separationNumberBefore: separationNumberBefore,
           separationNumberAfter: separationNumberAfter,
         ),
@@ -98,7 +106,7 @@ class OneTimeMaker {
 
       if (separationNumberAfter != null) {
         daysAndSeparations.add(
-          _buildSeparation(separationNumber: separationNumberAfter),
+          _buildDaySeparation(separationNumberAfter),
         );
       }
     }
@@ -109,7 +117,7 @@ class OneTimeMaker {
   Widget _buildEndPadding() {
     double width = 0.0;
     if (!extendOverEventsAreaEndMargin) {
-      width += positioningAssistant.dimensions.eventsAreaEndMargin;
+      width += positioningAssistant.dimensionsData.eventsAreaEndMargin;
     }
 
     return new Container(
@@ -119,38 +127,46 @@ class OneTimeMaker {
 
   Widget _buildDay({
     @required int dayNumber,
-    @required DateTime date,
+    @required DateTime day,
     @required int separationNumberBefore,
     @required int separationNumberAfter,
   }) {
-    DayMaker dayHeaderMaker = new DayMaker(
+    DayBuilder dayBuilder = new DayBuilder(
       context: context,
-      positioningAssistant: positioningAssistant,
-      days: days,
+      day: day,
+      item: _getItem(dayNumber),
+      itemBuilder: itemBuilder,
+      dayWidth: positioningAssistant.dayAreaWidth(dayNumber),
       extendOverSeparation: extendOverDaySeparation,
+      separationBeforeWidth: separationNumberBefore != null
+          ? positioningAssistant
+                  .daySeparationAreaWidth(separationNumberBefore) /
+              2
+          : 0.0,
+      separationAfterWidth: separationNumberAfter != null
+          ? positioningAssistant.daySeparationAreaWidth(separationNumberAfter) /
+              2
+          : 0.0,
       extendOverEventsAreaStartMargin: extendOverEventsAreaStartMargin,
       extendOverEventsAreaEndMargin: extendOverEventsAreaEndMargin,
-      dayNumber: dayNumber,
-      date: date,
-      separationNumberBefore: separationNumberBefore,
-      separationNumberAfter: separationNumberAfter,
-      item: _getItem(dayNumber),
-      itemBuilder: _getItemBuilder(),
+      isFirstDay: dayNumber == 0,
+      isLastDay: dayNumber == (daysData.numberOfDays - 1),
+      eventsAreaStartMarginWidth:
+          positioningAssistant.dimensionsData.eventsAreaStartMargin,
+      eventsAreaEndMarginWidth:
+          positioningAssistant.dimensionsData.eventsAreaEndMargin,
     );
 
-    return dayHeaderMaker.make();
+    return dayBuilder.build();
   }
 
-  Widget _buildSeparation({
-    @required int separationNumber,
-  }) {
-    DaySeparationMaker separationMaker = new DaySeparationMaker(
-      positioningAssistant: positioningAssistant,
-      extendOverDaySeparation: extendOverDaySeparation,
-      separationNumber: separationNumber,
+  Widget _buildDaySeparation(int separationNumber) {
+    DaySeparationBuilder separationBuilder = new DaySeparationBuilder(
+      extendOverSeparation: extendOverDaySeparation,
+      separationWidth: _getDaySeparationWidth(separationNumber) / 2,
     );
 
-    return separationMaker.make();
+    return separationBuilder.build();
   }
 
   Widget _getItem(int dayNumber) {
@@ -161,7 +177,7 @@ class OneTimeMaker {
     }
   }
 
-  DayHeaderBuilder _getItemBuilder() {
-    return itemBuilder;
+  double _getDaySeparationWidth(int separationNumber) {
+    return positioningAssistant.daySeparationAreaWidth(separationNumber);
   }
 }

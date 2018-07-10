@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 import 'components/all.dart';
-import 'positioning_assistant/all.dart';
 import 'properties/all.dart';
+import 'day_view.dart';
 
-/// Convenience widget that builds [DayViewRestrictions], [DayViewPositions] and [DayViewComponentsProvider].
+/// Convenience widget that builds [Restrictions], [Dimensions] and [ComponentsProvider].
 class DayViewResources extends StatefulWidget {
   DayViewResources({
-    this.restrictions = const Restrictions(),
-    this.dimensions = const Dimensions(),
+    this.restrictions = const RestrictionsData(),
+    this.dimensions = const DimensionsData(),
     @required this.components,
     @required this.child,
   })  : assert(restrictions != null),
@@ -17,16 +17,15 @@ class DayViewResources extends StatefulWidget {
         assert(components != null),
         assert(child != null);
 
-  /// Restrictions placed upon child DayViews.
-  final Restrictions restrictions;
+  /// Restrictions placed upon child [DayView]s.
+  final RestrictionsData restrictions;
 
-  /// Dimensions of child DayViews.
-  final Dimensions dimensions;
+  /// Dimensions of child [DayView]s.
+  final DimensionsData dimensions;
 
-  /// List of components to be displayed in child DayViews.
+  /// List of components to be displayed in child [DayView]s.
   final List<Component> components;
 
-  /// Child of this widget
   final Widget child;
 
   @override
@@ -36,15 +35,13 @@ class DayViewResources extends StatefulWidget {
 class _DayViewPropertiesState extends State<DayViewResources> {
   @override
   Widget build(BuildContext context) {
-    return new RestrictionsProvider(
-      restrictions: widget.restrictions,
-      child: new DimensionsProvider(
-        dimensions: widget.dimensions,
-        child: new PositioningAssistantGenerator(
-          child: new ComponentsProvider(
-            components: widget.components,
-            child: widget.child,
-          ),
+    return new Restrictions(
+      restrictionsData: widget.restrictions,
+      child: new Dimensions(
+        dimensionsData: widget.dimensions,
+        child: new ComponentsProvider(
+          components: widget.components,
+          child: widget.child,
         ),
       ),
     );

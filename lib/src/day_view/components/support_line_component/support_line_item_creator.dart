@@ -22,7 +22,7 @@ class SupportLineItemCreator {
 
   final BuildContext context;
 
-  final Restrictions restrictions;
+  final RestrictionsData restrictions;
   final PositioningAssistant positioningAssistant;
   final SupportLineItemBuilder builder;
 

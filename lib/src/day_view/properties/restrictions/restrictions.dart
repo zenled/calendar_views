@@ -1,26 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import 'restrictions.dart';
+import 'restrictions_data.dart';
 
-/// Widget that propagates DayView [Restrictions] down the widget tree.
-class RestrictionsProvider extends InheritedWidget {
-  RestrictionsProvider({
-    @required this.restrictions,
+/// Widget that propagates [RestrictionsData].
+class Restrictions extends InheritedWidget {
+  Restrictions({
+    @required this.restrictionsData,
     @required Widget child,
-  })  : assert(restrictions != null),
+  })  : assert(restrictionsData != null),
         super(child: child);
 
-  final Restrictions restrictions;
+  final RestrictionsData restrictionsData;
 
   @override
-  bool updateShouldNotify(RestrictionsProvider oldWidget) {
-    return restrictions != oldWidget.restrictions;
+  bool updateShouldNotify(Restrictions oldWidget) {
+    return restrictionsData != oldWidget.restrictionsData;
   }
 
-  static Restrictions of(BuildContext context) {
-    return (context.inheritFromWidgetOfExactType(RestrictionsProvider)
-            as RestrictionsProvider)
-        .restrictions;
+  static RestrictionsData of(BuildContext context) {
+    return (context.inheritFromWidgetOfExactType(Restrictions) as Restrictions)
+        .restrictionsData;
   }
 }

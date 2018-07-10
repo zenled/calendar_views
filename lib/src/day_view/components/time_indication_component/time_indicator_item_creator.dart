@@ -22,7 +22,7 @@ class TimeIndicatorItemCreator {
 
   final BuildContext context;
 
-  final Restrictions restrictions;
+  final RestrictionsData restrictions;
   final PositioningAssistant positioningAssistant;
   final TimeIndicatorItemBuilder builder;
 
@@ -65,7 +65,7 @@ class TimeIndicatorItemCreator {
   }) {
     return new ItemSize(
       width: positioningAssistant.timeIndicationAreaWidth,
-      height: positioningAssistant.heightOfMinutes(minutes),
+      height: positioningAssistant.heightOfDuration(minutes),
     );
   }
 }

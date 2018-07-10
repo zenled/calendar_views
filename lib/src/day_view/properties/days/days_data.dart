@@ -1,38 +1,50 @@
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/_utils/all.dart' as utils;
+import 'package:calendar_views/src/day_view/day_view.dart';
 
-/// Item with a list of dates that a DayView is  displaying.
+/// Data about days that a [DayView] should be displaying.
 @immutable
-class Days {
-  const Days({
-    @required this.dates,
-  }) : assert(dates != null);
+class DaysData {
+  /// Creates a new instance of DaysData.
+  const DaysData({
+    @required this.days,
+  }) : assert(days != null);
 
-  factory Days.forASingleDay({
-    @required DateTime date,
+  /// Creates DaysData when [DayView] should display a single day.
+  factory DaysData.forASingleDay({
+    @required DateTime day,
   }) {
-    return new Days(
-      dates: <DateTime>[date],
+    return new DaysData(
+      days: <DateTime>[day],
     );
   }
 
-  final List<DateTime> dates;
+  /// List of days that a [DayView] should display.
+  final List<DateTime> days;
 
-  int get numberOfDays => dates.length;
+  /// Number of days that [DayView] should display.
+  int get numberOfDays => days.length;
 
+  /// Returns List of integers each one representing sequential number of a single day in [DayView].
   List<int> get dayNumbers {
     List<int> dayNumbers = <int>[];
 
-    for (int i = 0; i < dates.length; i++) {
+    for (int i = 0; i < days.length; i++) {
       dayNumbers.add(i);
     }
 
     return dayNumbers;
   }
 
+  /// Returns day that is represented by a [dayNumber].
+  DateTime dayOf(int dayNumber) {
+    return days[dayNumber];
+  }
+
+  /// Returns how many day separations should be in a [DayView].
   int get numberOfDaySeparations => numberOfDays - 1;
 
+  /// Returns List of integers each one representing sequential number of a single daySeparator in [DayView].
   List<int> get daySeparationNumbers {
     List<int> daySeparationNumbers = <int>[];
 
@@ -43,14 +55,10 @@ class Days {
     return daySeparationNumbers;
   }
 
-  DateTime getDate(int dayNumber) {
-    return dates[dayNumber];
-  }
-
-  /// Returns the daySeparationNumber of a separation that belongs to a day with [dayNumber].
+  /// Returns number of daySeparator that should be shown just before a day with [dayNumber].
   ///
-  /// If day does not have a separation it returns null.
-  int separationNumberBefore(int dayNumber) {
+  /// If day does not have a separator before it, it returns null.
+  int daySeparatorNumberBefore(int dayNumber) {
     if (dayNumber <= 0 || dayNumber > numberOfDaySeparations) {
       return null;
     } else {
@@ -58,7 +66,10 @@ class Days {
     }
   }
 
-  int separationNumberAfter(int dayNumber) {
+  /// Returns number of daySeparator that should be shown just after a day with [dayNumber].
+  ///
+  /// If day does not have a separator after it, it returns null.
+  int daySeparatorNumberAfter(int dayNumber) {
     if (dayNumber < 0 || dayNumber >= numberOfDaySeparations) {
       return null;
     } else {
@@ -69,10 +80,10 @@ class Days {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Days &&
+      other is DaysData &&
           runtimeType == other.runtimeType &&
-          utils.areListsOfDatesTheSame(dates, other.dates);
+          days == other.days;
 
   @override
-  int get hashCode => dates.hashCode;
+  int get hashCode => days.hashCode;
 }

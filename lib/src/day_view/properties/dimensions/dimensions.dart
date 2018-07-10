@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import 'dimensions.dart';
+import 'dimensions_data.dart';
 
-class DimensionsProvider extends InheritedWidget {
-  DimensionsProvider({
-    @required this.dimensions,
+/// Widget that propagates [DimensionsData].
+class Dimensions extends InheritedWidget {
+  Dimensions({
+    @required this.dimensionsData,
     @required Widget child,
-  })  : assert(dimensions != null),
+  })  : assert(dimensionsData != null),
         super(child: child);
 
-  final Dimensions dimensions;
+  final DimensionsData dimensionsData;
 
   @override
-  bool updateShouldNotify(DimensionsProvider oldWidget) {
-    return oldWidget.dimensions != dimensions;
+  bool updateShouldNotify(Dimensions oldWidget) {
+    return oldWidget.dimensionsData != dimensionsData;
   }
 
-  static Dimensions of(BuildContext context) {
-    return (context.inheritFromWidgetOfExactType(DimensionsProvider)
-            as DimensionsProvider)
-        .dimensions;
+  static DimensionsData of(BuildContext context) {
+    return (context.inheritFromWidgetOfExactType(Dimensions) as Dimensions)
+        .dimensionsData;
   }
 }

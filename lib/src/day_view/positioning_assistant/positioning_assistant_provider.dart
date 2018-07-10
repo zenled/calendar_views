@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 
 import 'positioning_assistant.dart';
 
+/// Widget that propagates [PositioningAssistant].
 class PositioningAssistantProvider extends InheritedWidget {
   PositioningAssistantProvider({
     @required this.positioningAssistant,

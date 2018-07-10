@@ -6,8 +6,17 @@ import 'components/all.dart';
 import 'positioning_assistant/all.dart';
 import 'properties/all.dart';
 
+/// Widget that displays a day view.
 class DayView extends StatefulWidget {
-  const DayView();
+  const DayView({
+    this.rebuildWhenEventsChange = true,
+  }) : assert(rebuildWhenEventsChange != null);
+
+  /// If true components will be rebuilt when events of days inside this dayView change.
+  ///
+  /// If true this [DayView] will attach to [EventsChangedNotifier]
+  /// and rebuild all components when notified.
+  final bool rebuildWhenEventsChange;
 
   @override
   _DayViewState createState() => new _DayViewState();
@@ -32,30 +41,38 @@ class _DayViewState extends State<DayView> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void didUpdateWidget(DayView oldWidget) {
+    super.didUpdateWidget(oldWidget);
 
-    if (_areEventsChangedListenersAttached) {
+    if (!widget.rebuildWhenEventsChange) {
       _detachEventsChangedListeners();
     }
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    _detachEventsChangedListeners();
+  }
+
   void _createAndAttachEventsChangedListeners() {
-    Days days = _getDays();
+    DaysData days = _getDaysData();
 
     _eventsChangedListeners = _createEventsChangedListeners(days);
 
     _attachEventsChangedListeners();
   }
 
-  List<EventsChangedListener> _createEventsChangedListeners(Days days) {
-    return days.dates
+  List<EventsChangedListener> _createEventsChangedListeners(DaysData daysData) {
+    return daysData.days
         .map(
-          (date) => new EventsChangedListener(
-              day: date,
-              onEventsChanged: () {
-                setState(() {});
-              }),
+          (day) => new EventsChangedListener(
+                day: day,
+                onEventsChanged: () {
+                  setState(() {});
+                },
+              ),
         )
         .toList();
   }
@@ -71,17 +88,19 @@ class _DayViewState extends State<DayView> {
   }
 
   void _detachEventsChangedListeners() {
-    EventsChangedNotifier changedNotifier = _getEventsChangedNotifier();
+    if (_areEventsChangedListenersAttached) {
+      EventsChangedNotifier changedNotifier = _getEventsChangedNotifier();
 
-    for (EventsChangedListener listener in _eventsChangedListeners) {
-      changedNotifier.detach(listener);
+      for (EventsChangedListener listener in _eventsChangedListeners) {
+        changedNotifier.detach(listener);
+      }
+
+      _areEventsChangedListenersAttached = false;
     }
-
-    _areEventsChangedListenersAttached = false;
   }
 
-  Days _getDays() {
-    return DaysProvider.of(context);
+  DaysData _getDaysData() {
+    return Days.of(context);
   }
 
   EventsChangedNotifier _getEventsChangedNotifier() {
@@ -98,7 +117,7 @@ class _DayViewState extends State<DayView> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_areEventsChangedListenersAttached) {
+    if (!_areEventsChangedListenersAttached && widget.rebuildWhenEventsChange) {
       _createAndAttachEventsChangedListeners();
     }
 

@@ -1,39 +1,41 @@
 import 'package:meta/meta.dart';
 
-/// Sizes of key DayView components.
+import 'package:calendar_views/src/day_view/day_view.dart';
+
+/// Data about sizes inside a [DayView].
 @immutable
-class Dimensions {
-  const Dimensions({
+class DimensionsData {
+  const DimensionsData({
     this.heightPerMinute = 1.0,
-    this.daySeparation = 20.0,
-    this.topExtension = 40.0,
-    this.bottomExtension = 40.0,
+    this.daySeparationWidth = 20.0,
+    this.topExtensionHeight = 40.0,
+    this.bottomExtensionHeight = 40.0,
     this.timeIndicationAreaWidth = 60.0,
     this.separationAreaWidth = 4.0,
     this.eventsAreaStartMargin = 8.0,
     this.eventsAreaEndMargin = 8.0,
   })  : assert(heightPerMinute != null && heightPerMinute > 0),
-        assert(daySeparation != null && daySeparation >= 0),
-        assert(topExtension != null && topExtension >= 0),
-        assert(bottomExtension != null && bottomExtension >= 0),
+        assert(daySeparationWidth != null && daySeparationWidth >= 0),
+        assert(topExtensionHeight != null && topExtensionHeight >= 0),
+        assert(bottomExtensionHeight != null && bottomExtensionHeight >= 0),
         assert(timeIndicationAreaWidth != null && timeIndicationAreaWidth >= 0),
         assert(separationAreaWidth != null && separationAreaWidth >= 0),
         assert(eventsAreaStartMargin != null && eventsAreaStartMargin >= 0),
         assert(eventsAreaEndMargin != null && eventsAreaEndMargin >= 0);
 
-  /// Height taken by every minute inside a DayView.
+  /// Height taken by a minute in a [DayView].
   final double heightPerMinute;
 
-  /// Separation between days of DayView.
-  final double daySeparation;
+  /// Width of separation between days in a [DayView].
+  final double daySeparationWidth;
 
   // extension
 
-  /// Extension at the top of DayView.
-  final double topExtension;
+  /// Height of extension at the top of [DayView].
+  final double topExtensionHeight;
 
-  /// Extension at the bottom of DayView
-  final double bottomExtension;
+  /// Height of extension at the bottom of [DayView]
+  final double bottomExtensionHeight;
 
   // areas from start to end
 
@@ -41,8 +43,6 @@ class Dimensions {
   final double timeIndicationAreaWidth;
 
   /// Width of SeparationArea.
-  ///
-  /// SeparationArea is area between the end of TimeIndicationArea and start of ContentArea.
   final double separationAreaWidth;
 
   /// Width of margin at start (left) of EventsArea.
@@ -54,12 +54,12 @@ class Dimensions {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Dimensions &&
+      other is DimensionsData &&
           runtimeType == other.runtimeType &&
           heightPerMinute == other.heightPerMinute &&
-          daySeparation == other.daySeparation &&
-          topExtension == other.topExtension &&
-          bottomExtension == other.bottomExtension &&
+          daySeparationWidth == other.daySeparationWidth &&
+          topExtensionHeight == other.topExtensionHeight &&
+          bottomExtensionHeight == other.bottomExtensionHeight &&
           timeIndicationAreaWidth == other.timeIndicationAreaWidth &&
           separationAreaWidth == other.separationAreaWidth &&
           eventsAreaStartMargin == other.eventsAreaStartMargin &&
@@ -68,9 +68,9 @@ class Dimensions {
   @override
   int get hashCode =>
       heightPerMinute.hashCode ^
-      daySeparation.hashCode ^
-      topExtension.hashCode ^
-      bottomExtension.hashCode ^
+      daySeparationWidth.hashCode ^
+      topExtensionHeight.hashCode ^
+      bottomExtensionHeight.hashCode ^
       timeIndicationAreaWidth.hashCode ^
       separationAreaWidth.hashCode ^
       eventsAreaStartMargin.hashCode ^

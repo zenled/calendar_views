@@ -14,30 +14,28 @@ import 'single_day_events_preparer.dart';
 class SingleDayEventItemsCreator {
   SingleDayEventItemsCreator({
     @required this.context,
+    @required this.day,
+    @required this.builder,
     @required this.restrictions,
     @required this.filter,
     @required this.arranger,
-    @required this.positioningAssistant,
-    @required this.builder,
-    @required this.date,
-    @required this.dayNumber,
+    @required this.area,
   })  : assert(context != null),
-        assert(arranger != null),
-        assert(positioningAssistant != null),
+        assert(day != null),
         assert(builder != null),
-        assert(date != null),
-        assert(dayNumber != null && dayNumber >= 0);
+        assert(restrictions != null),
+        assert(arranger != null),
+        assert(area != null);
 
   final BuildContext context;
 
-  final Restrictions restrictions;
-  final EventsFilter filter;
-  final EventsArranger arranger;
-  final PositioningAssistant positioningAssistant;
+  final DateTime day;
   final EventBuilder builder;
 
-  final DateTime date;
-  final int dayNumber;
+  final RestrictionsData restrictions;
+  final EventsFilter filter;
+  final EventsArranger arranger;
+  final Area area;
 
   List<Positioned> createItems() {
     Set<PositionableEvent> events = _getEvents();
@@ -47,10 +45,10 @@ class SingleDayEventItemsCreator {
 
   Set<PositionableEvent> _getEvents() {
     SingleDayEventsPreparer eventsPreparer = new SingleDayEventsPreparer(
+      day: day,
       context: context,
       restrictions: restrictions,
       filter: filter,
-      date: date,
     );
 
     return eventsPreparer.getAndPrepareEvents();
@@ -78,22 +76,17 @@ class SingleDayEventItemsCreator {
 
   ArrangerConstraints _makeArrangerConstraints() {
     return new ArrangerConstraints(
-      areaWidth: positioningAssistant.dayAreaWidth(dayNumber),
-      areaHeight: positioningAssistant.dayAreaHeight(dayNumber),
-      positionTopOf: (int minuteOfDay) {
-        return positioningAssistant.minuteOfDayFromTopInsideDayArea(
-          dayNumber,
-          minuteOfDay,
-        );
-      },
-      heightOf: positioningAssistant.heightOfMinutes,
+      areaWidth: area.size.width,
+      areaHeight: area.size.height,
+      positionTopOf: area.minuteOfDayFromTop,
+      heightOf: area.heightOfDuration,
     );
   }
 
   ItemPosition _makeItemPosition(ArrangedEvent arrangedEvent) {
     return new ItemPosition(
-      top: arrangedEvent.top + positioningAssistant.dayAreaTop(dayNumber),
-      left: arrangedEvent.left + positioningAssistant.dayAreaLeft(dayNumber),
+      top: arrangedEvent.top + area.top,
+      left: arrangedEvent.left + area.left,
     );
   }
 

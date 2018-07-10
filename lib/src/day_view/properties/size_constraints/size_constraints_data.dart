@@ -1,17 +1,21 @@
 import 'package:meta/meta.dart';
 
+import 'package:calendar_views/src/day_view/day_view.dart';
+
+/// Size constraints placed upon a [DayView].
 @immutable
-class SizeConstraints {
-  const SizeConstraints({
+class SizeConstraintsData {
+  const SizeConstraintsData({
     @required this.availableWidth,
   }) : assert(availableWidth != null && availableWidth > 0);
 
+  /// Maximum with that a [DayView] is allowed and should occupy.
   final double availableWidth;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SizeConstraints &&
+      other is SizeConstraintsData &&
           runtimeType == other.runtimeType &&
           availableWidth == other.availableWidth;
 

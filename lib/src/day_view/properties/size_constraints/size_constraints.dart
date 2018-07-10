@@ -1,25 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import 'size_constraints.dart';
+import 'size_constraints_data.dart';
 
-class SizeConstraintsProvider extends InheritedWidget {
-  const SizeConstraintsProvider({
-    @required this.sizeConstraints,
+/// Widget that propagates [SizeConstraintsData].
+class SizeConstraints extends InheritedWidget {
+  const SizeConstraints({
+    @required this.sizeConstraintsData,
     @required Widget child,
-  })  : assert(sizeConstraints != null),
+  })  : assert(sizeConstraintsData != null),
         super(child: child);
 
-  final SizeConstraints sizeConstraints;
+  final SizeConstraintsData sizeConstraintsData;
 
   @override
-  bool updateShouldNotify(SizeConstraintsProvider oldWidget) {
-    return sizeConstraints != oldWidget.sizeConstraints;
+  bool updateShouldNotify(SizeConstraints oldWidget) {
+    return sizeConstraintsData != oldWidget.sizeConstraintsData;
   }
 
-  static SizeConstraints of(BuildContext context) {
-    return (context.inheritFromWidgetOfExactType(SizeConstraintsProvider)
-            as SizeConstraintsProvider)
-        .sizeConstraints;
+  static SizeConstraintsData of(BuildContext context) {
+    return (context.inheritFromWidgetOfExactType(SizeConstraints)
+            as SizeConstraints)
+        .sizeConstraintsData;
   }
 }
