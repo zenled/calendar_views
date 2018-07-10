@@ -1,41 +1,26 @@
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/_utils/all.dart' as utils;
+import 'restrictions.dart';
 
-/// Restrictions placed upon a DayView.
-@immutable
-class Restrictions {
-  static const default_minimumMinuteOfDay = 0;
-  static const default_maximumMinuteOfDay = 1440;
+/// Widget that propagates DayView [Restrictions] down the widget tree.
+class RestrictionsProvider extends InheritedWidget {
+  RestrictionsProvider({
+    @required this.restrictions,
+    @required Widget child,
+  })  : assert(restrictions != null),
+        super(child: child);
 
-  const Restrictions({
-    this.minimumMinuteOfDay = default_minimumMinuteOfDay,
-    this.maximumMinuteOfDay = default_maximumMinuteOfDay,
-  })  : assert(minimumMinuteOfDay >= utils.minimum_minute_of_day),
-        assert(maximumMinuteOfDay <= utils.maximum_minute_of_day),
-        assert(minimumMinuteOfDay <= maximumMinuteOfDay);
-
-  /// Minimum minute of day that a DayView is allowed to display (inclusive).
-  final int minimumMinuteOfDay;
-
-  /// Maximum minute of day that a DayView is allowed to display (inclusive).
-  final int maximumMinuteOfDay;
-
-  int get totalNumberOfMinutes => maximumMinuteOfDay - minimumMinuteOfDay;
+  final Restrictions restrictions;
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Restrictions &&
-          runtimeType == other.runtimeType &&
-          minimumMinuteOfDay == other.minimumMinuteOfDay &&
-          maximumMinuteOfDay == other.maximumMinuteOfDay;
+  bool updateShouldNotify(RestrictionsProvider oldWidget) {
+    return restrictions != oldWidget.restrictions;
+  }
 
-  @override
-  int get hashCode => minimumMinuteOfDay.hashCode ^ maximumMinuteOfDay.hashCode;
-
-  @override
-  String toString() {
-    return 'Restrictions{minimumMinuteOfDay: $minimumMinuteOfDay, maximumMinuteOfDay: $maximumMinuteOfDay}';
+  static Restrictions of(BuildContext context) {
+    return (context.inheritFromWidgetOfExactType(RestrictionsProvider)
+            as RestrictionsProvider)
+        .restrictions;
   }
 }
