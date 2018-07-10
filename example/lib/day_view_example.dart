@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/day_view.dart';
 
-import 'dummy_evets_retriever.dart';
+import 'dummy_evets_generator.dart';
 
 class DayViewExample extends StatefulWidget {
   @override
@@ -11,13 +11,13 @@ class DayViewExample extends StatefulWidget {
 }
 
 class _DayViewExampleState extends State<DayViewExample> {
-  DummyEventsRetriever _dummyEventsRetriever;
+  DummyEventsGenerator _dummyEventsGenerator;
 
   @override
   void initState() {
     super.initState();
 
-    _dummyEventsRetriever = new DummyEventsRetriever();
+    _dummyEventsGenerator = new DummyEventsGenerator();
   }
 
   @override
@@ -28,52 +28,51 @@ class _DayViewExampleState extends State<DayViewExample> {
       ),
       body: new Builder(builder: (BuildContext context) {
         return new CalendarEvents(
-          eventsRetriever: _dummyEventsRetriever,
+          eventsRetriever: _dummyEventsGenerator,
           child: new Builder(
             builder: (BuildContext context) {
-              return new DayViewResources(
-                dimensions: new Dimensions(),
-                components: <Component>[
-                  new IntervalTimeIndicationComponent.everyHour(),
-                  new IntervalSupportLineComponent.everyHour(),
-                  new DaySeparationComponent(),
-                  new EventViewComponent(eventBuilder: eventWithTitleBuilder),
-                ],
-                child: new SingleChildScrollView(
+              return new CalendarEvents(
+                eventsRetriever: _dummyEventsGenerator,
+                child: new DayViewResources(
+                  restrictions: new RestrictionsData(
+                    minimumMinuteOfDay: 6 * 60,
+                    maximumMinuteOfDay: 21 * 60,
+                  ),
+                  dimensions: new DimensionsData(),
+                  components: <Component>[
+                    new IntervalTimeIndicationComponent.everyHour(),
+                    new IntervalSupportLineComponent.everyHour(),
+                    new DaySeparationComponent(),
+                    new EventViewComponent(eventBuilder: eventWithTitleBuilder),
+                  ],
                   child: new Container(
                     padding: new EdgeInsets.symmetric(horizontal: 16.0),
-                    child: new DayViewInstance(
-                      days: new Days(dates: <DateTime>[
-                        new DateTime.now(),
-                        new DateTime.now().add(new Duration(days: 1)),
-                        new DateTime.now().add(new Duration(days: 1)),
-                        new DateTime.now(),
-                        new DateTime.now(),
-                        new DateTime.now(),
-                        new DateTime.now(),
-                      ]),
-                      child: new Column(
-                        children: <Widget>[
-                          new Container(
-                            height: 20.0,
+                    child: new Column(
+                      children: <Widget>[
+                        new Expanded(
+                          child: new DayViewInstance.fromListOfDays(
+                            days: <DateTime>[
+                              new DateTime.now(),
+                              new DateTime.now().add(new Duration(days: 1)),
+                            ],
+                            child: new Column(
+                              children: <Widget>[
+                                new DaysHeader.builder(
+                                  extendOverDaySeparation: false,
+                                  extendOverEventsAreaStartMargin: false,
+                                  extendOverEventsAreaEndMargin: false,
+                                  itemBuilder: _headerItemBuilder,
+                                ),
+                                new Expanded(
+                                  child: new SingleChildScrollView(
+                                    child: new DayView(),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          new RaisedButton(
-                              child: new Text("Refresh events"),
-                              onPressed: () {
-                                EventsRefresher.of(context).refreshAllEvents();
-                              }),
-                          new Container(
-                            height: 20.0,
-                          ),
-                          new DaysHeader.builder(
-                            headerBuilder: _headerBuilder,
-                          ),
-                          new Container(
-                            height: 20.0,
-                          ),
-                          new DayView(),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -85,15 +84,15 @@ class _DayViewExampleState extends State<DayViewExample> {
     );
   }
 
-  Widget _headerBuilder({
-    @required BuildContext context,
-    @required DateTime date,
-  }) {
+  Widget _headerItemBuilder(BuildContext context, DateTime date) {
     return new Container(
-      height: 20.0,
+      height: 40.0,
       color: Colors.redAccent,
       child: new Center(
-        child: new Text("${date.month}.${date.day}"),
+        child: new Text(
+          "${date.month.toString().padLeft(2, "0")}."
+              "${date.day.toString().padLeft(2, "0")}",
+        ),
       ),
     );
   }
