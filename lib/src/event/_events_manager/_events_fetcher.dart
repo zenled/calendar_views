@@ -15,24 +15,27 @@ typedef void OnEventsFetchCompleted(
 /// Class that handles fetching of events.
 class EventsFetcher {
   EventsFetcher({
-    @required EventsGenerator eventsRetriever,
+    @required EventsGenerator eventsGenerator,
     @required this.onFetchCompleted,
-  })  : _daysForWhichCurrentlyFetching = new Set(),
-        assert(eventsRetriever != null),
+  })  : _eventsGenerator = eventsGenerator,
+        _daysForWhichCurrentlyFetching = new Set(),
+        assert(eventsGenerator != null),
         assert(onFetchCompleted != null);
 
   /// Callback that fires when fetch for events of some day has completed.
   final OnEventsFetchCompleted onFetchCompleted;
 
   /// Object that that retrieves the events.
-  EventsGenerator _eventsRetriever;
+  EventsGenerator _eventsGenerator;
 
   /// Set of days of which events are currently being fetched.
   final Set<Date> _daysForWhichCurrentlyFetching;
 
   /// Tells the fetcher to use a different [EventsGenerator].
   void changeRetriever(EventsGenerator newRetriever) {
-    _eventsRetriever = newRetriever;
+    assert(newRetriever != null);
+
+    _eventsGenerator = newRetriever;
   }
 
   /// Prompts this fetcher to fetch events of [date].
@@ -57,7 +60,7 @@ class EventsFetcher {
   Future _fetch(Date date) async {
     Set<PositionableEvent> fetchedEvents;
 
-    fetchedEvents = await _eventsRetriever.generateEventsOf(
+    fetchedEvents = await _eventsGenerator.generateEventsOf(
       date.toDateTime(),
     );
 
