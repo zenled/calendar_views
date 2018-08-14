@@ -1,3 +1,4 @@
+export 'area_background_component/area_background_component.dart';
 export 'day_separation_component/all.dart';
 export 'event_view_component/all.dart';
 export 'support_line_component/all.dart';
