@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 import 'calendar_page_controller.dart';
+import 'calendar_page_view.dart';
 
 typedef void JumpToPage(int page);
 
@@ -13,7 +14,7 @@ typedef Future<Null> AnimateToPage(
   @required Curve curve,
 });
 
-/// Communicator between a calendar-PageView and [CalendarPageController].
+/// Communicator between a [CalendarPageView] and [CalendarPageController].
 @immutable
 class CalendarPageViewCommunicator {
   CalendarPageViewCommunicator({
@@ -24,12 +25,12 @@ class CalendarPageViewCommunicator {
         assert(animateToPage != null),
         assert(displayedPage != null);
 
-  /// Tells calendar-PageView to jump to a specific [page].
+  /// Tells [CalendarPageView] to jump to a specific [page].
   final JumpToPage jumpToPage;
 
-  /// Tells calendar-PageView to animate to a specified [page].
+  /// Tells [CalendarPageView] to animate to a specified [page].
   final AnimateToPage animateToPage;
 
-  /// Requests the current displayed page from the calendar-PageView.
+  /// Requests the current displayed page from the controlled [CalendarPageView].
   final ValueGetter<int> displayedPage;
 }
