@@ -1,5 +1,5 @@
-import '_internal_date_items/test_all.dart' as internal_date_items_test;
+import '_internal_date_time/all.dart' as test_internal_date_time;
 
 void main() {
-  internal_date_items_test.main();
+  test_internal_date_time.main();
 }
