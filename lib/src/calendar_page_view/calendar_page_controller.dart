@@ -7,6 +7,9 @@ import 'calendar_page_view_communicator.dart';
 import 'calendar_page_view.dart';
 
 /// Base class of a controller for a [CalendarPageView].
+///
+/// Each page of the controlled [CalendarPageView] should be representable
+/// with an unique object of type [T].
 abstract class CalendarPageController<T> {
   CalendarPageController({
     @required this.initialPage,

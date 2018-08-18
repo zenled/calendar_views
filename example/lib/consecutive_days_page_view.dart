@@ -13,17 +13,15 @@ class ConsecutiveDaysPageViewExample extends StatefulWidget {
 
 class _ConsecutiveDaysPageViewExampleState
     extends State<ConsecutiveDaysPageViewExample> {
-  bool _bigText;
+  final _initialDaysPerPage = 7;
 
-  int _daysPerPage;
+  bool _bigText;
 
   Axis _scrollDirection;
   bool _pageSnapping;
   bool _reverse;
 
-  bool _useInfiniteDaysPageController;
-  ConsecutiveDaysPageController _finiteDaysPageController;
-  ConsecutiveDaysPageController _infiniteDaysPageController;
+  ConsecutiveDaysPageController _daysPageController;
 
   TextEditingController _daysPerPageTextController;
 
@@ -33,43 +31,36 @@ class _ConsecutiveDaysPageViewExampleState
 
     _bigText = false;
 
-    _daysPerPage = 7;
-
-    _daysPerPage = DateTime.daysPerWeek;
-
     _scrollDirection = Axis.horizontal;
     _pageSnapping = true;
     _reverse = false;
 
-    _useInfiniteDaysPageController = false;
-    _createConsecutiveDaysPageControllers();
+    _createDaysPageController();
 
     _daysPerPageTextController =
-        new TextEditingController(text: "$_daysPerPage");
+        new TextEditingController(text: "$_initialDaysPerPage");
   }
 
-  void _createConsecutiveDaysPageControllers() {
+  String get _minimumDayText => _dateToString(_daysPageController.minimumDay);
+
+  String get _maximumDayText => _dateToString(_daysPageController.maximumDay);
+
+  String _dateToString(DateTime date) {
+    return "${date.year}.${date.month}.${date.day}";
+  }
+
+  void _createDaysPageController() {
     DateTime now = new DateTime.now();
     // using UTC to avoid problems with day light saving time when adding days
     DateTime nowUTC = new DateTime.utc(now.year, now.month, now.day);
 
-    _finiteDaysPageController = new ConsecutiveDaysPageController(
-      daysPerPage: _daysPerPage,
+    _daysPageController = new ConsecutiveDaysPageController(
+      daysPerPage: _initialDaysPerPage,
       initialDay: nowUTC,
-      minimumDay: nowUTC.add(new Duration(days: -(_daysPerPage * 2))),
-      maximumDay: nowUTC.add(new Duration(days: (_daysPerPage * 2))),
-    );
-
-    _infiniteDaysPageController = new ConsecutiveDaysPageController(
-      daysPerPage: _daysPerPage,
-      initialDay: nowUTC,
+      minimumDay: nowUTC.add(new Duration(days: -(_initialDaysPerPage * 2))),
+      maximumDay: nowUTC.add(new Duration(days: (_initialDaysPerPage * 2) - 1)),
     );
   }
-
-  ConsecutiveDaysPageController get _daysPageController =>
-      _useInfiniteDaysPageController
-          ? _infiniteDaysPageController
-          : _finiteDaysPageController;
 
   void _onDaysChanged(List<DateTime> daysOnPage) {
     DateTime day = daysOnPage.first;
@@ -108,7 +99,7 @@ class _ConsecutiveDaysPageViewExampleState
             flex: 1,
             child: new SingleChildScrollView(
               child: new Container(
-                margin: new EdgeInsets.all(16.0),
+                margin: new EdgeInsets.symmetric(vertical: 16.0),
                 child: new Column(
                   children: <Widget>[
                     new Divider(),
@@ -133,19 +124,108 @@ class _ConsecutiveDaysPageViewExampleState
                             decimal: false,
                           ),
                           onSubmitted: (value) {
-                            int intValue = int.parse(value);
+                            int newDaysPerPage = int.parse(value);
 
-                            if (intValue != null && intValue >= 1) {
+                            if (newDaysPerPage != null && newDaysPerPage >= 1) {
+                              ConsecutiveDaysPageController
+                                  _newDaysPageController = _daysPageController
+                                      .copyWith(daysPerPage: newDaysPerPage);
+
                               setState(() {
-                                _daysPerPage = intValue;
-                                _createConsecutiveDaysPageControllers();
+                                _daysPageController = _newDaysPageController;
                               });
                             }
                           },
                         ),
                       ),
                     ),
-                    new Divider(),
+                    new Divider(height: 0.0),
+                    new ListTile(
+                      title: new Text("Minimum Day"),
+                      trailing: new Text(_minimumDayText),
+                      onTap: () async {
+                        DateTime newMinimumDay = await showDatePicker(
+                          context: context,
+                          initialDate: _daysPageController.minimumDay,
+                          firstDate: new DateTime.fromMillisecondsSinceEpoch(0),
+                          lastDate: new DateTime(2100),
+                        );
+
+                        if (newMinimumDay == null) return;
+
+                        try {
+                          ConsecutiveDaysPageController newDaysPageController =
+                              _daysPageController.copyWith(
+                            minimumDay: newMinimumDay,
+                          );
+
+                          setState(() {
+                            _daysPageController = newDaysPageController;
+                          });
+                        } catch (e) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) => new AlertDialog(
+                                  title: new Text("Error"),
+                                  content: new Text("$e"),
+                                  actions: <Widget>[
+                                    new FlatButton(
+                                      child: new Text("OK"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                ),
+                          );
+                        }
+                      },
+                    ),
+                    new Divider(height: 0.0),
+                    new ListTile(
+                      title: new Text("MaximumDay"),
+                      trailing: new Text(_maximumDayText),
+                      onTap: () async {
+                        DateTime newMaximumDay = await showDatePicker(
+                          context: context,
+                          initialDate: _daysPageController.maximumDay,
+                          firstDate: new DateTime.fromMillisecondsSinceEpoch(0),
+                          lastDate: new DateTime(2100),
+                        );
+
+                        if (newMaximumDay == null) return;
+
+                        try {
+                          ConsecutiveDaysPageController newDaysPageController =
+                              _daysPageController.copyWith(
+                            maximumDay: newMaximumDay,
+                          );
+
+                          setState(() {
+                            _daysPageController = newDaysPageController;
+                          });
+                        } catch (e) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) => new AlertDialog(
+                                  title: new Text("Error"),
+                                  content: new Text("$e"),
+                                  actions: <Widget>[
+                                    new FlatButton(
+                                      child: new Text("OK"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                ),
+                          );
+                        }
+                      },
+                    ),
+                    new Divider(
+                      height: 0.0,
+                    ),
                     new CheckboxListTile(
                       title: new Text("Big Text"),
                       subtitle: new Text(
@@ -155,20 +235,6 @@ class _ConsecutiveDaysPageViewExampleState
                       onChanged: (value) {
                         setState(() {
                           _bigText = value;
-                        });
-                      },
-                    ),
-                    new Divider(),
-                    new CheckboxListTile(
-                      value: _useInfiniteDaysPageController,
-                      title: new Text("Infinite ConsecutiveDaysPageView"),
-                      subtitle: new Text(
-                        "If true ConsecutiveDaysPageView will be infinite.\n"
-                            "If false it will be restricted to two pages from today.",
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          _useInfiniteDaysPageController = value;
                         });
                       },
                     ),

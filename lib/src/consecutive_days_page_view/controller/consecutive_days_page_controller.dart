@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 import 'package:calendar_views/src/calendar_page_view/all.dart';
-import 'package:calendar_views/src/_internal_date_items/all.dart';
+import 'package:calendar_views/src/_internal_date_time/all.dart';
 
-import 'consecutive_days_page_view.dart';
+import '../consecutive_days_page_view.dart';
+
+import '_days_preparer.dart';
 
 /// Controller for a [ConsecutiveDaysPageView].
 class ConsecutiveDaysPageController extends CalendarPageController<DateTime> {
@@ -45,76 +47,48 @@ class ConsecutiveDaysPageController extends CalendarPageController<DateTime> {
   ///
   ///
   /// If [maximumDay] is set to null,
-  /// a week [default_pagesDeltaFromInitialDay] after [initialDay] will be set as [maximumDay].
+  /// a day [default_pagesDeltaFromInitialDay] after [initialDay] will be set as [maximumDay].
   ///
   /// [maximumDay] is automatically increased,
   /// to ensure there are always [daysPerPage] days displayed on every page.
   factory ConsecutiveDaysPageController({
-    int daysPerPage = DateTime.daysPerWeek,
+    int daysPerPage = 1,
     DateTime initialDay,
     DateTime minimumDay,
     DateTime maximumDay,
   }) {
-    assert(daysPerPage != null && daysPerPage > 0);
+    assert(daysPerPage != null);
 
-    // Converts to internal representation of weeks
-    Date initial;
-    Date minimum;
-    Date maximum;
-
-    if (initialDay != null) {
-      initial = new Date.fromDateTime(initialDay);
-    } else {
-      initial = new Date.today();
-    }
-
-    if (minimumDay != null) {
-      minimum = new Date.fromDateTime(minimumDay);
-
-      if (daysPerPage != 1) {
-        // lowers minimum so there is always [daysPerPage] days displayed on each page.
-        while (minimum.daysBetween(initial) % daysPerPage == 0) {
-          minimum = minimum.add(days: -1);
-        }
-      }
-    } else {
-      minimum = initial.add(
-        days: -(default_pagesDeltaFromInitialDay * daysPerPage),
+    /// Validates daysPerPage
+    if (daysPerPage <= 0) {
+      throw new ArgumentError.value(
+        daysPerPage,
+        "daysPerPage",
+        "daysPerPage must be >= 1",
       );
     }
 
-    if (maximumDay != null) {
-      maximum = new Date.fromDateTime(maximumDay);
+    DateTime nowUTC = new DateTime.now().toUtc();
 
-      if (daysPerPage != 1) {
-        // increases maximum so there is always [daysPerPage] days displayed on each page.
-        while (maximum.daysBetween(initial) % daysPerPage == 0) {
-          maximum = maximum.add(days: -1);
-        }
-      }
-    } else {
-      maximum = initial.add(
-        days: (default_pagesDeltaFromInitialDay * daysPerPage),
-      );
-    }
+    initialDay ??= nowUTC;
+    minimumDay ??= nowUTC.add(
+        new Duration(days: (-default_pagesDeltaFromInitialDay * daysPerPage)));
+    maximumDay ??= nowUTC.add(
+        new Duration(days: default_pagesDeltaFromInitialDay * daysPerPage));
 
-    // Validates
-    if (!(minimum.isBefore(initial) || minimum == initial)) {
-      throw new ArgumentError(
-        "minimumDay should be before or same day as initialDay",
-      );
-    }
-    if (!(maximum.isAfter(initial) || maximum == initial)) {
-      throw new ArgumentError(
-        "mamumumDay should be after or same day as initialDay",
-      );
-    }
+    DaysPreparer daysPreparer = new DaysPreparer(
+      daysPerPage: daysPerPage,
+      initialDayCandidate: initialDay,
+      minimumDayCandidate: minimumDay,
+      maximumDayCandidate: maximumDay,
+    );
+    daysPreparer.prepare();
 
     return new ConsecutiveDaysPageController._internal(
       daysPerPage: daysPerPage,
-      initialDay: initial,
-      minimumDay: minimum,
-      maximumDay: maximum,
+      initialDay: daysPreparer.preparedInitialDay,
+      minimumDay: daysPreparer.preparedMinimumDay,
+      maximumDay: daysPreparer.preparedMaximumDay,
     );
   }
 
@@ -136,7 +110,7 @@ class ConsecutiveDaysPageController extends CalendarPageController<DateTime> {
 
   @override
   DateTime representationOfCurrentPage() {
-    return displayedFirstDay();
+    return firstDayOnDisplayedPage();
   }
 
   @override
@@ -157,28 +131,26 @@ class ConsecutiveDaysPageController extends CalendarPageController<DateTime> {
     }
     if (d.isAfter(_maximumDay)) {
       return numberOfPages - 1;
+    } else {
+      int daysFromMinimumDay = _minimumDay.daysBetween(d);
+      return daysFromMinimumDay ~/ daysPerPage;
     }
-
-    int daysFromMinimumDay = _minimumDay.daysBetween(d);
-    return daysFromMinimumDay ~/ daysPerPage;
   }
 
-  /// Returns the first day in the list of days displayed on [page].
+  /// Returns the first day of the set of days displayed on [page].
   ///
-  /// Values of returned day except for year, month and day are set to their default values.
+  /// Properties of returned day except for year, month and day are set to their default values.
   DateTime firstDayOfPage(int page) {
     int pagesDeltaFromInitialPage = page - initialPage;
 
-    Date day = _initialDay.add(
-      days: (pagesDeltaFromInitialPage * daysPerPage),
-    );
+    Date day = _initialDay.addDays(pagesDeltaFromInitialPage * daysPerPage);
 
     return day.toDateTime();
   }
 
   /// Returns a list of days displayed on [page].
   ///
-  /// Values of returned days except for year, month and day are set to their default values.
+  /// Properties of returned days except for year, month and day are set to their default values.
   List<DateTime> daysOfPage(int page) {
     List<DateTime> days = <DateTime>[];
 
@@ -187,9 +159,8 @@ class ConsecutiveDaysPageController extends CalendarPageController<DateTime> {
     );
 
     for (int i = 0; i < daysPerPage; i++) {
-      days.add(
-        firstDay.add(days: i).toDateTime(),
-      );
+      Date day = firstDay.addDays(i);
+      days.add(day.toDateTime());
     }
 
     return days;
@@ -197,17 +168,12 @@ class ConsecutiveDaysPageController extends CalendarPageController<DateTime> {
 
   /// Returns the first day of days displayed on the current page in the controlled [ConsecutiveDaysPageView].
   ///
-  /// If no [ConsecutiveDaysPageView] is attached it returns null.
+  /// If no [ConsecutiveDaysPageView] is attached an exception is thrown.
   ///
-  /// Values of returned [DateTime]s except for year, month and day are set to their default values.
-  DateTime displayedFirstDay() {
+  /// Properties of returned [DateTime]s except for year, month and day are set to their default values.
+  DateTime firstDayOnDisplayedPage() {
     int displayedPage = super.displayedPage();
-
-    if (displayedPage != null) {
-      return firstDayOfPage(displayedPage);
-    } else {
-      return null;
-    }
+    return firstDayOfPage(displayedPage);
   }
 
   /// Returns a list of days of the current page in the controlled [ConsecutiveDaysPageView].
@@ -250,6 +216,22 @@ class ConsecutiveDaysPageController extends CalendarPageController<DateTime> {
       page,
       duration: duration,
       curve: curve,
+    );
+  }
+
+  /// Creates a copy of the controller with some value changed.
+  ///
+  /// Any items attached to the original controller are not copied.
+  ConsecutiveDaysPageController copyWith({
+    int daysPerPage,
+    DateTime minimumDay,
+    DateTime maximumDay,
+  }) {
+    return new ConsecutiveDaysPageController(
+      daysPerPage: daysPerPage ?? this.daysPerPage,
+      initialDay: this.initialDay,
+      minimumDay: minimumDay ?? this.minimumDay,
+      maximumDay: maximumDay ?? this.maximumDay,
     );
   }
 }

@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 import 'package:calendar_views/src/calendar_page_view/all.dart';
 
 import 'consecutive_days_page_builder.dart';
-import 'consecutive_days_page_controller.dart';
+import 'package:calendar_views/src/consecutive_days_page_view/controller/consecutive_days_page_controller.dart';
 
 /// Custom pageView in which each page represents some consecutive days.
 class ConsecutiveDaysPageView extends CalendarPageView {
@@ -25,7 +25,7 @@ class ConsecutiveDaysPageView extends CalendarPageView {
           pageSnapping: pageSnapping,
         );
 
-  /// Creates pageView with each page representing a week.
+  /// Creates pageView with each page representing some consecutive days.
   factory ConsecutiveDaysPageView({
     ConsecutiveDaysPageController controller,
     @required ConsecutiveDaysPageBuilder pageBuilder,

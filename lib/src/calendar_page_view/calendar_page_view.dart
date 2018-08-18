@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 import 'calendar_page_view_communicator.dart';
 import 'calendar_page_controller.dart';
 
-/// Base class for for a page view that can be controlled with [CalendarPageController].
+/// Base class for for a pageView that can be controlled with [CalendarPageController].
 ///
 /// Internally this is a wrapper around a [PageView],
 /// so behaviour and properties might sometimes be similar.
