@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
 
 import 'package:calendar_views/src/_internal_date_time/all.dart';
-import 'package:calendar_views/src/consecutive_days_page_view/controller/_days_preparer.dart';
+import 'package:calendar_views/src/days_page_view/controller/_days_preparer.dart';
 
 void main() {
   group("DaysPreparer", () {

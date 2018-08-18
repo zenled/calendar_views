@@ -3,12 +3,12 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/src/calendar_page_view/all.dart';
 
-import 'consecutive_days_page_builder.dart';
-import 'package:calendar_views/src/consecutive_days_page_view/controller/consecutive_days_page_controller.dart';
+import 'controller/days_page_controller.dart';
+import 'days_page_builder.dart';
 
 /// Custom pageView in which each page represents some consecutive days.
-class ConsecutiveDaysPageView extends CalendarPageView {
-  ConsecutiveDaysPageView._internal({
+class DaysPageView extends CalendarPageView {
+  DaysPageView._internal({
     @required this.controller,
     @required this.pageBuilder,
     @required this.onDaysChanged,
@@ -26,18 +26,18 @@ class ConsecutiveDaysPageView extends CalendarPageView {
         );
 
   /// Creates pageView with each page representing some consecutive days.
-  factory ConsecutiveDaysPageView({
-    ConsecutiveDaysPageController controller,
-    @required ConsecutiveDaysPageBuilder pageBuilder,
+  factory DaysPageView({
+    DaysPageController controller,
+    @required DaysPageBuilder pageBuilder,
     ValueChanged<List<DateTime>> onDaysChanged,
     Axis scrollDirection = Axis.horizontal,
     bool reverse = false,
     ScrollPhysics scrollPhysics,
     bool pageSnapping = true,
   }) {
-    controller ??= new ConsecutiveDaysPageController();
+    controller ??= new DaysPageController();
 
-    return new ConsecutiveDaysPageView._internal(
+    return new DaysPageView._internal(
       controller: controller,
       pageBuilder: pageBuilder,
       onDaysChanged: onDaysChanged,
@@ -48,23 +48,22 @@ class ConsecutiveDaysPageView extends CalendarPageView {
     );
   }
 
-  /// Object in charge of controlling this [ConsecutiveDaysPageView].
-  final ConsecutiveDaysPageController controller;
+  /// Object in charge of controlling this [DaysPageView].
+  final DaysPageController controller;
 
   /// Function that builds a page.
-  final ConsecutiveDaysPageBuilder pageBuilder;
+  final DaysPageBuilder pageBuilder;
 
-  /// Called whenever displayed days in this [ConsecutiveDaysPageView] changes.
+  /// Called whenever displayed days in this [DaysPageView] changes.
   final ValueChanged<List<DateTime>> onDaysChanged;
 
   @override
-  _ConsecutiveDaysPageView createState() => new _ConsecutiveDaysPageView();
+  _DaysPageViewState createState() => new _DaysPageViewState();
 }
 
-class _ConsecutiveDaysPageView
-    extends CalendarPageViewState<ConsecutiveDaysPageView> {
+class _DaysPageViewState extends CalendarPageViewState<DaysPageView> {
   @override
-  bool hasAnythingChanged(ConsecutiveDaysPageView oldWidget) {
+  bool hasAnythingChanged(DaysPageView oldWidget) {
     return widget.controller != oldWidget.controller ||
         !identical(widget.pageBuilder, oldWidget.pageBuilder) ||
         !identical(widget.onDaysChanged, oldWidget.onDaysChanged);

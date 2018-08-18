@@ -6,15 +6,15 @@ import 'package:meta/meta.dart';
 import 'package:calendar_views/src/calendar_page_view/all.dart';
 import 'package:calendar_views/src/_internal_date_time/all.dart';
 
-import '../consecutive_days_page_view.dart';
+import '../days_page_view.dart';
 
 import '_days_preparer.dart';
 
-/// Controller for a [ConsecutiveDaysPageView].
-class ConsecutiveDaysPageController extends CalendarPageController<DateTime> {
+/// Controller for a [DaysPageView].
+class DaysPageController extends CalendarPageController<DateTime> {
   static const default_pagesDeltaFromInitialDay = 1000;
 
-  ConsecutiveDaysPageController._internal({
+  DaysPageController._internal({
     @required this.daysPerPage,
     @required Date initialDay,
     @required Date minimumDay,
@@ -32,7 +32,7 @@ class ConsecutiveDaysPageController extends CalendarPageController<DateTime> {
               (minimumDay.daysBetween(maximumDay) ~/ daysPerPage) + 1,
         );
 
-  /// Creates a controller for [ConsecutiveDaysPageView].
+  /// Creates a controller for [DaysPageView].
   ///
   /// Default value for [daysPerPage] is [DateTime.daysPerWeek] (7, a day for every day of week).
   ///
@@ -51,7 +51,7 @@ class ConsecutiveDaysPageController extends CalendarPageController<DateTime> {
   ///
   /// [maximumDay] is automatically increased,
   /// to ensure there are always [daysPerPage] days displayed on every page.
-  factory ConsecutiveDaysPageController({
+  factory DaysPageController({
     int daysPerPage = 1,
     DateTime initialDay,
     DateTime minimumDay,
@@ -84,7 +84,7 @@ class ConsecutiveDaysPageController extends CalendarPageController<DateTime> {
     );
     daysPreparer.prepare();
 
-    return new ConsecutiveDaysPageController._internal(
+    return new DaysPageController._internal(
       daysPerPage: daysPerPage,
       initialDay: daysPreparer.preparedInitialDay,
       minimumDay: daysPreparer.preparedMinimumDay,
@@ -99,13 +99,13 @@ class ConsecutiveDaysPageController extends CalendarPageController<DateTime> {
   final Date _minimumDay;
   final Date _maximumDay;
 
-  /// Day shown when first creating the controlled [ConsecutiveDaysPageView].
+  /// Day shown when first creating the controlled [DaysPageView].
   DateTime get initialDay => _initialDay.toDateTime();
 
-  /// Minimum day shown in the controlled [ConsecutiveDaysPageView] (inclusive).
+  /// Minimum day shown in the controlled [DaysPageView] (inclusive).
   DateTime get minimumDay => _minimumDay.toDateTime();
 
-  /// Maximum day shown in the controlled [ConsecutiveDaysPageView] (inclusive).
+  /// Maximum day shown in the controlled [DaysPageView] (inclusive).
   DateTime get maximumDay => _maximumDay.toDateTime();
 
   @override
@@ -166,9 +166,9 @@ class ConsecutiveDaysPageController extends CalendarPageController<DateTime> {
     return days;
   }
 
-  /// Returns the first day of days displayed on the current page in the controlled [ConsecutiveDaysPageView].
+  /// Returns the first day of days displayed on the current page in the controlled [DaysPageView].
   ///
-  /// If no [ConsecutiveDaysPageView] is attached an exception is thrown.
+  /// If no [DaysPageView] is attached an exception is thrown.
   ///
   /// Properties of returned [DateTime]s except for year, month and day are set to their default values.
   DateTime firstDayOnDisplayedPage() {
@@ -176,9 +176,9 @@ class ConsecutiveDaysPageController extends CalendarPageController<DateTime> {
     return firstDayOfPage(displayedPage);
   }
 
-  /// Returns a list of days of the current page in the controlled [ConsecutiveDaysPageView].
+  /// Returns a list of days of the current page in the controlled [DaysPageView].
   ///
-  /// If no [ConsecutiveDaysPageView] is attached it returns null.
+  /// If no [DaysPageView] is attached it returns null.
   ///
   /// Values of returned [DateTime]s except for year, month and day are set to their default values.
   List<DateTime> displayedDays() {
@@ -191,20 +191,20 @@ class ConsecutiveDaysPageController extends CalendarPageController<DateTime> {
     }
   }
 
-  /// Changes which set of consecutive days is displayed in the controlled [ConsecutiveDaysPageView].
+  /// Changes which set of consecutive days is displayed in the controlled [DaysPageView].
   ///
   /// It jumps to page of which [day] is a member of.
   ///
-  /// If no [ConsecutiveDaysPageView] is attached it does nothing.
+  /// If no [DaysPageView] is attached it does nothing.
   void jumpToDay(DateTime day) {
     int page = pageOfDay(day);
 
     super.jumpToPage(page);
   }
 
-  /// Animates the controlled [ConsecutiveDaysPageView] to the given [day].
+  /// Animates the controlled [DaysPageView] to the given [day].
   ///
-  /// If no [ConsecutiveDaysPageView] is attached it does nothing.
+  /// If no [DaysPageView] is attached it does nothing.
   Future<Null> animateToDay(
     DateTime day, {
     @required Duration duration,
@@ -219,15 +219,15 @@ class ConsecutiveDaysPageController extends CalendarPageController<DateTime> {
     );
   }
 
-  /// Creates a copy of the controller with some value changed.
+  /// Creates a copy of the controller with some values changed.
   ///
   /// Any items attached to the original controller are not copied.
-  ConsecutiveDaysPageController copyWith({
+  DaysPageController copyWith({
     int daysPerPage,
     DateTime minimumDay,
     DateTime maximumDay,
   }) {
-    return new ConsecutiveDaysPageController(
+    return new DaysPageController(
       daysPerPage: daysPerPage ?? this.daysPerPage,
       initialDay: this.initialDay,
       minimumDay: minimumDay ?? this.minimumDay,
