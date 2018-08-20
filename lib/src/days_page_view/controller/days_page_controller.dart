@@ -34,8 +34,6 @@ class DaysPageController extends CalendarPageController<DateTime> {
 
   /// Creates a controller for [DaysPageView].
   ///
-  /// Default value for [daysPerPage] is [DateTime.daysPerWeek] (7, a day for every day of week).
-  ///
   /// If [initialDay] is set to null,
   /// today will be set as [initialDay].
   ///
@@ -68,19 +66,16 @@ class DaysPageController extends CalendarPageController<DateTime> {
       );
     }
 
-    DateTime nowUTC = new DateTime.now().toUtc();
-
-    initialDay ??= nowUTC;
-    minimumDay ??= nowUTC.add(
-        new Duration(days: (-default_pagesDeltaFromInitialDay * daysPerPage)));
-    maximumDay ??= nowUTC.add(
-        new Duration(days: default_pagesDeltaFromInitialDay * daysPerPage));
-
     DaysPreparer daysPreparer = new DaysPreparer(
+      defaultPagesDeltaFromInitialDay: default_pagesDeltaFromInitialDay,
       daysPerPage: daysPerPage,
-      initialDayCandidate: initialDay,
-      minimumDayCandidate: minimumDay,
-      maximumDayCandidate: maximumDay,
+      defaultInitialDay: new Date.today(),
+      initialDayCandidate:
+          initialDay != null ? new Date.fromDateTime(initialDay) : null,
+      minimumDayCandidate:
+          minimumDay != null ? new Date.fromDateTime(minimumDay) : null,
+      maximumDayCandidate:
+          maximumDay != null ? new Date.fromDateTime(maximumDay) : null,
     );
     daysPreparer.prepare();
 
@@ -89,6 +84,36 @@ class DaysPageController extends CalendarPageController<DateTime> {
       initialDay: daysPreparer.preparedInitialDay,
       minimumDay: daysPreparer.preparedMinimumDay,
       maximumDay: daysPreparer.preparedMaximumDay,
+    );
+  }
+
+  /// Creates a controller for [DaysPageView] that displays weeks.
+  ///
+  /// Each week will start with day that is on [firstWeekday].
+  ///
+  /// Week that contains [dayInsideInitialWeek],
+  /// will be shown when first creating the controlled [DaysPageView].
+  ///
+  /// If [dayInsideInitialWeek] is null, it will be set to today.
+  ///
+  /// MinimumDay and MaximumDay behave the same as in default constructor.
+  factory DaysPageController.forWeeks({
+    int firstWeekday = DateTime.monday,
+    DateTime dayInsideInitialWeek,
+    DateTime minimumDay,
+    DateTime maximumDay,
+  }) {
+    Date initialDate = dayInsideInitialWeek != null
+        ? new Date.fromDateTime(dayInsideInitialWeek)
+        : new Date.today();
+
+    initialDate = initialDate.lowerToWeekday(firstWeekday);
+
+    return new DaysPageController(
+      daysPerPage: DateTime.daysPerWeek,
+      initialDay: initialDate.toDateTime(),
+      minimumDay: minimumDay,
+      maximumDay: maximumDay,
     );
   }
 

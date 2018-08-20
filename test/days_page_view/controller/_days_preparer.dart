@@ -13,19 +13,21 @@ void main() {
 
 void _testInitialDayPreparation() {
   group("initialDay preparation", () {
-    test("correctly converts DateTime to Date", () {
-      DateTime initialDayCandidate = new DateTime.utc(2018, 8, 18);
+    test("correctly sets initialDay if initialDayCandidate is null", () {
+      Date defaultInitialDay = new Date(2018, 8, 18);
 
       DaysPreparer daysPreparer = new DaysPreparer(
-        daysPerPage: 1,
-        initialDayCandidate: initialDayCandidate,
-        minimumDayCandidate: initialDayCandidate.add(new Duration(days: -1)),
-        maximumDayCandidate: initialDayCandidate.add(new Duration(days: 1)),
+        defaultPagesDeltaFromInitialDay: 1,
+        daysPerPage: 7,
+        defaultInitialDay: defaultInitialDay,
+        initialDayCandidate: null,
+        minimumDayCandidate: new Date(2018, 8, 18),
+        maximumDayCandidate: new Date(2018, 8, 18),
       );
       daysPreparer.prepare();
 
-      Date actual = daysPreparer.preparedInitialDay;
-      Date matcher = new Date(2018, 8, 18);
+      Date actual = defaultInitialDay;
+      Date matcher = defaultInitialDay;
 
       expect(actual, matcher);
     });
@@ -34,29 +36,77 @@ void _testInitialDayPreparation() {
 
 void _testMinimumDayPreparation() {
   group("minimumDay preparation", () {
-    test("correctly converts DateTime to Date", () {
-      DateTime minimumDayCandidate = new DateTime.utc(2018, 8, 18);
+    test(
+        "correctly sets minimumDay if minimumDayCandidate is null, defaultPagesDeltaFromInitialDay is 1",
+        () {
+      int defaultPagesDeltaFromInitialDay = 1;
 
       DaysPreparer daysPreparer = new DaysPreparer(
-        daysPerPage: 1,
-        initialDayCandidate: minimumDayCandidate.add(new Duration(days: 1)),
-        minimumDayCandidate: minimumDayCandidate,
-        maximumDayCandidate: minimumDayCandidate.add(new Duration(days: 2)),
+        defaultPagesDeltaFromInitialDay: defaultPagesDeltaFromInitialDay,
+        daysPerPage: 7,
+        defaultInitialDay: new Date(2018, 8, 18),
+        initialDayCandidate: new Date(2018, 8, 18),
+        minimumDayCandidate: null,
+        maximumDayCandidate: new Date(2018, 8, 19),
       );
       daysPreparer.prepare();
 
       Date actual = daysPreparer.preparedMinimumDay;
-      Date matcher = new Date(2018, 8, 18);
+      Date matcher = new Date(2018, 8, 11);
 
       expect(actual, matcher);
     });
 
-    test("throws exception if minimumDay is after initialDay", () {
+    test(
+        "correctly sets minimumDay if minimumDayCandidate is null, defaultPagesDeltaFromInitialDay is 2",
+        () {
+      int defaultPagesDeltaFromInitialDay = 2;
+
       DaysPreparer daysPreparer = new DaysPreparer(
+        defaultPagesDeltaFromInitialDay: defaultPagesDeltaFromInitialDay,
+        daysPerPage: 7,
+        defaultInitialDay: new Date(2018, 8, 18),
+        initialDayCandidate: new Date(2018, 8, 18),
+        minimumDayCandidate: null,
+        maximumDayCandidate: new Date(2018, 8, 19),
+      );
+      daysPreparer.prepare();
+
+      Date actual = daysPreparer.preparedMinimumDay;
+      Date matcher = new Date(2018, 8, 4);
+
+      expect(actual, matcher);
+    });
+
+    test(
+        "keeps minimumDay on the same day as initialDay, if both candidates are the same",
+        () {
+      Date date = new Date(2018, 8, 18);
+
+      DaysPreparer daysPreparer = new DaysPreparer(
+        defaultPagesDeltaFromInitialDay: 2,
+        daysPerPage: 7,
+        defaultInitialDay: date,
+        initialDayCandidate: date,
+        minimumDayCandidate: date,
+        maximumDayCandidate: new Date(2018, 8, 24),
+      );
+      daysPreparer.prepare();
+
+      Date actual = daysPreparer.preparedMinimumDay;
+      Date matcher = date;
+
+      expect(actual, matcher);
+    });
+
+    test("throws exception when minimumDay is after initialDay", () {
+      DaysPreparer daysPreparer = new DaysPreparer(
+        defaultPagesDeltaFromInitialDay: 1,
         daysPerPage: 1,
-        initialDayCandidate: new DateTime(2018, 8, 18),
-        minimumDayCandidate: new DateTime(2018, 8, 19),
-        maximumDayCandidate: new DateTime(2018, 8, 19),
+        defaultInitialDay: new Date(2018, 8, 18),
+        initialDayCandidate: new Date(2018, 8, 18),
+        minimumDayCandidate: new Date(2018, 8, 19),
+        maximumDayCandidate: new Date(2018, 8, 19),
       );
 
       expect(
@@ -67,10 +117,12 @@ void _testMinimumDayPreparation() {
 
     test("moves minimumDay one day backward to satisfy daysPerPage", () {
       DaysPreparer daysPreparer = new DaysPreparer(
+        defaultPagesDeltaFromInitialDay: 1,
         daysPerPage: 7,
-        initialDayCandidate: new DateTime(2018, 8, 18),
-        minimumDayCandidate: new DateTime(2018, 8, 12),
-        maximumDayCandidate: new DateTime(2018, 8, 24),
+        defaultInitialDay: new Date(2018, 8, 18),
+        initialDayCandidate: new Date(2018, 8, 18),
+        minimumDayCandidate: new Date(2018, 8, 12),
+        maximumDayCandidate: new Date(2018, 8, 24),
       );
       daysPreparer.prepare();
 
@@ -82,10 +134,12 @@ void _testMinimumDayPreparation() {
 
     test("moves minimumDay six days backward to satisfy daysPerPage", () {
       DaysPreparer daysPreparer = new DaysPreparer(
+        defaultPagesDeltaFromInitialDay: 1,
         daysPerPage: 7,
-        initialDayCandidate: new DateTime(2018, 8, 18),
-        minimumDayCandidate: new DateTime(2018, 8, 10),
-        maximumDayCandidate: new DateTime(2018, 8, 24),
+        defaultInitialDay: new Date(2018, 8, 18),
+        initialDayCandidate: new Date(2018, 8, 18),
+        minimumDayCandidate: new Date(2018, 8, 10),
+        maximumDayCandidate: new Date(2018, 8, 24),
       );
       daysPreparer.prepare();
 
@@ -99,29 +153,77 @@ void _testMinimumDayPreparation() {
 
 void _testMaximumDayPreparation() {
   group("maximumDay preparation", () {
-    test("correctly converts DateTime to Date", () {
-      DateTime maximumDayCandidate = new DateTime.utc(2018, 8, 18);
+    test(
+        "correctly sets maximumDay if maximumDayCandidate is null, defaultPagesDeltaFromInitialDay is 1",
+        () {
+      int defaultPagesDeltaFromInitialDay = 2;
 
       DaysPreparer daysPreparer = new DaysPreparer(
-        daysPerPage: 1,
-        initialDayCandidate: maximumDayCandidate.add(new Duration(days: -1)),
-        minimumDayCandidate: maximumDayCandidate.add(new Duration(days: -2)),
-        maximumDayCandidate: maximumDayCandidate,
+        defaultPagesDeltaFromInitialDay: defaultPagesDeltaFromInitialDay,
+        daysPerPage: 7,
+        defaultInitialDay: new Date(2018, 8, 18),
+        initialDayCandidate: new Date(2018, 8, 18),
+        minimumDayCandidate: new Date(2018, 8, 11),
+        maximumDayCandidate: null,
       );
       daysPreparer.prepare();
 
       Date actual = daysPreparer.preparedMaximumDay;
-      Date matcher = new Date(2018, 8, 18);
+      Date matcher = new Date(2018, 9, 7);
 
       expect(actual, matcher);
     });
 
-    test("throws exception if maximumDay is before initialDay", () {
+    test(
+        "correctly sets maximumDay if maximumDayCandidate is null, defaultPagesDeltaFromInitialDay is 2",
+        () {
+      int defaultPagesDeltaFromInitialDay = 1;
+
       DaysPreparer daysPreparer = new DaysPreparer(
+        defaultPagesDeltaFromInitialDay: defaultPagesDeltaFromInitialDay,
+        daysPerPage: 7,
+        defaultInitialDay: new Date(2018, 8, 18),
+        initialDayCandidate: new Date(2018, 8, 18),
+        minimumDayCandidate: new Date(2018, 8, 11),
+        maximumDayCandidate: null,
+      );
+      daysPreparer.prepare();
+
+      Date actual = daysPreparer.preparedMaximumDay;
+      Date matcher = new Date(2018, 8, 31);
+
+      expect(actual, matcher);
+    });
+
+    test(
+        "if maximumDay is the same as initialDay, it changes it to the last day of week",
+        () {
+      Date date = new Date(2018, 8, 18);
+
+      DaysPreparer daysPreparer = new DaysPreparer(
+        defaultPagesDeltaFromInitialDay: 2,
+        daysPerPage: 7,
+        defaultInitialDay: date,
+        initialDayCandidate: date,
+        minimumDayCandidate: new Date(2018, 8, 11),
+        maximumDayCandidate: date,
+      );
+      daysPreparer.prepare();
+
+      Date actual = daysPreparer.preparedMaximumDay;
+      Date matcher = new Date(2018, 8, 24);
+
+      expect(actual, matcher);
+    });
+
+    test("throws exception when maximumDay is before initialDay", () {
+      DaysPreparer daysPreparer = new DaysPreparer(
+        defaultPagesDeltaFromInitialDay: 1,
         daysPerPage: 1,
-        initialDayCandidate: new DateTime(2018, 8, 18),
-        minimumDayCandidate: new DateTime(2018, 8, 17),
-        maximumDayCandidate: new DateTime(2018, 8, 17),
+        defaultInitialDay: new Date(2018, 8, 18),
+        initialDayCandidate: new Date(2018, 8, 18),
+        minimumDayCandidate: new Date(2018, 8, 17),
+        maximumDayCandidate: new Date(2018, 8, 17),
       );
 
       expect(
@@ -132,10 +234,12 @@ void _testMaximumDayPreparation() {
 
     test("moves maximumDay one day forward to satisfy daysPerPage", () {
       DaysPreparer daysPreparer = new DaysPreparer(
+        defaultPagesDeltaFromInitialDay: 1,
         daysPerPage: 7,
-        initialDayCandidate: new DateTime(2018, 8, 18),
-        minimumDayCandidate: new DateTime(2018, 8, 11),
-        maximumDayCandidate: new DateTime(2018, 8, 23),
+        defaultInitialDay: new Date(2018, 8, 18),
+        initialDayCandidate: new Date(2018, 8, 18),
+        minimumDayCandidate: new Date(2018, 8, 11),
+        maximumDayCandidate: new Date(2018, 8, 23),
       );
       daysPreparer.prepare();
 
@@ -147,10 +251,12 @@ void _testMaximumDayPreparation() {
 
     test("moves maximumDay six days forward to satisfy daysPerPage", () {
       DaysPreparer daysPreparer = new DaysPreparer(
+        defaultPagesDeltaFromInitialDay: 1,
         daysPerPage: 7,
-        initialDayCandidate: new DateTime(2018, 8, 18),
-        minimumDayCandidate: new DateTime(2018, 8, 11),
-        maximumDayCandidate: new DateTime(2018, 8, 25),
+        defaultInitialDay: new Date(2018, 8, 18),
+        initialDayCandidate: new Date(2018, 8, 18),
+        minimumDayCandidate: new Date(2018, 8, 11),
+        maximumDayCandidate: new Date(2018, 8, 25),
       );
       daysPreparer.prepare();
 

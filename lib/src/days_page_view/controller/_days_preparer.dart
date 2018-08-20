@@ -4,20 +4,25 @@ import 'package:calendar_views/src/_internal_date_time/all.dart';
 
 class DaysPreparer {
   DaysPreparer({
+    @required this.defaultPagesDeltaFromInitialDay,
     @required this.daysPerPage,
+    @required this.defaultInitialDay,
     @required this.initialDayCandidate,
     @required this.minimumDayCandidate,
     @required this.maximumDayCandidate,
-  })  : assert(daysPerPage != null && daysPerPage > 0),
-        assert(initialDayCandidate != null),
-        assert(minimumDayCandidate != null),
-        assert(maximumDayCandidate != null);
+  })  : assert(defaultPagesDeltaFromInitialDay != null &&
+            defaultPagesDeltaFromInitialDay > 0),
+        assert(daysPerPage != null && daysPerPage > 0),
+        assert(defaultInitialDay != null);
 
+  final int defaultPagesDeltaFromInitialDay;
   final int daysPerPage;
 
-  final DateTime initialDayCandidate;
-  final DateTime minimumDayCandidate;
-  final DateTime maximumDayCandidate;
+  final Date defaultInitialDay;
+
+  final Date initialDayCandidate;
+  final Date minimumDayCandidate;
+  final Date maximumDayCandidate;
 
   Date _initialDay;
   Date _minimumDay;
@@ -33,15 +38,32 @@ class DaysPreparer {
   ///
   /// Throws exception if dayCandidate is invalid.
   void prepare() {
-    _convertToDate();
+    _seyStartingValues();
+    _setDefaultsToNullValues();
     _validate();
     _adjustToSatisfyDaysPerPage();
   }
 
-  void _convertToDate() {
-    _initialDay = new Date.fromDateTime(initialDayCandidate);
-    _minimumDay = new Date.fromDateTime(minimumDayCandidate);
-    _maximumDay = new Date.fromDateTime(maximumDayCandidate);
+  void _seyStartingValues() {
+    _initialDay = initialDayCandidate;
+    _minimumDay = minimumDayCandidate;
+    _maximumDay = maximumDayCandidate;
+  }
+
+  void _setDefaultsToNullValues() {
+    if (_initialDay == null) {
+      _initialDay = defaultInitialDay;
+    }
+
+    if (_minimumDay == null) {
+      _minimumDay =
+          _initialDay.addDays(-(defaultPagesDeltaFromInitialDay * daysPerPage));
+    }
+
+    if (_maximumDay == null) {
+      _maximumDay =
+          _initialDay.addDays(defaultPagesDeltaFromInitialDay * daysPerPage);
+    }
   }
 
   void _validate() {
@@ -54,7 +76,7 @@ class DaysPreparer {
       throw new ArgumentError.value(
         minimumDayCandidate.toString(),
         "minimumDay",
-        "minimumDay should be before or same day as initialDay",
+        "minimumDay($_minimumDay) should be before or same day as initialDay($_initialDay)",
       );
     }
   }
@@ -64,7 +86,7 @@ class DaysPreparer {
       throw new ArgumentError.value(
         maximumDayCandidate.toString(),
         "maximumDay",
-        "mamumumDay should be after or same day as initialDay",
+        "maximumDay(_$_maximumDay) should be after or same day as initialDay($_initialDay}",
       );
     }
   }
