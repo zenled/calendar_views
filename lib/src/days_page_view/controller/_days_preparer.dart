@@ -2,20 +2,22 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/src/_internal_date_time/all.dart';
 
+@deprecated
 class DaysPreparer {
   DaysPreparer({
-    @required this.defaultPagesDeltaFromInitialDay,
+    @required this.defaultPagesDeltaAfterInitialDay,
     @required this.daysPerPage,
     @required this.defaultInitialDay,
     @required this.initialDayCandidate,
     @required this.minimumDayCandidate,
     @required this.maximumDayCandidate,
-  })  : assert(defaultPagesDeltaFromInitialDay != null &&
-            defaultPagesDeltaFromInitialDay > 0),
+  })  : assert(defaultPagesDeltaAfterInitialDay != null &&
+            defaultPagesDeltaAfterInitialDay > 0),
         assert(daysPerPage != null && daysPerPage > 0),
-        assert(defaultInitialDay != null);
+        assert(defaultInitialDay != null),
+        assert(_minimumDay != null);
 
-  final int defaultPagesDeltaFromInitialDay;
+  final int defaultPagesDeltaAfterInitialDay;
   final int daysPerPage;
 
   final Date defaultInitialDay;
@@ -55,23 +57,18 @@ class DaysPreparer {
       _initialDay = defaultInitialDay;
     }
 
-    if (_minimumDay == null) {
-      _minimumDay =
-          _initialDay.addDays(-(defaultPagesDeltaFromInitialDay * daysPerPage));
-    }
-
     if (_maximumDay == null) {
       _maximumDay =
-          _initialDay.addDays(defaultPagesDeltaFromInitialDay * daysPerPage);
+          _initialDay.addDays(defaultPagesDeltaAfterInitialDay * daysPerPage);
     }
   }
 
   void _validate() {
-    _validateMinimumDay();
+    _validateInitialDay();
     _validateMaximumDay();
   }
 
-  void _validateMinimumDay() {
+  void _validateInitialDay() {
     if (_minimumDay.isAfter(_initialDay)) {
       throw new ArgumentError.value(
         minimumDayCandidate.toString(),

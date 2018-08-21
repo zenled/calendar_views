@@ -8,82 +8,90 @@ import 'package:calendar_views/src/_internal_date_time/all.dart';
 
 import '../days_page_view.dart';
 
-import '_days_preparer.dart';
+import '_maximum_day_adjuster.dart';
 
 /// Controller for a [DaysPageView].
 class DaysPageController extends CalendarPageController<DateTime> {
-  static const default_pagesDeltaFromInitialDay = 1000;
-
   DaysPageController._internal({
-    @required this.daysPerPage,
+    @required int daysPerPage,
     @required Date initialDay,
     @required Date minimumDay,
     @required Date maximumDay,
-  })  : assert(daysPerPage != null && daysPerPage > 0),
-        assert(initialDay != null),
+  })  : assert(initialDay != null),
         assert(minimumDay != null),
-        assert(maximumDay != null),
         _initialDay = initialDay,
-        _minimumDay = minimumDay,
-        _maximumDay = maximumDay,
         super(
           initialPage: minimumDay.daysBetween(initialDay) ~/ daysPerPage,
-          numberOfPages:
-              (minimumDay.daysBetween(maximumDay) ~/ daysPerPage) + 1,
-        );
+          numberOfPages: _calculateNumberOfPages(
+            daysPerPage: daysPerPage,
+            minimumDay: minimumDay,
+            maximumDay: maximumDay,
+          ),
+        ) {
+    _daysPerPage = daysPerPage;
+
+    _minimumDay = minimumDay;
+    _maximumDay = maximumDay;
+  }
 
   /// Creates a controller for [DaysPageView].
   ///
   /// If [initialDay] is set to null,
   /// today will be set as [initialDay].
   ///
-  /// If [minimumDay] is set to null,
-  /// a day [default_pagesDeltaFromInitialDay] before [initialDay] will be set as [minimumDay].
+  /// [minimumDay] will be the lowest day (first day of first page).
   ///
-  /// [minimumDay] is automatically decreased,
-  /// to ensure there are always [daysPerPage] days displayed on every page.
-  ///
-  ///
-  /// If [maximumDay] is set to null,
-  /// a day [default_pagesDeltaFromInitialDay] after [initialDay] will be set as [maximumDay].
-  ///
-  /// [maximumDay] is automatically increased,
-  /// to ensure there are always [daysPerPage] days displayed on every page.
+  /// If [maximumDay] is null, the [DaysPageView] will be infinite.
+  /// If [maximumDay] is provided it will be automatically increased to satisfy [daysPerPage].
   factory DaysPageController({
     int daysPerPage = 1,
     DateTime initialDay,
-    DateTime minimumDay,
+    @required DateTime minimumDay,
     DateTime maximumDay,
   }) {
     assert(daysPerPage != null);
+    assert(minimumDay != null);
 
-    /// Validates daysPerPage
-    if (daysPerPage <= 0) {
+    _throwArgumentErrorIfInvalidDaysPerPage(daysPerPage);
+
+    /// Converts to Date
+    Date initial =
+        initialDay != null ? Date.fromDateTime(initialDay) : new Date.today();
+    Date minimum = Date.fromDateTime(minimumDay);
+    Date maximum = maximumDay != null ? Date.fromDateTime(maximumDay) : null;
+
+    /// Validates initialDay
+    if (initial.isBefore(minimum)) {
       throw new ArgumentError.value(
-        daysPerPage,
-        "daysPerPage",
-        "daysPerPage must be >= 1",
+        initialDay,
+        "initialDay",
+        "initialDay($initial) should be after or same day as minimumDay($minimum)",
       );
     }
 
-    DaysPreparer daysPreparer = new DaysPreparer(
-      defaultPagesDeltaFromInitialDay: default_pagesDeltaFromInitialDay,
+    /// Validates maximumDay (if provided)
+    if (maximum != null) {
+      if (maximum.isBefore(initial)) {
+        throw new ArgumentError.value(
+          maximumDay,
+          "maximumDay",
+          "maximumDay($maximum) should be after or same day as initialDay($initial}",
+        );
+      }
+    }
+
+    /// Increases maximumDay (if provided) to satisfy daysPerPage
+    maximum = _adjustMaximumDayToSatisfyDaysPerPage(
       daysPerPage: daysPerPage,
-      defaultInitialDay: new Date.today(),
-      initialDayCandidate:
-          initialDay != null ? new Date.fromDateTime(initialDay) : null,
-      minimumDayCandidate:
-          minimumDay != null ? new Date.fromDateTime(minimumDay) : null,
-      maximumDayCandidate:
-          maximumDay != null ? new Date.fromDateTime(maximumDay) : null,
+      minimumDay: minimum,
+      maximumDayCandidate: maximum,
     );
-    daysPreparer.prepare();
 
     return new DaysPageController._internal(
       daysPerPage: daysPerPage,
-      initialDay: daysPreparer.preparedInitialDay,
-      minimumDay: daysPreparer.preparedMinimumDay,
-      maximumDay: daysPreparer.preparedMaximumDay,
+      initialDay: initial,
+      minimumDay: minimum,
+      maximumDay: maximum,
     );
   }
 
@@ -91,38 +99,41 @@ class DaysPageController extends CalendarPageController<DateTime> {
   ///
   /// Each week will start with day that is on [firstWeekday].
   ///
-  /// Week that contains [dayInsideInitialWeek],
+  /// Week that contains [dayInInitialWeek],
   /// will be shown when first creating the controlled [DaysPageView].
   ///
-  /// If [dayInsideInitialWeek] is null, it will be set to today.
+  /// If [dayInInitialWeek] is null, it will be set to today.
   ///
-  /// MinimumDay and MaximumDay behave the same as in default constructor.
+  /// Week that contains [dayInMinimumWeek] will be the lowest week.
+  ///
+  /// If [dayInMaximumWeek] is null, the [DaysPageView] will be infinite.
   factory DaysPageController.forWeeks({
     int firstWeekday = DateTime.monday,
-    DateTime dayInsideInitialWeek,
-    DateTime minimumDay,
-    DateTime maximumDay,
+    DateTime dayInInitialWeek,
+    @required DateTime dayInMinimumWeek,
+    DateTime dayInMaximumWeek,
   }) {
-    Date initialDate = dayInsideInitialWeek != null
-        ? new Date.fromDateTime(dayInsideInitialWeek)
-        : new Date.today();
-
-    initialDate = initialDate.lowerToWeekday(firstWeekday);
+    // lowers dayInMinimumWeek to firstWeekday
+    Date minimumCandidate = Date.fromDateTime(dayInMinimumWeek);
+    minimumCandidate = minimumCandidate.lowerToWeekday(firstWeekday);
+    DateTime minimum = minimumCandidate.toDateTime();
 
     return new DaysPageController(
       daysPerPage: DateTime.daysPerWeek,
-      initialDay: initialDate.toDateTime(),
-      minimumDay: minimumDay,
-      maximumDay: maximumDay,
+      initialDay: dayInInitialWeek,
+      minimumDay: minimum,
+      maximumDay: dayInMaximumWeek,
     );
   }
 
-  /// Number of consecutive days displayed per page.
-  final int daysPerPage;
+  int _daysPerPage;
 
   final Date _initialDay;
-  final Date _minimumDay;
-  final Date _maximumDay;
+  Date _minimumDay;
+  Date _maximumDay;
+
+  /// Number of consecutive days to display per page.
+  int get daysPerPage => _daysPerPage;
 
   /// Day shown when first creating the controlled [DaysPageView].
   DateTime get initialDay => _initialDay.toDateTime();
@@ -130,17 +141,25 @@ class DaysPageController extends CalendarPageController<DateTime> {
   /// Minimum day shown in the controlled [DaysPageView] (inclusive).
   DateTime get minimumDay => _minimumDay.toDateTime();
 
-  /// Maximum day shown in the controlled [DaysPageView] (inclusive).
-  DateTime get maximumDay => _maximumDay.toDateTime();
+  /// Maximum day shown in the controlled [DaysPageView] (inclusive), or null if [DaysPageView] is infinite.
+  DateTime get maximumDay => isInfinite ? null : _maximumDay.toDateTime();
+
+  /// True if controlled [DaysPageView] is infinite (does not have maximumDay).
+  bool get isInfinite => _maximumDay == null;
 
   @override
   DateTime representationOfCurrentPage() {
-    return firstDayOnDisplayedPage();
+    int currentPage = super.displayedPage();
+    return _representationOfPage(currentPage);
   }
 
   @override
   int indexOfPageThatRepresents(DateTime pageRepresentation) {
     return pageOfDay(pageRepresentation);
+  }
+
+  DateTime _representationOfPage(int page) {
+    return firstDayOfPage(page);
   }
 
   /// Returns index of page that displays [day].
@@ -154,7 +173,7 @@ class DaysPageController extends CalendarPageController<DateTime> {
     if (d.isBefore(_minimumDay)) {
       return 0;
     }
-    if (d.isAfter(_maximumDay)) {
+    if (!isInfinite && d.isAfter(_maximumDay)) {
       return numberOfPages - 1;
     } else {
       int daysFromMinimumDay = _minimumDay.daysBetween(d);
@@ -166,10 +185,9 @@ class DaysPageController extends CalendarPageController<DateTime> {
   ///
   /// Properties of returned day except for year, month and day are set to their default values.
   DateTime firstDayOfPage(int page) {
-    int pagesDeltaFromInitialPage = page - initialPage;
+    assert(page >= 0);
 
-    Date day = _initialDay.addDays(pagesDeltaFromInitialPage * daysPerPage);
-
+    Date day = _minimumDay.addDays(page * daysPerPage);
     return day.toDateTime();
   }
 
@@ -189,16 +207,6 @@ class DaysPageController extends CalendarPageController<DateTime> {
     }
 
     return days;
-  }
-
-  /// Returns the first day of days displayed on the current page in the controlled [DaysPageView].
-  ///
-  /// If no [DaysPageView] is attached an exception is thrown.
-  ///
-  /// Properties of returned [DateTime]s except for year, month and day are set to their default values.
-  DateTime firstDayOnDisplayedPage() {
-    int displayedPage = super.displayedPage();
-    return firstDayOfPage(displayedPage);
   }
 
   /// Returns a list of days of the current page in the controlled [DaysPageView].
@@ -244,19 +252,151 @@ class DaysPageController extends CalendarPageController<DateTime> {
     );
   }
 
-  /// Creates a copy of the controller with some values changed.
+  /// Sets the number of consecutive days to display per page.
   ///
-  /// Any items attached to the original controller are not copied.
-  DaysPageController copyWith({
-    int daysPerPage,
-    DateTime minimumDay,
-    DateTime maximumDay,
+  /// If [jumpToDay] is not null the controlled [DaysPageView]
+  /// will jump to page of which [jumpToDay] is part of.
+  ///
+  /// If [jumpToPage] is not null the controller [DaysPageView]
+  /// will jump to specified page.
+  ///
+  /// If both [jumpToDay] and [jumpToPage] are null the controlled [DayPageView]
+  /// will jump to page that displays first day of current page.
+  void changeDaysPerPage(
+    int newDaysPerPage, {
+    DateTime jumpToDay,
+    int jumpToPage,
   }) {
-    return new DaysPageController(
-      daysPerPage: daysPerPage ?? this.daysPerPage,
-      initialDay: this.initialDay,
-      minimumDay: minimumDay ?? this.minimumDay,
-      maximumDay: maximumDay ?? this.maximumDay,
+    _throwArgumentErrorIfInvalidDaysPerPage(newDaysPerPage);
+
+    DateTime representationOfPageToJumpTo;
+    if (jumpToDay != null) {
+      representationOfPageToJumpTo = jumpToDay;
+    } else if (jumpToPage != null) {
+      representationOfPageToJumpTo = firstDayOfPage(jumpToPage);
+    } else {
+      representationOfPageToJumpTo = representationOfCurrentPage();
+    }
+
+    _daysPerPage = newDaysPerPage;
+    _maximumDay = _adjustMaximumDayToSatisfyDaysPerPage(
+      daysPerPage: daysPerPage,
+      minimumDay: _minimumDay,
+      maximumDayCandidate: _maximumDay,
     );
+    super.numberOfPages = _calculateNumberOfPages(
+      daysPerPage: daysPerPage,
+      minimumDay: _minimumDay,
+      maximumDay: _maximumDay,
+    );
+
+    super.updateControlledItem(representationOfPageToJumpTo);
+  }
+
+  void changeMinimumDay(
+    DateTime newMinimumDay, {
+    DateTime jumpToDay,
+    int jumpToPage,
+  }) {
+    // TODO check in newMinimumDayIsValid
+
+    DateTime representationOfPageToJumpTo;
+    if (jumpToDay != null) {
+      representationOfPageToJumpTo = jumpToDay;
+    } else if (jumpToPage != null) {
+      representationOfPageToJumpTo = firstDayOfPage(jumpToPage);
+    } else {
+      representationOfPageToJumpTo = representationOfCurrentPage();
+    }
+
+    _minimumDay = new Date.fromDateTime(newMinimumDay);
+    _maximumDay = _adjustMaximumDayToSatisfyDaysPerPage(
+      daysPerPage: daysPerPage,
+      minimumDay: _minimumDay,
+      maximumDayCandidate: _maximumDay,
+    );
+    super.numberOfPages = _calculateNumberOfPages(
+      daysPerPage: daysPerPage,
+      minimumDay: _minimumDay,
+      maximumDay: _maximumDay,
+    );
+
+    super.updateControlledItem(representationOfPageToJumpTo);
+  }
+
+  void changeMaximumDay(
+    DateTime newMaximumDay, {
+    DateTime jumpToDay,
+    int jumpToPage,
+  }) {
+    // TODO check in newMaximumDayIsValid
+
+    DateTime representationOfPageToJumpTo;
+    if (jumpToDay != null) {
+      representationOfPageToJumpTo = jumpToDay;
+    } else if (jumpToPage != null) {
+      representationOfPageToJumpTo = firstDayOfPage(jumpToPage);
+    } else {
+      representationOfPageToJumpTo = representationOfCurrentPage();
+    }
+
+    _maximumDay = _adjustMaximumDayToSatisfyDaysPerPage(
+      daysPerPage: daysPerPage,
+      minimumDay: _minimumDay,
+      maximumDayCandidate: new Date.fromDateTime(newMaximumDay),
+    );
+    super.numberOfPages = _calculateNumberOfPages(
+      daysPerPage: daysPerPage,
+      minimumDay: _minimumDay,
+      maximumDay: _maximumDay,
+    );
+
+    super.updateControlledItem(representationOfPageToJumpTo);
+  }
+
+  static int _calculateNumberOfPages({
+    @required int daysPerPage,
+    @required Date minimumDay,
+    @required Date maximumDay,
+  }) {
+    assert(daysPerPage != null);
+    assert(minimumDay != null);
+
+    if (maximumDay == null) {
+      return null;
+    } else {
+      return (minimumDay.daysBetween(maximumDay) ~/ daysPerPage) + 1;
+    }
+  }
+
+  static void _throwArgumentErrorIfInvalidDaysPerPage(int daysPerPage) {
+    if (daysPerPage == null) {
+      throw new ArgumentError.notNull("daysPerPage");
+    }
+
+    if (daysPerPage <= 0) {
+      throw new ArgumentError.value(
+        daysPerPage,
+        "daysPerPage",
+        "daysPerPage should be > 0",
+      );
+    }
+  }
+
+  static Date _adjustMaximumDayToSatisfyDaysPerPage({
+    @required int daysPerPage,
+    @required Date minimumDay,
+    @required Date maximumDayCandidate,
+  }) {
+    if (maximumDayCandidate == null) {
+      return null;
+    } else {
+      MaximumDayAdjuster maximumDayAdjuster = new MaximumDayAdjuster(
+        daysPerPage: daysPerPage,
+        minimumDay: minimumDay,
+        maximumDayCandidate: maximumDayCandidate,
+      );
+      return maximumDayAdjuster.adjust();
+    }
   }
 }

@@ -14,18 +14,23 @@ abstract class CalendarPageController<T> {
   CalendarPageController({
     @required this.initialPage,
     @required this.numberOfPages,
-  })  : assert(initialPage != null),
-        assert(numberOfPages != null),
-        assert(initialPage >= 0 && initialPage < numberOfPages);
+  }) : assert(initialPage != null) {
+    _throwArgumentErrorIfInvalidNumberOfPages(numberOfPages);
+  }
 
   /// Initial page that the controlled [CalendarPageView] should display.
   final int initialPage;
 
-  /// Number of pages that the controlled [CalendarPageView] should be able to display.
-  final int numberOfPages;
+  int numberOfPages;
 
   /// Object for communication with attached [CalendarPageView].
   CalendarPageViewCommunicator _attachedCommunicator;
+
+  void updateControlledItem(T pageToJumpTo) {
+    _throwExceptionIfNoCommunicatorIsAttached();
+
+    _attachedCommunicator.onControllerChanged(pageToJumpTo);
+  }
 
   /// Registers the given [communicator] with this controller.
   ///
@@ -94,6 +99,20 @@ abstract class CalendarPageController<T> {
   void _throwExceptionIfNoCommunicatorIsAttached() {
     if (!isCommunicatorAttached()) {
       throw new Exception("No item is attached to this controller");
+    }
+  }
+
+  void _throwArgumentErrorIfInvalidNumberOfPages(int numberOfPages) {
+    if (numberOfPages == null) {
+      return;
+    } else {
+      if (numberOfPages <= 0) {
+        throw new ArgumentError.value(
+          numberOfPages,
+          "numberOfPages",
+          "numberOfPages must be > 0",
+        );
+      }
     }
   }
 }

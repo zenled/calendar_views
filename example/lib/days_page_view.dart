@@ -1,27 +1,23 @@
 import 'package:flutter/material.dart';
 
-import 'package:calendar_views/consecutive_days_page_view.dart';
+import 'package:calendar_views/days_page_view.dart';
 
 import 'axis_to_string.dart';
 import 'page.dart';
 
-class ConsecutiveDaysPageViewExample extends StatefulWidget {
+class DaysPageViewExample extends StatefulWidget {
   @override
-  _ConsecutiveDaysPageViewExampleState createState() =>
-      new _ConsecutiveDaysPageViewExampleState();
+  _DaysPageViewExampleState createState() => new _DaysPageViewExampleState();
 }
 
-class _ConsecutiveDaysPageViewExampleState
-    extends State<ConsecutiveDaysPageViewExample> {
-  final _initialDaysPerPage = 7;
-
+class _DaysPageViewExampleState extends State<DaysPageViewExample> {
   bool _bigText;
 
   Axis _scrollDirection;
   bool _pageSnapping;
   bool _reverse;
 
-  ConsecutiveDaysPageController _daysPageController;
+  DaysPageController _daysPageController;
 
   TextEditingController _daysPerPageTextController;
 
@@ -35,30 +31,48 @@ class _ConsecutiveDaysPageViewExampleState
     _pageSnapping = true;
     _reverse = false;
 
-    _createDaysPageController();
+    _daysPageController = new DaysPageController.forWeeks(
+      firstWeekday: DateTime.monday,
+      dayInInitialWeek: new DateTime(2018, 8, 21),
+      dayInMinimumWeek: new DateTime(2018, 8, 14),
+      dayInMaximumWeek: new DateTime(2018, 8, 28),
+    );
 
     _daysPerPageTextController =
-        new TextEditingController(text: "$_initialDaysPerPage");
+        new TextEditingController(text: "${_daysPageController.daysPerPage}");
   }
 
   String get _minimumDayText => _dateToString(_daysPageController.minimumDay);
 
-  String get _maximumDayText => _dateToString(_daysPageController.maximumDay);
+  String get _maximumDayText {
+    DateTime maximumDay = _daysPageController.maximumDay;
+
+    if (maximumDay != null) {
+      return _dateToString(maximumDay);
+    } else {
+      return "Unbounded";
+    }
+  }
 
   String _dateToString(DateTime date) {
     return "${date.year}.${date.month}.${date.day}";
   }
 
-  void _createDaysPageController() {
-    DateTime now = new DateTime.now();
-    // using UTC to avoid problems with day light saving time when adding days
-    DateTime nowUTC = new DateTime.utc(now.year, now.month, now.day);
-
-    _daysPageController = new ConsecutiveDaysPageController(
-      daysPerPage: _initialDaysPerPage,
-      initialDay: nowUTC,
-      minimumDay: nowUTC.add(new Duration(days: -(_initialDaysPerPage * 2))),
-      maximumDay: nowUTC.add(new Duration(days: (_initialDaysPerPage * 2) - 1)),
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => new AlertDialog(
+            title: new Text("Error"),
+            content: new Text("$message"),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
     );
   }
 
@@ -77,7 +91,7 @@ class _ConsecutiveDaysPageViewExampleState
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text("ConsecutiveDaysPageView Example"),
+        title: new Text("DaysPageView Example"),
       ),
       body: new Column(
         children: <Widget>[
@@ -85,7 +99,7 @@ class _ConsecutiveDaysPageViewExampleState
             flex: 1,
             child: new Container(
               color: Colors.green.shade200,
-              child: new ConsecutiveDaysPageView(
+              child: new DaysPageView(
                 scrollDirection: _scrollDirection,
                 pageSnapping: _pageSnapping,
                 reverse: _reverse,
@@ -126,14 +140,11 @@ class _ConsecutiveDaysPageViewExampleState
                           onSubmitted: (value) {
                             int newDaysPerPage = int.parse(value);
 
-                            if (newDaysPerPage != null && newDaysPerPage >= 1) {
-                              ConsecutiveDaysPageController
-                                  _newDaysPageController = _daysPageController
-                                      .copyWith(daysPerPage: newDaysPerPage);
-
-                              setState(() {
-                                _daysPageController = _newDaysPageController;
-                              });
+                            try {
+                              _daysPageController
+                                  .changeDaysPerPage(newDaysPerPage);
+                            } catch (e) {
+                              _showErrorDialog(e.toString());
                             }
                           },
                         ),
@@ -154,30 +165,9 @@ class _ConsecutiveDaysPageViewExampleState
                         if (newMinimumDay == null) return;
 
                         try {
-                          ConsecutiveDaysPageController newDaysPageController =
-                              _daysPageController.copyWith(
-                            minimumDay: newMinimumDay,
-                          );
-
-                          setState(() {
-                            _daysPageController = newDaysPageController;
-                          });
+                          _daysPageController.changeMinimumDay(newMinimumDay);
                         } catch (e) {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) => new AlertDialog(
-                                  title: new Text("Error"),
-                                  content: new Text("$e"),
-                                  actions: <Widget>[
-                                    new FlatButton(
-                                      child: new Text("OK"),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ],
-                                ),
-                          );
+                          _showErrorDialog(e.toString());
                         }
                       },
                     ),
@@ -196,30 +186,9 @@ class _ConsecutiveDaysPageViewExampleState
                         if (newMaximumDay == null) return;
 
                         try {
-                          ConsecutiveDaysPageController newDaysPageController =
-                              _daysPageController.copyWith(
-                            maximumDay: newMaximumDay,
-                          );
-
-                          setState(() {
-                            _daysPageController = newDaysPageController;
-                          });
+                          _daysPageController.changeMaximumDay(newMaximumDay);
                         } catch (e) {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) => new AlertDialog(
-                                  title: new Text("Error"),
-                                  content: new Text("$e"),
-                                  actions: <Widget>[
-                                    new FlatButton(
-                                      child: new Text("OK"),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ],
-                                ),
-                          );
+                          _showErrorDialog(e.toString());
                         }
                       },
                     ),

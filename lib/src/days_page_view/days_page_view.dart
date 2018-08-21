@@ -6,16 +6,17 @@ import 'package:calendar_views/src/calendar_page_view/all.dart';
 import 'controller/days_page_controller.dart';
 import 'days_page_builder.dart';
 
-/// Custom pageView in which each page represents some consecutive days.
+/// Custom pageView in which each page represents one or more consecutive days.
 class DaysPageView extends CalendarPageView {
-  DaysPageView._internal({
+  /// Creates pageView with each page representing one or more consecutive days.
+  DaysPageView({
     @required this.controller,
     @required this.pageBuilder,
-    @required this.onDaysChanged,
-    @required Axis scrollDirection,
-    @required bool reverse,
-    @required ScrollPhysics physics,
-    @required bool pageSnapping,
+    this.onDaysChanged,
+    Axis scrollDirection = Axis.horizontal,
+    bool reverse = false,
+    ScrollPhysics physics,
+    bool pageSnapping = true,
   })  : assert(controller != null),
         assert(pageBuilder != null),
         super(
@@ -24,29 +25,6 @@ class DaysPageView extends CalendarPageView {
           physics: physics,
           pageSnapping: pageSnapping,
         );
-
-  /// Creates pageView with each page representing some consecutive days.
-  factory DaysPageView({
-    DaysPageController controller,
-    @required DaysPageBuilder pageBuilder,
-    ValueChanged<List<DateTime>> onDaysChanged,
-    Axis scrollDirection = Axis.horizontal,
-    bool reverse = false,
-    ScrollPhysics scrollPhysics,
-    bool pageSnapping = true,
-  }) {
-    controller ??= new DaysPageController();
-
-    return new DaysPageView._internal(
-      controller: controller,
-      pageBuilder: pageBuilder,
-      onDaysChanged: onDaysChanged,
-      scrollDirection: scrollDirection,
-      reverse: reverse,
-      physics: scrollPhysics,
-      pageSnapping: pageSnapping,
-    );
-  }
 
   /// Object in charge of controlling this [DaysPageView].
   final DaysPageController controller;
