@@ -26,10 +26,10 @@ abstract class CalendarPageController<T> {
   /// Object for communication with attached [CalendarPageView].
   CalendarPageViewCommunicator _attachedCommunicator;
 
-  void updateControlledItem(T pageToJumpTo) {
+  void updateControlledItem(T representationOfPageToJumpTo) {
     _throwExceptionIfNoCommunicatorIsAttached();
 
-    _attachedCommunicator.onControllerChanged(pageToJumpTo);
+    _attachedCommunicator.onControllerChanged(representationOfPageToJumpTo);
   }
 
   /// Registers the given [communicator] with this controller.

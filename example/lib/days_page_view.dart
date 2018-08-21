@@ -13,11 +13,14 @@ class DaysPageViewExample extends StatefulWidget {
 class _DaysPageViewExampleState extends State<DaysPageViewExample> {
   bool _bigText;
 
+  DateTime _initialDay;
+  DateTime _minimumDay;
+  DateTime _maximumDay;
+  DaysPageController _daysPageController;
+
   Axis _scrollDirection;
   bool _pageSnapping;
   bool _reverse;
-
-  DaysPageController _daysPageController;
 
   TextEditingController _daysPerPageTextController;
 
@@ -27,16 +30,19 @@ class _DaysPageViewExampleState extends State<DaysPageViewExample> {
 
     _bigText = false;
 
+    _initialDay = new DateTime.now().toUtc();
+    _minimumDay = _initialDay.add(new Duration(days: -7));
+    _maximumDay = _initialDay.add(new Duration(days: 7));
+    _daysPageController = new DaysPageController.forWeeks(
+      firstWeekday: DateTime.monday,
+      dayInInitialWeek: _initialDay,
+      dayInMinimumWeek: _minimumDay,
+      dayInMaximumWeek: _maximumDay,
+    );
+
     _scrollDirection = Axis.horizontal;
     _pageSnapping = true;
     _reverse = false;
-
-    _daysPageController = new DaysPageController.forWeeks(
-      firstWeekday: DateTime.monday,
-      dayInInitialWeek: new DateTime(2018, 8, 21),
-      dayInMinimumWeek: new DateTime(2018, 8, 14),
-      dayInMaximumWeek: new DateTime(2018, 8, 28),
-    );
 
     _daysPerPageTextController =
         new TextEditingController(text: "${_daysPageController.daysPerPage}");
@@ -50,12 +56,13 @@ class _DaysPageViewExampleState extends State<DaysPageViewExample> {
     if (maximumDay != null) {
       return _dateToString(maximumDay);
     } else {
-      return "Unbounded";
+      return "Infinite";
     }
   }
 
   String _dateToString(DateTime date) {
-    return "${date.year}.${date.month}.${date.day}";
+    return "${date.year.toString().padLeft(4)}.${date.month.toString().padLeft(
+        2)}.${date.day.toString().padLeft(2)}";
   }
 
   void _showErrorDialog(String message) {
@@ -77,14 +84,9 @@ class _DaysPageViewExampleState extends State<DaysPageViewExample> {
   }
 
   void _onDaysChanged(List<DateTime> daysOnPage) {
-    DateTime day = daysOnPage.first;
+    DateTime firstDayOfPage = daysOnPage.first;
 
-    print(
-      "First day of displayed days: "
-          "${day.year.toString().padLeft(4, "0")}.${day.month.toString()
-          .padLeft(2, "0")}.${day
-          .day.toString().padLeft(2, "0")}",
-    );
+    print("First day of displayed days: ${_dateToString(firstDayOfPage)}");
   }
 
   @override
@@ -96,7 +98,6 @@ class _DaysPageViewExampleState extends State<DaysPageViewExample> {
       body: new Column(
         children: <Widget>[
           new Expanded(
-            flex: 1,
             child: new Container(
               color: Colors.green.shade200,
               child: new DaysPageView(
@@ -110,7 +111,6 @@ class _DaysPageViewExampleState extends State<DaysPageViewExample> {
             ),
           ),
           new Expanded(
-            flex: 1,
             child: new SingleChildScrollView(
               child: new Container(
                 margin: new EdgeInsets.symmetric(vertical: 16.0),
@@ -120,9 +120,7 @@ class _DaysPageViewExampleState extends State<DaysPageViewExample> {
                     new RaisedButton(
                         child: new Text("Jump To Today"),
                         onPressed: () {
-                          _daysPageController.jumpToDay(
-                            new DateTime.now(),
-                          );
+                          _daysPageController.jumpToDay(new DateTime.now());
                         }),
                     new Divider(),
                     new ListTile(
@@ -187,6 +185,9 @@ class _DaysPageViewExampleState extends State<DaysPageViewExample> {
 
                         try {
                           _daysPageController.changeMaximumDay(newMaximumDay);
+                          setState(() {
+                            _maximumDay = _daysPageController.maximumDay;
+                          });
                         } catch (e) {
                           _showErrorDialog(e.toString());
                         }
