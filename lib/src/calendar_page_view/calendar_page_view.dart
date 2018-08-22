@@ -162,7 +162,25 @@ abstract class CalendarPageViewState<T extends CalendarPageView>
       displayedPage: () {
         return _pageController.page.round();
       },
+      onControllerChanged: onControllerChanged,
     );
+  }
+
+  void onControllerChanged(dynamic representationOfCurrentPage) {
+    int initialPageOnNewPageController = widget.controller
+        .indexOfPageThatRepresents(representationOfCurrentPage);
+
+    _pageController = _createPageController(
+      initialPage: initialPageOnNewPageController,
+    );
+
+    widget.controller.attach(_createCommunicator());
+
+    setState(() {
+      _pageView = _createPageView(
+        withNewUniqueKey: true,
+      );
+    });
   }
 
   Widget pageBuilder(BuildContext context, int page);

@@ -14,6 +14,10 @@ typedef Future<Null> AnimateToPage(
   @required Curve curve,
 });
 
+typedef void OnControllerChanged(
+  dynamic representationOfCurrentPage,
+);
+
 /// Communicator between a [CalendarPageView] and [CalendarPageController].
 @immutable
 class CalendarPageViewCommunicator {
@@ -21,9 +25,11 @@ class CalendarPageViewCommunicator {
     @required this.jumpToPage,
     @required this.animateToPage,
     @required this.displayedPage,
+    @required this.onControllerChanged,
   })  : assert(jumpToPage != null),
         assert(animateToPage != null),
-        assert(displayedPage != null);
+        assert(displayedPage != null),
+        assert(onControllerChanged != null);
 
   /// Tells [CalendarPageView] to jump to a specific [page].
   final JumpToPage jumpToPage;
@@ -33,4 +39,7 @@ class CalendarPageViewCommunicator {
 
   /// Requests the current displayed page from the controlled [CalendarPageView].
   final ValueGetter<int> displayedPage;
+
+  /// Called whenever number of pages changes.
+  final OnControllerChanged onControllerChanged;
 }
