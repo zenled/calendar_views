@@ -15,13 +15,23 @@ class DaysPageView extends StatefulWidget {
     @required this.controller,
     @required this.pageBuilder,
     this.onDaysChanged,
+    this.scrollDirection = Axis.horizontal,
+    this.pageSnapping = true,
+    this.reverse = false,
   })  : assert(constraints != null),
         assert(controller != null),
-        assert(pageBuilder != null);
+        assert(pageBuilder != null),
+        assert(scrollDirection != null),
+        assert(pageSnapping != null),
+        assert(reverse != null);
 
   final DaysConstraints constraints;
   final DaysPageController controller;
   final DaysPageBuilder pageBuilder;
+
+  final Axis scrollDirection;
+  final bool pageSnapping;
+  final bool reverse;
 
   final ValueChanged<List<DateTime>> onDaysChanged;
 
@@ -65,7 +75,8 @@ class _DaysPageViewState extends State<DaysPageView> {
       _attachToController();
     }
 
-    if (widget.constraints != oldWidget.constraints) {
+    if (widget.constraints != oldWidget.constraints ||
+        widget.scrollDirection != oldWidget.scrollDirection) {
       _createPageDays();
 
       int initialPage = _pageDays.pageOfDate(representationOfCurrentPage);
@@ -159,6 +170,9 @@ class _DaysPageViewState extends State<DaysPageView> {
       onPageChanged: _onPageChanged,
       itemBuilder: _pageBuilder,
       itemCount: _pageDays.numberOfPages,
+      scrollDirection: widget.scrollDirection,
+      pageSnapping: widget.pageSnapping,
+      reverse: widget.reverse,
     );
   }
 
