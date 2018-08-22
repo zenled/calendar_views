@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'consecutive_days_page_view.dart';
-import 'day_page_view_example.dart';
+import 'days_page_view.dart';
 import 'day_view_example.dart';
 import 'month_example.dart';
 import 'month_page_view_example.dart';
@@ -73,22 +72,11 @@ class MyApp extends StatelessWidget {
                   ),
                   new Divider(height: 0.0),
                   new ListTile(
-                    title: new Text("Day Page View"),
-                    subtitle: new Text("DayPageView Example"),
+                    title: new Text("Days Page View"),
+                    subtitle: new Text("DaysPageView Example"),
                     onTap: () {
                       _showWidgetInFullScreenDialog(
-                        context,
-                        new DayPageViewExample(),
-                      );
-                    },
-                  ),
-                  new Divider(height: 0.0),
-                  new ListTile(
-                    title: new Text("Consecutive Days Page View"),
-                    subtitle: new Text("ConsecutiveDaysPageView Example"),
-                    onTap: () {
-                      _showWidgetInFullScreenDialog(
-                          context, new ConsecutiveDaysPageViewExample());
+                          context, new DaysPageViewExample());
                     },
                   ),
                   new Divider(height: 0.0),

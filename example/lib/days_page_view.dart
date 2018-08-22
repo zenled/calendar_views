@@ -13,9 +13,8 @@ class DaysPageViewExample extends StatefulWidget {
 class _DaysPageViewExampleState extends State<DaysPageViewExample> {
   bool _bigText;
 
+  DaysConstraints _daysConstraints;
   DateTime _initialDay;
-  DateTime _minimumDay;
-  DateTime _maximumDay;
   DaysPageController _daysPageController;
 
   Axis _scrollDirection;
@@ -31,27 +30,27 @@ class _DaysPageViewExampleState extends State<DaysPageViewExample> {
     _bigText = false;
 
     _initialDay = new DateTime.now().toUtc();
-    _minimumDay = _initialDay.add(new Duration(days: -7));
-    _maximumDay = _initialDay.add(new Duration(days: 7));
-    _daysPageController = new DaysPageController.forWeeks(
-      firstWeekday: DateTime.monday,
-      dayInInitialWeek: _initialDay,
-      dayInMinimumWeek: _minimumDay,
-      dayInMaximumWeek: _maximumDay,
+    _daysConstraints = new DaysConstraints.forWeeks(
+      dayInMinimumWeek: _initialDay.add(new Duration(days: -7)),
+      dayInMaximumWeek: _initialDay.add(new Duration(days: 7)),
+    );
+    _daysPageController = new DaysPageController(
+      initialDay: _initialDay,
     );
 
     _scrollDirection = Axis.horizontal;
     _pageSnapping = true;
     _reverse = false;
 
-    _daysPerPageTextController =
-        new TextEditingController(text: "${_daysPageController.daysPerPage}");
+    _daysPerPageTextController = new TextEditingController(
+      text: "${_daysConstraints.daysPerPage}",
+    );
   }
 
-  String get _minimumDayText => _dateToString(_daysPageController.minimumDay);
+  String get _minimumDayText => _dateToString(_daysConstraints.minimumDay);
 
   String get _maximumDayText {
-    DateTime maximumDay = _daysPageController.maximumDay;
+    DateTime maximumDay = _daysConstraints.maximumDay;
 
     if (maximumDay != null) {
       return _dateToString(maximumDay);
@@ -101,12 +100,10 @@ class _DaysPageViewExampleState extends State<DaysPageViewExample> {
             child: new Container(
               color: Colors.green.shade200,
               child: new DaysPageView(
-                scrollDirection: _scrollDirection,
-                pageSnapping: _pageSnapping,
-                reverse: _reverse,
+                constraints: _daysConstraints,
                 controller: _daysPageController,
-                onDaysChanged: _onDaysChanged,
                 pageBuilder: _daysPageBuilder,
+                onDaysChanged: _onDaysChanged,
               ),
             ),
           ),
@@ -139,8 +136,10 @@ class _DaysPageViewExampleState extends State<DaysPageViewExample> {
                             int newDaysPerPage = int.parse(value);
 
                             try {
-                              _daysPageController
-                                  .changeDaysPerPage(newDaysPerPage);
+                              setState(() {
+                                _daysConstraints = _daysConstraints
+                                    .copyWithDaysPerPage(newDaysPerPage);
+                              });
                             } catch (e) {
                               _showErrorDialog(e.toString());
                             }
@@ -155,7 +154,7 @@ class _DaysPageViewExampleState extends State<DaysPageViewExample> {
                       onTap: () async {
                         DateTime newMinimumDay = await showDatePicker(
                           context: context,
-                          initialDate: _daysPageController.minimumDay,
+                          initialDate: _daysConstraints.minimumDay,
                           firstDate: new DateTime.fromMillisecondsSinceEpoch(0),
                           lastDate: new DateTime(2100),
                         );
@@ -163,7 +162,10 @@ class _DaysPageViewExampleState extends State<DaysPageViewExample> {
                         if (newMinimumDay == null) return;
 
                         try {
-                          _daysPageController.changeMinimumDay(newMinimumDay);
+                          setState(() {
+                            _daysConstraints = _daysConstraints
+                                .copyWithMinimumDay(newMinimumDay);
+                          });
                         } catch (e) {
                           _showErrorDialog(e.toString());
                         }
@@ -176,17 +178,17 @@ class _DaysPageViewExampleState extends State<DaysPageViewExample> {
                       onTap: () async {
                         DateTime newMaximumDay = await showDatePicker(
                           context: context,
-                          initialDate: _daysPageController.maximumDay,
+                          initialDate: _daysConstraints.maximumDay != null
+                              ? _daysConstraints.maximumDay
+                              : new DateTime.now(),
                           firstDate: new DateTime.fromMillisecondsSinceEpoch(0),
                           lastDate: new DateTime(2100),
                         );
 
-                        if (newMaximumDay == null) return;
-
                         try {
-                          _daysPageController.changeMaximumDay(newMaximumDay);
                           setState(() {
-                            _maximumDay = _daysPageController.maximumDay;
+                            _daysConstraints = _daysConstraints
+                                .copyWithMaximumDay(newMaximumDay);
                           });
                         } catch (e) {
                           _showErrorDialog(e.toString());

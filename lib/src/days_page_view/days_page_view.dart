@@ -1,64 +1,169 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/calendar_page_view/all.dart';
+import 'package:calendar_views/src/_internal_date_time/all.dart';
 
-import 'controller/days_page_controller.dart';
+import '_helpers/all.dart';
+import 'days_constraints.dart';
 import 'days_page_builder.dart';
+import 'days_page_communicator.dart';
+import 'days_page_controller.dart';
 
-/// Custom pageView in which each page represents one or more consecutive days.
-class DaysPageView extends CalendarPageView {
-  /// Creates pageView with each page representing one or more consecutive days.
+class DaysPageView extends StatefulWidget {
   DaysPageView({
+    @required this.constraints,
     @required this.controller,
     @required this.pageBuilder,
     this.onDaysChanged,
-    Axis scrollDirection = Axis.horizontal,
-    bool reverse = false,
-    ScrollPhysics physics,
-    bool pageSnapping = true,
-  })  : assert(controller != null),
-        assert(pageBuilder != null),
-        super(
-          scrollDirection: scrollDirection,
-          reverse: reverse,
-          physics: physics,
-          pageSnapping: pageSnapping,
-        );
+  })  : assert(constraints != null),
+        assert(controller != null),
+        assert(pageBuilder != null);
 
-  /// Object in charge of controlling this [DaysPageView].
+  final DaysConstraints constraints;
   final DaysPageController controller;
-
-  /// Function that builds a page.
   final DaysPageBuilder pageBuilder;
 
-  /// Called whenever displayed days in this [DaysPageView] changes.
   final ValueChanged<List<DateTime>> onDaysChanged;
 
   @override
-  _DaysPageViewState createState() => new _DaysPageViewState();
+  State createState() => new _DaysPageViewState();
 }
 
-class _DaysPageViewState extends CalendarPageViewState<DaysPageView> {
+class _DaysPageViewState extends State<DaysPageView> {
+  PageController _pageController;
+  Key _pageViewKey;
+
+  PageDays _pageDays;
+
   @override
-  bool hasAnythingChanged(DaysPageView oldWidget) {
-    return widget.controller != oldWidget.controller ||
-        !identical(widget.pageBuilder, oldWidget.pageBuilder) ||
-        !identical(widget.onDaysChanged, oldWidget.onDaysChanged);
+  void initState() {
+    super.initState();
+
+    _createPageDays();
+    _initPageController();
+    _createNewUniquePageViewKey();
+    _attachToController();
+  }
+
+  void _initPageController() {
+    DateTime initialDay = widget.controller.initialDay;
+    Date initialDate = new Date.fromDateTime(initialDay);
+
+    int initialPage = _pageDays.pageOfDate(initialDate);
+
+    _createPageController(initialPage: initialPage);
   }
 
   @override
-  void onPageChanged(int page) {
-    if (widget.onDaysChanged != null) {
-      List<DateTime> days = widget.controller.daysOfPage(page);
+  void didUpdateWidget(DaysPageView oldWidget) {
+    super.didUpdateWidget(oldWidget);
 
-      widget.onDaysChanged(days);
+    Date representationOfCurrentPage = getRepresentationOfCurrentPage();
+
+    if (widget.controller != oldWidget.controller) {
+      oldWidget.controller.detach();
+      _attachToController();
+    }
+
+    if (widget.constraints != oldWidget.constraints) {
+      _createPageDays();
+
+      int initialPage = _pageDays.pageOfDate(representationOfCurrentPage);
+      _createPageController(initialPage: initialPage);
+      _createNewUniquePageViewKey();
     }
   }
 
+  Date getRepresentationOfCurrentPage() {
+    int currentPage = _pageController.page.round();
+    return _pageDays.getFirstDateOfPage(currentPage);
+  }
+
+  void _createNewUniquePageViewKey() {
+    _pageViewKey = new UniqueKey();
+  }
+
+  void _createPageDays() {
+    _pageDays = new PageDays(
+      daysPerPage: widget.constraints.daysPerPage,
+      minimumDate: new Date.fromDateTime(widget.constraints.minimumDay),
+      maximumDate: new Date.fromDateTime(widget.constraints.maximumDay),
+    );
+  }
+
+  void _createPageController({
+    @required int initialPage,
+  }) {
+    assert(initialPage != null);
+
+    _pageController = new PageController(
+      initialPage: initialPage,
+    );
+  }
+
+  void _onPageChanged(int page) {
+    if (widget.onDaysChanged == null) return;
+
+    List<DateTime> daysOfPage = _daysOfPage(page);
+    widget.onDaysChanged(daysOfPage);
+  }
+
+  void _attachToController() {
+    widget.controller.attach(_createCommunicator());
+  }
+
+  DaysPageCommunicator _createCommunicator() {
+    return new DaysPageCommunicator(
+      displayedDays: () {
+        int displayedPage = _pageController.page.round();
+        return _daysOfPage(displayedPage);
+      },
+      jumpToDay: (DateTime day) {
+        Date date = new Date.fromDateTime(day);
+        int page = _pageDays.pageOfDate(date);
+        _pageController.jumpToPage(page);
+      },
+      animateToDay: (
+        DateTime day, {
+        @required Duration duration,
+        @required Curve curve,
+      }) {
+        Date date = new Date.fromDateTime(day);
+        int page = _pageDays.pageOfDate(date);
+        _pageController.animateToPage(
+          page,
+          duration: duration,
+          curve: curve,
+        );
+      },
+      jumpToPage: _pageController.jumpToPage,
+      animateToPage: _pageController.animateToPage,
+    );
+  }
+
+  List<DateTime> _daysOfPage(int page) {
+    List<Date> datesOfPage = _pageDays.datesOfPage(page);
+
+    return datesOfPage
+        .map(
+          (date) => date.toDateTime(),
+        )
+        .toList();
+  }
+
   @override
-  Widget pageBuilder(BuildContext context, int page) {
-    List<DateTime> daysOfPage = widget.controller.daysOfPage(page);
+  Widget build(BuildContext context) {
+    return new PageView.builder(
+      key: _pageViewKey,
+      controller: _pageController,
+      onPageChanged: _onPageChanged,
+      itemBuilder: _pageBuilder,
+      itemCount: _pageDays.numberOfPages,
+    );
+  }
+
+  Widget _pageBuilder(BuildContext context, int page) {
+    List<DateTime> daysOfPage = _daysOfPage(page);
 
     return widget.pageBuilder(context, daysOfPage);
   }
