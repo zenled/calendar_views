@@ -9,7 +9,7 @@ class PageDays {
   PageDays({
     @required this.daysPerPage,
     @required this.minimumDate,
-    @required this.maximumDate,
+    this.maximumDate,
   })  : assert(daysPerPage != null),
         assert(minimumDate != null);
 

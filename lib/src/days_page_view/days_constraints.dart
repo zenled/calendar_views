@@ -11,7 +11,7 @@ class DaysConstraints {
   DaysConstraints._internal({
     @required this.daysPerPage,
     @required this.minimumDay,
-    @required this.maximumDay,
+    this.maximumDay,
   });
 
   factory DaysConstraints({
@@ -27,7 +27,7 @@ class DaysConstraints {
       throw new ArgumentError.value(
         daysPerPage,
         "daysPerPage",
-        "daysPerPageShould be > 0",
+        "daysPerPage must be > 0",
       );
     }
 
@@ -50,11 +50,14 @@ class DaysConstraints {
     }
 
     // calculate maximumDay
-    DateTime maximumDay = _adjustMaximumDayToSatisfyDaysPerPage(
-      daysPerPage: daysPerPage,
-      minimumDay: minimumDay,
-      maximumDayCandidate: maximumDayCandidate,
-    );
+    DateTime maximumDay;
+    if (maximumDayCandidate != null) {
+      maximumDay = _adjustMaximumDayToSatisfyDaysPerPage(
+        daysPerPage: daysPerPage,
+        minimumDay: minimumDay,
+        maximumDayCandidate: maximumDayCandidate,
+      );
+    }
 
     return new DaysConstraints._internal(
       daysPerPage: daysPerPage,
@@ -83,22 +86,6 @@ class DaysConstraints {
   final DateTime minimumDay;
   final DateTime maximumDay;
 
-  @override
-  int get hashCode => hash3(daysPerPage, minimumDay, maximumDay);
-
-  @override
-  bool operator ==(Object other) {
-    if (!(other is DaysConstraints)) {
-      return false;
-    }
-
-    DaysConstraints otherConstraints = other as DaysConstraints;
-    return daysPerPage == otherConstraints.daysPerPage &&
-        isSameDate(minimumDay, otherConstraints.minimumDay) &&
-        ((maximumDay == null && otherConstraints.maximumDay == null) ||
-            (isSameDate(maximumDay, otherConstraints.maximumDay)));
-  }
-
   DaysConstraints copyWithDaysPerPage(int daysPerPage) {
     return new DaysConstraints(
       daysPerPage: daysPerPage,
@@ -121,6 +108,21 @@ class DaysConstraints {
       minimumDay: minimumDay,
       maximumDayCandidate: maximumDayCandidate,
     );
+  }
+
+  @override
+  int get hashCode => hash3(daysPerPage, minimumDay, maximumDay);
+
+  @override
+  bool operator ==(Object other) {
+    if (other is DaysConstraints) {
+      return daysPerPage == other.daysPerPage &&
+          isSameDate(minimumDay, other.minimumDay) &&
+          ((maximumDay == null && other.maximumDay == null) ||
+              (isSameDate(maximumDay, other.maximumDay)));
+    } else {
+      return false;
+    }
   }
 
   static DateTime _adjustMaximumDayToSatisfyDaysPerPage({

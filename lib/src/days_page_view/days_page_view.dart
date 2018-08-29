@@ -68,7 +68,7 @@ class _DaysPageViewState extends State<DaysPageView> {
   void didUpdateWidget(DaysPageView oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    Date representationOfCurrentPage = getRepresentationOfCurrentPage();
+    Date representationOfCurrentPage = _getRepresentationOfCurrentPage();
 
     if (widget.controller != oldWidget.controller) {
       oldWidget.controller.detach();
@@ -85,7 +85,7 @@ class _DaysPageViewState extends State<DaysPageView> {
     }
   }
 
-  Date getRepresentationOfCurrentPage() {
+  Date _getRepresentationOfCurrentPage() {
     int currentPage = _pageController.page.round();
     return _pageDays.getFirstDateOfPage(currentPage);
   }
@@ -98,7 +98,9 @@ class _DaysPageViewState extends State<DaysPageView> {
     _pageDays = new PageDays(
       daysPerPage: widget.constraints.daysPerPage,
       minimumDate: new Date.fromDateTime(widget.constraints.minimumDay),
-      maximumDate: new Date.fromDateTime(widget.constraints.maximumDay),
+      maximumDate: widget.constraints.maximumDay != null
+          ? new Date.fromDateTime(widget.constraints.maximumDay)
+          : null,
     );
   }
 
@@ -155,11 +157,7 @@ class _DaysPageViewState extends State<DaysPageView> {
   List<DateTime> _daysOfPage(int page) {
     List<Date> datesOfPage = _pageDays.datesOfPage(page);
 
-    return datesOfPage
-        .map(
-          (date) => date.toDateTime(),
-        )
-        .toList();
+    return datesOfPage.map((date) => date.toDateTime()).toList();
   }
 
   @override

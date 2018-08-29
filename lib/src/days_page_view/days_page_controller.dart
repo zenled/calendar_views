@@ -83,7 +83,7 @@ class DaysPageController {
   void _throwExceptionIfNoItemAttached() {
     if (!isItemAttached) {
       throw new Exception(
-        "Couln not perform action, No item is attached to the controller",
+        "Couln not perform action, No item is attached to this controller",
       );
     }
   }
