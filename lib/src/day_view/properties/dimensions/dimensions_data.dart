@@ -1,8 +1,8 @@
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/day_view/day_view.dart';
+import 'package:calendar_views/src/day_view/day_view_OLD.dart';
 
-/// Data about sizes inside a [DayView].
+/// Data about sizes inside a [DayViewOLD].
 @immutable
 class DimensionsData {
   const DimensionsData({
@@ -23,18 +23,18 @@ class DimensionsData {
         assert(eventsAreaStartMargin != null && eventsAreaStartMargin >= 0),
         assert(eventsAreaEndMargin != null && eventsAreaEndMargin >= 0);
 
-  /// Height taken by a minute in a [DayView].
+  /// Height taken by a minute in a [DayViewOLD].
   final double heightPerMinute;
 
-  /// Width of separation between days in a [DayView].
+  /// Width of separation between days in a [DayViewOLD].
   final double daySeparationWidth;
 
   // extension
 
-  /// Height of extension at the top of [DayView].
+  /// Height of extension at the top of [DayViewOLD].
   final double topExtensionHeight;
 
-  /// Height of extension at the bottom of [DayView]
+  /// Height of extension at the bottom of [DayViewOLD]
   final double bottomExtensionHeight;
 
   // areas from start to end

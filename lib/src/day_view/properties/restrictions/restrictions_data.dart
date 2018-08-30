@@ -1,9 +1,9 @@
 import 'package:meta/meta.dart';
 
 import 'package:calendar_views/src/_utils/all.dart' as utils;
-import 'package:calendar_views/src/day_view/day_view.dart';
+import 'package:calendar_views/src/day_view/day_view_OLD.dart';
 
-/// Data with restrictions placed upon a [DayView].
+/// Data with restrictions placed upon a [DayViewOLD].
 @immutable
 class RestrictionsData {
   static const default_minimumMinuteOfDay = 0;
@@ -16,13 +16,13 @@ class RestrictionsData {
         assert(maximumMinuteOfDay <= utils.maximum_minute_of_day),
         assert(minimumMinuteOfDay <= maximumMinuteOfDay);
 
-  /// Minimum minute of day that a [DayView] is allowed to display (inclusive).
+  /// Minimum minute of day that a [DayViewOLD] is allowed to display (inclusive).
   final int minimumMinuteOfDay;
 
-  /// Maximum minute of day that a [DayView] is allowed to display (inclusive).
+  /// Maximum minute of day that a [DayViewOLD] is allowed to display (inclusive).
   final int maximumMinuteOfDay;
 
-  /// Number of minutes that a [DayView] should be able to display.
+  /// Number of minutes that a [DayViewOLD] should be able to display.
   int get totalNumberOfMinutes => maximumMinuteOfDay - minimumMinuteOfDay;
 
   @override

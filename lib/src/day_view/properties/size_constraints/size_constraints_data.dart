@@ -1,15 +1,15 @@
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/day_view/day_view.dart';
+import 'package:calendar_views/src/day_view/day_view_OLD.dart';
 
-/// Size constraints placed upon a [DayView].
+/// Size constraints placed upon a [DayViewOLD].
 @immutable
 class SizeConstraintsData {
   const SizeConstraintsData({
     @required this.availableWidth,
   }) : assert(availableWidth != null && availableWidth > 0);
 
-  /// Maximum with that a [DayView] is allowed and should occupy.
+  /// Maximum with that a [DayViewOLD] is allowed and should occupy.
   final double availableWidth;
 
   @override

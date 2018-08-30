@@ -1,8 +1,8 @@
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/day_view/day_view.dart';
+import 'package:calendar_views/src/day_view/day_view_OLD.dart';
 
-/// Data about days that a [DayView] should be displaying.
+/// Data about days that a [DayViewOLD] should be displaying.
 @immutable
 class DaysData {
   /// Creates a new instance of DaysData.
@@ -10,7 +10,7 @@ class DaysData {
     @required this.days,
   }) : assert(days != null);
 
-  /// Creates DaysData when [DayView] should display a single day.
+  /// Creates DaysData when [DayViewOLD] should display a single day.
   factory DaysData.forASingleDay({
     @required DateTime day,
   }) {
@@ -19,13 +19,13 @@ class DaysData {
     );
   }
 
-  /// List of days that a [DayView] should display.
+  /// List of days that a [DayViewOLD] should display.
   final List<DateTime> days;
 
-  /// Number of days that [DayView] should display.
+  /// Number of days that [DayViewOLD] should display.
   int get numberOfDays => days.length;
 
-  /// Returns List of integers each one representing sequential number of a single day in [DayView].
+  /// Returns List of integers each one representing sequential number of a single day in [DayViewOLD].
   List<int> get dayNumbers {
     List<int> dayNumbers = <int>[];
 
@@ -41,10 +41,10 @@ class DaysData {
     return days[dayNumber];
   }
 
-  /// Returns how many day separations should be in a [DayView].
+  /// Returns how many day separations should be in a [DayViewOLD].
   int get numberOfDaySeparations => numberOfDays - 1;
 
-  /// Returns List of integers each one representing sequential number of a single daySeparator in [DayView].
+  /// Returns List of integers each one representing sequential number of a single daySeparator in [DayViewOLD].
   List<int> get daySeparationNumbers {
     List<int> daySeparationNumbers = <int>[];
 
