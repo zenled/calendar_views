@@ -1,4 +1,4 @@
-import 'package:calendar_views/src/_internal_date_items/all.dart';
+import 'package:calendar_views/src/_internal_date_time/all.dart';
 import 'package:calendar_views/src/event/events/positionable_event.dart';
 
 /// Class that handles storage of events.

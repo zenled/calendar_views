@@ -1,10 +1,6 @@
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/event/events/positionable_event.dart';
-
-import '../arranged_event.dart';
-import '../arranger_constraints.dart';
-import '../events_arranger.dart';
+import 'package:calendar_views/event.dart';
 
 /// [EventsArranger] that tries to equally separate overlapping events.
 @immutable
@@ -12,21 +8,17 @@ class ChainsEventsArranger implements EventsArranger {
   /// Creates a new instance of this class.
   ///
   /// Using some other [eventsSorter] might produce different results.
-  const ChainsEventsArranger({
-    this.eventsSorter = sortPositionableEvents,
-  }) : assert(eventsSorter != null);
-
-  final PositionableEventsSorter eventsSorter;
+  const ChainsEventsArranger();
 
   @override
   List<ArrangedEvent> arrangeEvents({
-    @required Set<PositionableEvent> events,
+    @required List<TimePositionableEvent> events,
     @required ArrangerConstraints constraints,
   }) {
-    // sorts events
-    List<PositionableEvent> sortedEvents;
-    sortedEvents = events.toList();
-    eventsSorter(sortedEvents);
+    // creates a new list with sortedEvents
+    List<TimePositionableEvent> sortedEvents = <TimePositionableEvent>[];
+    sortedEvents.addAll(events);
+    _sortEvents(sortedEvents);
 
     // makes all the items
     List<_Item> items = _makeItems(
@@ -56,10 +48,10 @@ class ChainsEventsArranger implements EventsArranger {
     return items
         .map(
           (item) => new ArrangedEvent(
-                top: constraints.positionTopOf(item.start),
+                top: constraints.positionOfMinuteFromTop(item.start),
                 left: item.leftPercentage * constraints.areaWidth,
                 width: item.widthPercentage * constraints.areaWidth,
-                height: constraints.heightOf(item.duration),
+                height: constraints.heightOfDuration(item.duration),
                 event: item.event,
               ),
         )
@@ -67,8 +59,20 @@ class ChainsEventsArranger implements EventsArranger {
   }
 }
 
+void _sortEvents(List<TimePositionableEvent> events) {
+  events.sort(
+    (event1, event2) {
+      if (event1.startMinuteOfDay == event2.startMinuteOfDay) {
+        return event1.duration.compareTo(event2.duration);
+      } else {
+        return event1.startMinuteOfDay.compareTo(event2.startMinuteOfDay);
+      }
+    },
+  );
+}
+
 /// Creates a list of [_Item]s from [events].
-List<_Item> _makeItems(List<PositionableEvent> events) {
+List<_Item> _makeItems(List<TimePositionableEvent> events) {
   List<_Item> items = <_Item>[];
 
   for (int i = 0; i < events.length; i++) {
@@ -106,7 +110,7 @@ void _setLateOverlaps(_Item item, List<_Item> otherItems) {
 /// Sorts lateOverlaps of [item].
 void _sortLateOverlaps(_Item item) {
   item.lateOverlaps.sort((a, b) {
-    int r = a.event.beginMinuteOfDay.compareTo(b.event.beginMinuteOfDay);
+    int r = a.start.compareTo(b.start);
     if (r == 0) {
       // same start time (sort by duration, longest first)
       r -= a.event.duration.compareTo(b.event.duration);
@@ -172,7 +176,7 @@ void setAbstractWidthAndLeft(_Item item) {
 class _Item {
   final int id;
 
-  final PositionableEvent event;
+  final TimePositionableEvent event;
 
   List<_Item> earlyOverlaps;
 
@@ -196,9 +200,9 @@ class _Item {
   })  : assert(id != null),
         assert(event != null);
 
-  int get start => event.beginMinuteOfDay;
+  int get start => event.startMinuteOfDay;
 
-  int get end => event.endMinuteOfDay;
+  int get end => event.startMinuteOfDay + duration;
 
   int get duration => event.duration;
 

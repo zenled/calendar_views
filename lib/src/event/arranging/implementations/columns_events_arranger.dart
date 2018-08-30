@@ -1,9 +1,6 @@
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/event/events/positionable_event.dart';
-import '../arranged_event.dart';
-import '../arranger_constraints.dart';
-import '../events_arranger.dart';
+import 'package:calendar_views/event.dart';
 
 /// [EventsArranger] that arranges events into columns.
 @immutable
@@ -21,13 +18,14 @@ class ColumnsEventsArranger implements EventsArranger {
 
   @override
   List<ArrangedEvent> arrangeEvents({
-    @required Set<PositionableEvent> events,
+    @required List<TimePositionableEvent> events,
     @required ArrangerConstraints constraints,
   }) {
-    List<PositionableEvent> eventsToArrange = events.toList();
+    List<TimePositionableEvent> sortedEvents = <TimePositionableEvent>[];
+    sortedEvents.addAll(events);
+    _sortEvents(sortedEvents);
 
-    sortPositionableEvents(eventsToArrange);
-    List<_Column> columns = _makeColumns(eventsToArrange);
+    List<_Column> columns = _makeColumns(sortedEvents);
 
     return _columnsToArrangedEvents(
       columns: columns,
@@ -37,14 +35,26 @@ class ColumnsEventsArranger implements EventsArranger {
   }
 }
 
-List<_Column> _makeColumns(List<PositionableEvent> events) {
+void _sortEvents(List<TimePositionableEvent> events) {
+  events.sort(
+    (event1, event2) {
+      if (event1.startMinuteOfDay == event2.startMinuteOfDay) {
+        return event1.duration.compareTo(event2.duration);
+      } else {
+        return event1.startMinuteOfDay.compareTo(event2.startMinuteOfDay);
+      }
+    },
+  );
+}
+
+List<_Column> _makeColumns(List<TimePositionableEvent> events) {
   List<_Column> columns = new List();
 
   columns.add(
     new _Column(),
   );
 
-  for (PositionableEvent event in events) {
+  for (TimePositionableEvent event in events) {
     _Reservation reservation = new _Reservation(event);
 
     bool foundColumn = false;
@@ -106,11 +116,13 @@ List<ArrangedEvent> _columnsToArrangedEvents({
 
       arrangedEvents.add(
         new ArrangedEvent(
-          top: constraints
-              .positionTopOf(reservationInColumn.event.beginMinuteOfDay),
+          top: constraints.positionOfMinuteFromTop(
+            reservationInColumn.event.startMinuteOfDay,
+          ),
           left: columnWidth * columnNumber,
           width: columnWidth * widthInColumns,
-          height: constraints.heightOf(reservationInColumn.event.duration),
+          height:
+              constraints.heightOfDuration(reservationInColumn.event.duration),
           event: reservationInColumn.event,
         ),
       );
@@ -126,11 +138,11 @@ class _Reservation {
     this.event,
   ) : assert(event != null);
 
-  final PositionableEvent event;
+  final TimePositionableEvent event;
 
-  int get fromMinute => event.beginMinuteOfDay;
+  int get fromMinute => event.startMinuteOfDay;
 
-  int get toMinute => event.beginMinuteOfDay + event.duration;
+  int get toMinute => event.startMinuteOfDay + event.duration;
 }
 
 class _Column {

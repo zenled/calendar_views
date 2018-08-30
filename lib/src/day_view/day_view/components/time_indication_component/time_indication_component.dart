@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/day_view.dart';
 
+@immutable
 class TimeIndicationComponent implements DayViewComponent {
   const TimeIndicationComponent({
     @required this.items,

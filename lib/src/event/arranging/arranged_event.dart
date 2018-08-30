@@ -6,7 +6,7 @@ import 'package:calendar_views/event.dart';
 ///
 /// It contains an event it's position and size.
 @immutable
-class ArrangedEvent<I extends PositionableEvent> {
+class ArrangedEvent {
   ArrangedEvent({
     @required this.top,
     @required this.left,
@@ -27,5 +27,5 @@ class ArrangedEvent<I extends PositionableEvent> {
 
   final double height;
 
-  final I event;
+  final TimePositionableEvent event;
 }

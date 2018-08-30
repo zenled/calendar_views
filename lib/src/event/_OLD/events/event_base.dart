@@ -22,7 +22,7 @@ abstract class EventBase extends PositionableEvent {
     @required this.duration,
   })  : assert(date != null),
         assert(
-            beginMinuteOfDay != null && isValidMinuteOfDay(beginMinuteOfDay)),
+            beginMinuteOfDay != null && isMinuteOfDayValid(beginMinuteOfDay)),
         assert(duration != null &&
             (beginMinuteOfDay + duration) <= maximum_minute_of_day),
         isAllDay = false,

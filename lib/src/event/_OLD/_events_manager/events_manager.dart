@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/_internal_date_items/all.dart';
+import 'package:calendar_views/src/_internal_date_time/all.dart';
 import 'package:calendar_views/src/event/events/positionable_event.dart';
 import 'package:calendar_views/src/event/calendar_events/events_changed_listener.dart';
 import 'package:calendar_views/src/event/calendar_events/events_generator.dart';
