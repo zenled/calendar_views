@@ -57,8 +57,8 @@ class _DayViewState extends State<DayView> {
         Positioner positioner = _createPositioner(constraints.maxHeight);
 
         return new Container(
-          width: positioner.totalAreaWidth,
-          height: positioner.totalAreaHeight,
+          width: positioner.availableWidth,
+          height: positioner.nonPaddedAreaHeight,
           child: new Stack(
             children: _buildComponentItems(
               context: context,

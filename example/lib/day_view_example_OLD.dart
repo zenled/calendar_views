@@ -43,7 +43,7 @@ class _DayViewExampleState extends State<DayViewExample> {
                     new IntervalTimeIndicationComponent.everyHour(),
                     new IntervalSupportLineComponent.everyHour(),
                     new DaySeparationComponent(),
-                    new EventViewComponent(eventBuilder: eventWithTitleBuilder),
+                    new EventViewComponent(eventItemBuilder: eventWithTitleBuilder),
                   ],
                   child: new Container(
                     padding: new EdgeInsets.symmetric(horizontal: 16.0),
@@ -61,7 +61,7 @@ class _DayViewExampleState extends State<DayViewExample> {
                                   extendOverDaySeparation: false,
                                   extendOverEventsAreaStartMargin: false,
                                   extendOverEventsAreaEndMargin: false,
-                                  itemBuilder: _headerItemBuilder,
+                                  eventItemBuilder: _headerItemBuilder,
                                 ),
                                 new Expanded(
                                   child: new SingleChildScrollView(

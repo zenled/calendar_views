@@ -35,8 +35,8 @@ class Positioner extends HorizontalPositioner {
   /// Returns the [Area] of some non-numbered-area.
   Area getArea(AreaName areaName) {
     switch (areaName) {
-      case AreaName.totalArea:
-        return totalArea;
+      case AreaName.nonPaddedArea:
+        return nonPaddedArea;
       case AreaName.timeIndicationArea:
         return timeIndicationArea;
       case AreaName.separationArea:
@@ -70,40 +70,40 @@ class Positioner extends HorizontalPositioner {
     }
   }
 
-  // TotalArea -----------------------------------------------------------------
+  // NonPaddedArea -------------------------------------------------------------
 
-  double get totalAreaHeight =>
+  double get nonPaddedAreaHeight =>
       topExtensionHeight +
       heightOfDuration(properties.totalNumberOfMinutes) +
       bottomExtensionHeight;
 
-  double get totalAreaTop => 0.0;
+  double get nonPaddedAreaTop => 0.0;
 
-  double get totalAreaBottom => totalAreaTop + totalAreaHeight;
+  double get nonPaddedAreaBottom => nonPaddedAreaTop + nonPaddedAreaHeight;
 
-  Size get totalAreaSize => new Size(
-        totalAreaWidth,
-        totalAreaHeight,
+  Size get nonPaddedAreaSize => new Size(
+        nonPaddedAreaWidth,
+        nonPaddedAreaHeight,
       );
 
-  Area get totalArea => new Area(
-        name: AreaName.totalArea,
-        size: totalAreaSize,
-        left: totalAreaLeft,
-        right: totalAreaRight,
-        top: totalAreaTop,
-        bottom: totalAreaBottom,
+  Area get nonPaddedArea => new Area(
+        name: AreaName.nonPaddedArea,
+        size: nonPaddedAreaSize,
+        left: nonPaddedAreaLeft,
+        right: nonPaddedAreaRight,
+        top: nonPaddedAreaTop,
+        bottom: nonPaddedAreaBottom,
         minuteOfDayFromTop: minuteOfDayFromTop,
         heightOfDuration: heightOfDuration,
       );
 
   // TimeIndicationArea --------------------------------------------------------
 
-  double get timeIndicationAreHeight => totalAreaHeight;
+  double get timeIndicationAreHeight => nonPaddedAreaHeight;
 
   double get timeIndicationAreaTop => 0.0;
 
-  double get timeIndicationAreaBottom => totalAreaBottom;
+  double get timeIndicationAreaBottom => nonPaddedAreaBottom;
 
   Size get timeIndicationAreaSize => new Size(
         timeIndicationAreaWidth,
@@ -123,11 +123,11 @@ class Positioner extends HorizontalPositioner {
 
   // SeparationArea ------------------------------------------------------------
 
-  double get separationAreaHeight => totalAreaHeight;
+  double get separationAreaHeight => nonPaddedAreaHeight;
 
   double get separationAreaTop => 0.0;
 
-  double get separationAreaBottom => totalAreaBottom;
+  double get separationAreaBottom => nonPaddedAreaBottom;
 
   Size get separationAreaSize => new Size(
         separationAreaWidth,
@@ -147,11 +147,11 @@ class Positioner extends HorizontalPositioner {
 
   // ContentArea --------------------------------------------------------------
 
-  double get contentAreaHeight => totalAreaHeight;
+  double get contentAreaHeight => nonPaddedAreaHeight;
 
   double get contentAreaTop => 0.0;
 
-  double get contentAreaBottom => totalAreaBottom;
+  double get contentAreaBottom => nonPaddedAreaBottom;
 
   Size get contentAreaSize => new Size(
         contentAreaWidth,
@@ -171,11 +171,11 @@ class Positioner extends HorizontalPositioner {
 
   // EventArea -----------------------------------------------------------------
 
-  double get eventAreaHeight => totalAreaHeight;
+  double get eventAreaHeight => nonPaddedAreaHeight;
 
   double get eventAreaTop => 0.0;
 
-  double get eventAreaBottom => totalAreaBottom;
+  double get eventAreaBottom => nonPaddedAreaBottom;
 
   Size get eventAreaSize => new Size(
         eventAreaWidth,
@@ -195,11 +195,11 @@ class Positioner extends HorizontalPositioner {
 
   // DayArea -------------------------------------------------------------------
 
-  double get dayAreaHeight => totalAreaHeight;
+  double get dayAreaHeight => nonPaddedAreaHeight;
 
   double get dayAreaTop => 0.0;
 
-  double get dayAreaBottom => totalAreaBottom;
+  double get dayAreaBottom => nonPaddedAreaBottom;
 
   Size get dayAreaSize => new Size(
         dayAreaWidth,
@@ -223,11 +223,11 @@ class Positioner extends HorizontalPositioner {
 
   // DaySeparationArea ---------------------------------------------------------
 
-  double get daySeparationAreaHeight => totalAreaHeight;
+  double get daySeparationAreaHeight => nonPaddedAreaHeight;
 
   double get daySeparationAreaTop => 0.0;
 
-  double get daySeparationAreaBottom => totalAreaBottom;
+  double get daySeparationAreaBottom => nonPaddedAreaBottom;
 
   Size get daySeparationAreaSize => new Size(
         daySeparationAreaWidth,

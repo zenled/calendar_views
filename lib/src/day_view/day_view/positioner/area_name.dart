@@ -1,5 +1,5 @@
 enum AreaName {
-  totalArea,
+  nonPaddedArea,
   timeIndicationArea,
   separationArea,
   contentArea,

@@ -33,6 +33,8 @@ class Widths {
       identical(this, other) ||
       other is Widths &&
           runtimeType == other.runtimeType &&
+          paddingStart == other.paddingStart &&
+          paddingEnd == other.paddingEnd &&
           timeIndicationAreaWidth == other.timeIndicationAreaWidth &&
           separationAreaWidth == other.separationAreaWidth &&
           eventAreaStartMargin == other.eventAreaStartMargin &&
@@ -41,6 +43,8 @@ class Widths {
 
   @override
   int get hashCode =>
+      paddingStart.hashCode ^
+      paddingEnd.hashCode ^
       timeIndicationAreaWidth.hashCode ^
       separationAreaWidth.hashCode ^
       eventAreaStartMargin.hashCode ^

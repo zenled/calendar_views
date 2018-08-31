@@ -22,20 +22,20 @@ class HorizontalPositioner {
   final Widths widths;
   final double availableWidth;
 
-  // TotalArea -----------------------------------------------------------------
+  // NonPaddedArea -------------------------------------------------------------
 
-  double get totalAreaWidth =>
+  double get nonPaddedAreaWidth =>
       availableWidth - widths.paddingStart - widths.paddingEnd;
 
-  double get totalAreaLeft => widths.paddingStart;
+  double get nonPaddedAreaLeft => widths.paddingStart;
 
-  double get totalAreaRight => totalAreaLeft + totalAreaWidth;
+  double get nonPaddedAreaRight => nonPaddedAreaLeft + nonPaddedAreaWidth;
 
   // TimeIndicationArea --------------------------------------------------------
 
   double get timeIndicationAreaWidth => widths.timeIndicationAreaWidth;
 
-  double get timeIndicationAreaLeft => totalAreaLeft;
+  double get timeIndicationAreaLeft => nonPaddedAreaLeft;
 
   double get timeIndicationAreaRight =>
       timeIndicationAreaLeft + timeIndicationAreaWidth;
@@ -51,7 +51,7 @@ class HorizontalPositioner {
   // ContentArea ---------------------------------------------------------------
 
   double get contentAreaWidth => _minimumZero(
-        totalAreaWidth - timeIndicationAreaWidth - separationAreaWidth,
+        nonPaddedAreaWidth - timeIndicationAreaWidth - separationAreaWidth,
       );
 
   double get contentAreaLeft => separationAreaRight;
