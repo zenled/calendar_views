@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 import 'package:calendar_views/src/calendar_page_view/all.dart';
-import 'package:calendar_views/src/_internal_date_items/all.dart';
+import 'package:calendar_views/src/_internal_date_time/all.dart';
 
 import 'month_page_view.dart';
 
@@ -43,7 +43,7 @@ class MonthPageController extends CalendarPageController<DateTime> {
     DateTime minimumMonth,
     DateTime maximumMonth,
   }) {
-    // Converts to internal representation of months
+    /// Converts to internal representation of months
     Month initial;
     Month minimum;
     Month maximum;
@@ -57,23 +57,27 @@ class MonthPageController extends CalendarPageController<DateTime> {
     if (minimumMonth != null) {
       minimum = new Month.fromDateTime(minimumMonth);
     } else {
-      minimum = initial.add(-default_monthsDeltaFromInitialMonth);
+      minimum = initial.addMonths(-default_monthsDeltaFromInitialMonth);
     }
 
     if (maximumMonth != null) {
       maximum = new Month.fromDateTime(maximumMonth);
     } else {
-      maximum = initial.add(default_monthsDeltaFromInitialMonth);
+      maximum = initial.addMonths(default_monthsDeltaFromInitialMonth);
     }
 
-    // Validates
+    /// Validates
     if (!(minimum.isBefore(initial)) || minimum == initial) {
-      throw new ArgumentError(
+      throw new ArgumentError.value(
+        minimumMonth,
+        "minimumMonth",
         "minimumMonth should be before or same month as initialMonth",
       );
     }
     if (!(maximum.isAfter(initial) || maximum == initial)) {
-      throw new ArgumentError(
+      throw new ArgumentError.value(
+        maximumMonth,
+        "maximumMonth",
         "maximumMonth should be after or same month as initialMonth",
       );
     }
@@ -121,25 +125,26 @@ class MonthPageController extends CalendarPageController<DateTime> {
     }
     if (m.isAfter(_maximumMonth)) {
       return numberOfPages - 1;
+    } else {
+      return _minimumMonth.differenceInMonthsTo(m);
     }
-    return _minimumMonth.differenceInMonthsTo(m);
   }
 
   /// Returns month displayed on [page].
   ///
-  /// Values of returned month except year and month are set to their default values.
+  /// Properties of returned month except for year and month are set to their default values.
   DateTime monthOfPage(int page) {
     int deltaFromInitialPage = page - initialPage;
 
-    Month month = _initialMonth.add(deltaFromInitialPage);
+    Month month = _initialMonth.addMonths(deltaFromInitialPage);
     return month.toDateTime();
   }
 
   /// Returns currently displayed month in the controlled [MonthPageView].
   ///
-  /// If no [MonthPageView] is attached it returns null.
+  /// If no [MonthPageView] is attached an exception is thrown.
   ///
-  /// Values of returned [DateTime] except for year and month are set to their default values.
+  /// Properties of returned [DateTime] except for year and month are set to their default values.
   DateTime displayedMonth() {
     int displayedPage = super.displayedPage();
 
