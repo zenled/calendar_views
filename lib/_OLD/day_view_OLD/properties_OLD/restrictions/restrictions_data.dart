@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 
 import 'package:calendar_views/src/_utils/all.dart' as utils;
-import 'package:calendar_views/src/day_view/day_view_OLD.dart';
+import 'package:calendar_views/src/day_view/_OLD/day_view_OLD.dart';
 
 /// Data with restrictions placed upon a [DayViewOLD].
 @immutable

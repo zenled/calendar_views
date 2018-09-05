@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/day_view/day_view_OLD.dart';
+import 'package:calendar_views/src/day_view/_OLD/day_view_OLD.dart';
 
 /// Data about days that a [DayViewOLD] should be displaying.
 @immutable

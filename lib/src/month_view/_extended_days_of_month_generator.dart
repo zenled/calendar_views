@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/_internal_date_items/all.dart';
+import 'package:calendar_views/src/_internal_date_time/all.dart';
 import 'package:calendar_views/src/_utils/all.dart' as utils;
 
 import 'day_of_month_properties.dart';
@@ -12,7 +12,7 @@ class ExtendedDaysOfMonthGenerator {
     @required DateTime month,
     @required this.firstWeekday,
   })  : assert(month != null),
-        assert(firstWeekday != null && utils.isValidWeekday(firstWeekday)),
+        assert(firstWeekday != null && utils.isWeekdayValid(firstWeekday)),
         _month = new Month.fromDateTime(month);
 
   final Month _month;
@@ -44,8 +44,7 @@ class ExtendedDaysOfMonthGenerator {
   List<DayOfMonthProperties> _generateExtendedDaysBeforeMonth() {
     List<DayOfMonthProperties> extendedDays = <DayOfMonthProperties>[];
 
-    Date date =
-        _month.toDateAsFirstDayOfMonth().lowerToFirstWeekday(firstWeekday);
+    Date date = _month.toDateAsFirstDayOfMonth().lowerToWeekday(firstWeekday);
     while (!date.isOfMonth(_month)) {
       extendedDays.add(
         new DayOfMonthProperties.ofExtendedDay(
@@ -54,7 +53,7 @@ class ExtendedDaysOfMonthGenerator {
         ),
       );
 
-      date = date.add(days: 1);
+      date = date.addDays(1);
     }
 
     return extendedDays;
@@ -63,15 +62,13 @@ class ExtendedDaysOfMonthGenerator {
   List<DayOfMonthProperties> _generateDaysOfMonth() {
     List<DayOfMonthProperties> daysOfMonth = <DayOfMonthProperties>[];
 
-    Date date = _month.toDateAsFirstDayOfMonth();
-    while (date.isOfMonth(_month)) {
+    List<Date> days = _month.daysOfMonth();
+    for (Date day in days) {
       daysOfMonth.add(
         new DayOfMonthProperties(
-          date: date.toDateTime(),
+          date: day.toDateTime(),
         ),
       );
-
-      date = date.add(days: 1);
     }
 
     return daysOfMonth;
@@ -85,7 +82,7 @@ class ExtendedDaysOfMonthGenerator {
     List<DayOfMonthProperties> extendedDays = <DayOfMonthProperties>[];
 
     Date date = new Date.fromDateTime(lastDayOfMonth);
-    date = date.add(days: 1);
+    date = date.addDays(1);
     while (date.weekday != firstWeekday) {
       extendedDays.add(
         new DayOfMonthProperties.ofExtendedDay(
@@ -94,7 +91,7 @@ class ExtendedDaysOfMonthGenerator {
         ),
       );
 
-      date = date.add(days: 1);
+      date = date.addDays(1);
     }
 
     return extendedDays;
