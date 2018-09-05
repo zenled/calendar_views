@@ -1,2 +1,3 @@
-export 'event_item_builder.dart';
+export 'arranging/all.dart';
+
 export 'event_view_component.dart';

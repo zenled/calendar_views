@@ -6,17 +6,17 @@ import 'package:calendar_views/day_view.dart';
 @immutable
 class SupportLineComponent implements DayViewComponent {
   SupportLineComponent({
-    @required this.items,
-    @required this.itemBuilder,
-  })  : assert(items != null),
-        assert(itemBuilder != null);
+    @required this.supportLines,
+    @required this.supportLineItemBuilder,
+  })  : assert(supportLines != null),
+        assert(supportLineItemBuilder != null);
 
-  final List<TimePositionableItem> items;
-  final TimePositionableItemBuilder itemBuilder;
+  final List<ItemWithTime> supportLines;
+  final ItemWithTimeBuilder supportLineItemBuilder;
 
   ItemPosition _getItemPosition({
     @required Area area,
-    @required TimePositionableItem item,
+    @required ItemWithTime item,
   }) {
     return new ItemPosition(
       top: area.minuteOfDayFromTop(item.minuteOfDay),
@@ -39,7 +39,7 @@ class SupportLineComponent implements DayViewComponent {
     List<Positioned> builtItems = <Positioned>[];
     Area area = positioner.getArea(AreaName.contentArea);
 
-    for (TimePositionableItem item in items) {
+    for (ItemWithTime item in supportLines) {
       builtItems.add(
         _buildItem(
           context: context,
@@ -57,9 +57,9 @@ class SupportLineComponent implements DayViewComponent {
     @required BuildContext context,
     @required ItemPosition itemPosition,
     @required double itemWidth,
-    @required TimePositionableItem item,
+    @required ItemWithTime item,
   }) {
-    return itemBuilder(
+    return supportLineItemBuilder(
       context: context,
       position: itemPosition,
       width: itemWidth,

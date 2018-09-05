@@ -6,20 +6,17 @@ import 'package:calendar_views/day_view.dart';
 @immutable
 class TimeIndicationComponent implements DayViewComponent {
   const TimeIndicationComponent({
-    @required this.items,
-    @required this.itemBuilder,
-  })  : assert(items != null),
-        assert(itemBuilder != null);
+    @required this.timeIndicators,
+    @required this.timeIndicatorItemBuilder,
+  })  : assert(timeIndicators != null),
+        assert(timeIndicatorItemBuilder != null);
 
-  /// List of TimeIndicators ([TimeIndicatorProperties]) to build when calling [buildItems].
-  final List<StartDurationPositionableItem> items;
-
-  /// Function that builds a TimeIndicator.
-  final StartDurationPositionableItemBuilder itemBuilder;
+  final List<ItemWithStartDuration> timeIndicators;
+  final ItemWithStartDurationBuilder timeIndicatorItemBuilder;
 
   ItemPosition _getItemPosition({
     @required Area area,
-    @required StartDurationPositionableItem item,
+    @required ItemWithStartDuration item,
   }) {
     assert(area != null);
     assert(item != null);
@@ -32,7 +29,7 @@ class TimeIndicationComponent implements DayViewComponent {
 
   ItemSize _getItemSize({
     @required Area area,
-    @required StartDurationPositionableItem properties,
+    @required ItemWithStartDuration properties,
   }) {
     assert(area != null);
     assert(properties != null);
@@ -52,7 +49,7 @@ class TimeIndicationComponent implements DayViewComponent {
     List<Positioned> builtItems = <Positioned>[];
     Area area = positioner.getArea(AreaName.timeIndicationArea);
 
-    for (StartDurationPositionableItem item in items) {
+    for (ItemWithStartDuration item in timeIndicators) {
       builtItems.add(
         _buildItem(
           context: context,
@@ -70,9 +67,9 @@ class TimeIndicationComponent implements DayViewComponent {
     @required BuildContext context,
     @required ItemPosition itemPosition,
     @required ItemSize itemSize,
-    @required StartDurationPositionableItem item,
+    @required ItemWithStartDuration item,
   }) {
-    return itemBuilder(
+    return timeIndicatorItemBuilder(
       context: context,
       position: itemPosition,
       size: itemSize,

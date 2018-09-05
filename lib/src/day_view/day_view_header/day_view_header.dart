@@ -6,13 +6,12 @@ import 'package:calendar_views/day_view.dart';
 class DayViewHeader extends StatefulWidget {
   DayViewHeader({
     this.verticalAlignment = CrossAxisAlignment.start,
-    @required this.itemBuilder,
-  })
-      : assert(verticalAlignment != null),
-        assert(itemBuilder != null);
+    @required this.headerItemBuilder,
+  })  : assert(verticalAlignment != null),
+        assert(headerItemBuilder != null);
 
   final CrossAxisAlignment verticalAlignment;
-  final DayViewHeaderItemBuilder itemBuilder;
+  final DayViewHeaderItemBuilder headerItemBuilder;
 
   @override
   State createState() => new _DayViewHeaderState();
@@ -48,7 +47,9 @@ class _DayViewHeaderState extends State<DayViewHeader> {
         _buildDay(context: context, day: day),
       );
       if (_isDaySeparationAfterDay(dayNumber)) {
-        rowChildren.add(_buildDaySeparation(context),);
+        rowChildren.add(
+          _buildDaySeparation(context),
+        );
       }
     }
 
@@ -77,7 +78,7 @@ class _DayViewHeaderState extends State<DayViewHeader> {
   }) {
     return new Container(
       width: _horizontalPositioner.dayAreaWidth,
-      child: widget.itemBuilder(context, day),
+      child: widget.headerItemBuilder(context, day),
     );
   }
 
@@ -90,7 +91,7 @@ class _DayViewHeaderState extends State<DayViewHeader> {
   }
 
   bool _isLastDay(int dayNumber) {
-    return dayNumber == (_numberOfDays -1) ;
+    return dayNumber == (_numberOfDays - 1);
   }
 
   Widget _buildDaySeparation(BuildContext context) {
@@ -107,5 +108,5 @@ class _DayViewHeaderState extends State<DayViewHeader> {
 
   double get _endingOffsetWidth =>
       _horizontalPositioner.widths.eventAreaEndMargin +
-          _horizontalPositioner.widths.paddingEnd;
+      _horizontalPositioner.widths.paddingEnd;
 }

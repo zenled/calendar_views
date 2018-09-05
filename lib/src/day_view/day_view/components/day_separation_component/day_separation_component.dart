@@ -6,14 +6,14 @@ import 'package:calendar_views/day_view.dart';
 @immutable
 class DaySeparationComponent implements DayViewComponent {
   DaySeparationComponent({
-    @required this.itemBuilder,
+    @required this.daySeparationItemBuilder,
     this.extendOverTopExtension = true,
     this.extendOverBottomExtension = true,
-  })  : assert(itemBuilder != null),
+  })  : assert(daySeparationItemBuilder != null),
         assert(extendOverTopExtension != null),
         assert(extendOverBottomExtension != null);
 
-  final PositionableItemBuilder itemBuilder;
+  final ItemWithGeneratedPositionBuilder daySeparationItemBuilder;
 
   final bool extendOverTopExtension;
   final bool extendOverBottomExtension;
@@ -45,7 +45,7 @@ class DaySeparationComponent implements DayViewComponent {
       );
 
       builtItems.add(
-        itemBuilder(
+        daySeparationItemBuilder(
           context: context,
           position: position,
           size: size,

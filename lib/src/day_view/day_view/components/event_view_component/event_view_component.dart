@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 import 'package:calendar_views/day_view.dart';
-import 'package:calendar_views/event.dart';
 
 import '_day_builder.dart';
 
-typedef List<TimePositionableEvent> GetEventsOfDayCallback(
+typedef Set<ItemWithStartDuration> GetEventsOfDayCallback(
   DateTime day,
 );
 
@@ -19,8 +18,9 @@ class EventViewComponent implements DayViewComponent {
   });
 
   final GetEventsOfDayCallback getEventsOfDay;
-  final EventsArranger eventsArranger;
-  final EventItemBuilder eventItemBuilder;
+  final EventViewArranger eventsArranger;
+
+  final ItemWithStartDurationBuilder eventItemBuilder;
 
   @override
   List<Positioned> buildItems({
@@ -34,7 +34,7 @@ class EventViewComponent implements DayViewComponent {
     for (int i = 0; i < days.length; i++) {
       DateTime day = days[i];
       Area area = positioner.getNumberedArea(AreaName.dayArea, i);
-      List<TimePositionableEvent> events = getEventsOfDay(day);
+      Set<ItemWithStartDuration> events = getEventsOfDay(day);
 
       builtItems.addAll(
         _buildDay(
@@ -50,7 +50,7 @@ class EventViewComponent implements DayViewComponent {
 
   List<Positioned> _buildDay({
     @required BuildContext context,
-    @required List<TimePositionableEvent> events,
+    @required Set<ItemWithStartDuration> events,
     @required Area area,
   }) {
     DayBuilder dayBuilder = new DayBuilder(

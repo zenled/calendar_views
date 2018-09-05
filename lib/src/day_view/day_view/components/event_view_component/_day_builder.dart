@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 import 'package:calendar_views/day_view.dart';
-import 'package:calendar_views/event.dart';
 
 @immutable
 class DayBuilder {
@@ -20,10 +19,10 @@ class DayBuilder {
 
   final BuildContext context;
 
-  final List<TimePositionableEvent> events;
+  final Set<ItemWithStartDuration> events;
   final Area area;
-  final EventsArranger eventsArranger;
-  final EventItemBuilder eventItemBuilder;
+  final EventViewArranger eventsArranger;
+  final ItemWithStartDurationBuilder eventItemBuilder;
 
   List<Positioned> build() {
     List<ArrangedEvent> arrangedEvents = _arrangeEvents();
@@ -59,14 +58,14 @@ class DayBuilder {
       context: context,
       position: _createItemPosition(arrangedEvent),
       size: _createItemSize(arrangedEvent),
-      event: arrangedEvent.event,
+      item: arrangedEvent.event,
     );
   }
 
   ItemPosition _createItemPosition(ArrangedEvent arrangedEvent) {
     return new ItemPosition(
       top: arrangedEvent.top,
-      left: arrangedEvent.left,
+      left: arrangedEvent.left + area.left,
     );
   }
 
