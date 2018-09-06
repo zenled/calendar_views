@@ -65,7 +65,7 @@ class Month {
   }
 
   /// Returns number of months between this and [other] month.
-  int differenceInMonthsTo(Month other) {
+  int monthsBetween(Month other) {
     int thisFrom0AD = _monthsFrom0AD;
     int otherFrom0AD = other._monthsFrom0AD;
 
