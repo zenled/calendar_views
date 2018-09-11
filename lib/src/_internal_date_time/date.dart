@@ -1,11 +1,9 @@
 import 'package:meta/meta.dart';
 import 'package:quiver/core.dart';
 
-import 'package:calendar_views/src/_utils/all.dart';
+import 'package:calendar_views/src/_internal_date_time/all.dart';
 
-import 'month.dart';
-
-/// Internal representation of a date (year.month.day).
+/// Internal representation of a date (year, month, day).
 ///
 /// This class is intended only for use by this library only.
 @immutable
@@ -19,7 +17,7 @@ class Date {
         assert(month != null && isMonthValid(month)),
         assert(day != null && day >= 1 && day <= 31);
 
-  /// Creates new Date from [DateTime].
+  /// Creates a new Date from [DateTime].
   factory Date.fromDateTime(DateTime dateTime) {
     return new Date(
       dateTime.year,
@@ -28,7 +26,7 @@ class Date {
     );
   }
 
-  /// Creates new Date set to today-date.
+  /// Creates a new Date set to today.
   factory Date.today() {
     DateTime now = new DateTime.now();
 
@@ -66,7 +64,7 @@ class Date {
     return this.year == month.year && this.month == month.month;
   }
 
-  /// Returns days between this and [other] date.
+  /// Returns the number of days between this and [other] date.
   int daysBetween(Date other) {
     DateTime thisDateTimeUTC = toDateTimeUTC();
     DateTime otherDateTimeUTC = other.toDateTimeUTC();

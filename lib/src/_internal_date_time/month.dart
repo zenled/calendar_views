@@ -1,8 +1,6 @@
 import 'package:meta/meta.dart';
 
-import 'date.dart';
-
-import 'package:calendar_views/src/_utils/all.dart';
+import 'package:calendar_views/src/_internal_date_time/all.dart';
 
 /// Internal representation of a month.
 ///
@@ -16,17 +14,15 @@ class Month {
   )   : assert(year != null),
         assert(month != null && isMonthValid(month));
 
-  /// Creates new Month from [DateTime].
+  /// Creates a new Month from [DateTime].
   factory Month.fromDateTime(DateTime dateTime) {
-    assert(dateTime != null);
-
     return new Month(
       dateTime.year,
       dateTime.month,
     );
   }
 
-  /// Creates new Month set to today-month.
+  /// Creates a new Month set to whatever month is today.
   factory Month.now() {
     DateTime now = new DateTime.now();
     return new Month.fromDateTime(now);
@@ -35,9 +31,9 @@ class Month {
   /// Year of this Month.
   final int year;
 
-  /// Month of year.
+  /// Month of year of this Month.
   ///
-  /// Months are 1-based (1-January, 2-February).
+  /// Months are 1-based (1-January, 2-February...).
   final int month;
 
   int get _monthBase0 => month - 1;
@@ -74,7 +70,7 @@ class Month {
 
   int get _monthsFrom0AD {
     int r = 0;
-    r += year * 12;
+    r += year * DateTime.monthsPerYear;
 
     // if month is after 0 AD, months must be added, but if before they must be subtracted
     if (year >= 0) {
@@ -132,7 +128,7 @@ class Month {
 
   /// Returns this month as [DateTime].
   ///
-  /// Values except year and month are set to default.
+  /// Values except year and month are set to default values.
   DateTime toDateTime() {
     return new DateTime(year, month);
   }

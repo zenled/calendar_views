@@ -4,12 +4,12 @@ import 'package:calendar_views/src/_internal_date_time/all.dart';
 
 void main() {
   group("Month", () {
-    _testFromDateTime();
+    _testFactoryFromDateTime();
     _testAdd();
   });
 }
 
-void _testFromDateTime() {
+void _testFactoryFromDateTime() {
   group("factory .fromDateTime", () {
     test("test 1", () {
       DateTime dateTime = new DateTime(2018, 3, 31);

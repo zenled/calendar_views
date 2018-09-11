@@ -4,8 +4,8 @@ import 'package:calendar_views/src/_internal_date_time/all.dart';
 
 void main() {
   group("Date", () {
-    _testFromDateTime();
-    _testToday();
+    _testFactoryFromDateTime();
+    _testFactoryToday();
     _testToDateTime();
     _testIsBefore();
     _testIsAfter();
@@ -16,7 +16,7 @@ void main() {
   });
 }
 
-void _testFromDateTime() {
+void _testFactoryFromDateTime() {
   group("factory .fromDateTime", () {
     test("first day of year", () {
       DateTime dateTime = new DateTime(2018, 1, 1);
@@ -29,7 +29,7 @@ void _testFromDateTime() {
   });
 }
 
-void _testToday() {
+void _testFactoryToday() {
   group("factory .today", () {
     test("test if matches with  new DateTime.now()", () {
       Date actual = new Date.today();

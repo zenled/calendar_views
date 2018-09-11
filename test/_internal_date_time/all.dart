@@ -1,11 +1,11 @@
 import 'package:test/test.dart';
 
-import 'date.dart' as test_date;
-import 'month.dart' as test_month;
+import 'date.dart' as date_test;
+import 'month.dart' as month_test;
 
 void main() {
   group("_internal_date_time", () {
-    test_date.main();
-    test_month.main();
+    date_test.main();
+    month_test.main();
   });
 }
