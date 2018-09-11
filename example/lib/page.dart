@@ -19,23 +19,18 @@ import 'package:calendar_views/calendar_views.dart';
 /// For more information on this issue check documentation of [CalendarPageView].
 class Page extends StatefulWidget {
   Page.forSingleDay({
-    @required this.bigText,
     @required DateTime day,
   })  : showDayOfMonth = true,
         days = <DateTime>[day];
 
   Page.forMultipleDays({
-    @required this.bigText,
     @required this.days,
   }) : showDayOfMonth = true;
 
   Page.forMonth({
-    @required this.bigText,
     @required DateTime month,
   })  : showDayOfMonth = false,
         days = <DateTime>[month];
-
-  final bool bigText;
 
   final bool showDayOfMonth;
   final List<DateTime> days;
@@ -45,9 +40,16 @@ class Page extends StatefulWidget {
 }
 
 class _PageState extends State<Page> with AutomaticKeepAliveClientMixin<Page> {
+  bool checked;
+
   @override
-  bool get wantKeepAlive {
-    return true;
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    checked = false;
   }
 
   @override
@@ -65,19 +67,29 @@ class _PageState extends State<Page> with AutomaticKeepAliveClientMixin<Page> {
       return text;
     }
 
-    return new SingleChildScrollView(
-      child: new Container(
-        padding: new EdgeInsets.symmetric(vertical: 16.0),
-        child: new Column(
-          children: widget.days
-              .map((day) => new Text(
-                    _makeTextString(day),
-                    style: widget.bigText
-                        ? new TextStyle(fontSize: 50.0)
-                        : new TextStyle(),
-                  ))
-              .toList(),
-        ),
+    return new Container(
+      constraints: new BoxConstraints.expand(),
+      padding: new EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      child: new Column(
+        children: <Widget>[
+          new FlatButton(
+              child: new Icon(
+                  checked ? Icons.check_box : Icons.check_box_outline_blank),
+              onPressed: () {
+                setState(() {
+                  checked = !checked;
+                });
+              }),
+          new Expanded(
+            child: new SingleChildScrollView(
+              child: new Column(
+                children: widget.days
+                    .map((day) => new Text(_makeTextString(day)))
+                    .toList(),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

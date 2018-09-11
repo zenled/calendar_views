@@ -18,7 +18,7 @@ class MonthView extends StatefulWidget {
     this.showExtendedDaysAfter = true,
     Key key,
   })  : assert(month != null),
-        assert(firstWeekday != null && utils.isValidWeekday(firstWeekday)),
+        assert(firstWeekday != null && utils.isWeekdayValid(firstWeekday)),
         assert(dayOfMonthBuilder != null),
         assert(showExtendedDaysBefore != null),
         assert(showExtendedDaysAfter != null),

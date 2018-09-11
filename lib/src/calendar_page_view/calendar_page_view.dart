@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import '_calendar_page_view_communicator.dart';
+import 'calendar_page_view_communicator.dart';
 import 'calendar_page_controller.dart';
 
 /// Base class for for a pageView that can be controlled with [CalendarPageController].
@@ -21,7 +21,7 @@ import 'calendar_page_controller.dart';
 ///
 /// Due to this workaround
 /// state of all pages will be lost if [controller] or [scrollDirection] is changed at runtime.
-/// State will be lost even when using [PageStorage] or [AutomaticKeepAliveClientMixin]
+/// State will be lost even when using [PageStorage], [AutomaticKeepAliveClientMixin]
 /// or similar state-storing solutions.
 /// This is because internally an entirely new (with new State) [PageView]
 /// is created when changing those properties.
@@ -67,7 +67,7 @@ abstract class CalendarPageViewState<T extends CalendarPageView>
     );
 
     _pageView = _createPageView(
-      withUniqueKey: false,
+      withNewUniqueKey: false,
     );
 
     _attachToController();
@@ -92,14 +92,8 @@ abstract class CalendarPageViewState<T extends CalendarPageView>
       dynamic representationOfCurrentPage =
           oldWidget.controller.representationOfCurrentPage();
 
-      int initialPageOnNewPageController;
-
-      if (representationOfCurrentPage != null) {
-        initialPageOnNewPageController = widget.controller
-            .indexOfPageThatRepresents(representationOfCurrentPage);
-      } else {
-        initialPageOnNewPageController = widget.controller.initialPage;
-      }
+      int initialPageOnNewPageController = widget.controller
+          .indexOfPageThatRepresents(representationOfCurrentPage);
 
       _pageController = _createPageController(
         initialPage: initialPageOnNewPageController,
@@ -108,13 +102,13 @@ abstract class CalendarPageViewState<T extends CalendarPageView>
       oldWidget.controller.detach();
       _attachToController();
 
-      bool createPageViewWithUniqueKey =
+      bool useUniqueKeyWhenCreatingPageView =
           widget.scrollDirection != oldWidget.scrollDirection ||
               widget.controller != oldWidget.controller;
 
       setState(() {
         _pageView = _createPageView(
-          withUniqueKey: createPageViewWithUniqueKey,
+          withNewUniqueKey: useUniqueKeyWhenCreatingPageView,
         );
       });
     }
@@ -136,9 +130,9 @@ abstract class CalendarPageViewState<T extends CalendarPageView>
   }
 
   PageView _createPageView({
-    @required bool withUniqueKey,
+    @required bool withNewUniqueKey,
   }) {
-    if (withUniqueKey || _keyOfPageView == null) {
+    if (withNewUniqueKey || _keyOfPageView == null) {
       _keyOfPageView = new UniqueKey();
     }
 
@@ -157,25 +151,43 @@ abstract class CalendarPageViewState<T extends CalendarPageView>
 
   void _attachToController() {
     widget.controller.attach(
-      _createCalendarPageViewCommunicator(),
+      _createCommunicator(),
     );
   }
 
-  CalendarPageViewCommunicator _createCalendarPageViewCommunicator() {
+  CalendarPageViewCommunicator _createCommunicator() {
     return new CalendarPageViewCommunicator(
       jumpToPage: _pageController.jumpToPage,
       animateToPage: _pageController.animateToPage,
       displayedPage: () {
         return _pageController.page.round();
       },
+      onControllerChanged: onControllerChanged,
     );
+  }
+
+  void onControllerChanged(dynamic representationOfCurrentPage) {
+    int initialPageOnNewPageController = widget.controller
+        .indexOfPageThatRepresents(representationOfCurrentPage);
+
+    _pageController = _createPageController(
+      initialPage: initialPageOnNewPageController,
+    );
+
+    widget.controller.attach(_createCommunicator());
+
+    setState(() {
+      _pageView = _createPageView(
+        withNewUniqueKey: true,
+      );
+    });
   }
 
   Widget pageBuilder(BuildContext context, int page);
 
   /// Called whenever the page changes.
   ///
-  /// This method is not called if page is changed because of new [constraints].
+  /// This method is not called if page is changed because of new constraints (eg. minimumDay, maximumDay).
   void onPageChanged(int page);
 
   @override

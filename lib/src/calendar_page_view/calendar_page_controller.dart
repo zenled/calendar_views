@@ -3,53 +3,59 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import '_calendar_page_view_communicator.dart';
+import 'calendar_page_view_communicator.dart';
 import 'calendar_page_view.dart';
 
 /// Base class of a controller for a [CalendarPageView].
+///
+/// Each page of the controlled [CalendarPageView] should be representable
+/// with an unique object of type [T].
 abstract class CalendarPageController<T> {
   CalendarPageController({
     @required this.initialPage,
     @required this.numberOfPages,
-  })  : assert(initialPage != null),
-        assert(numberOfPages != null),
-        assert(initialPage >= 0 && initialPage < numberOfPages);
-
-  /// Object for communication with attached [CalendarPageView].
-  CalendarPageViewCommunicator _attachedCommunicator;
+  }) : assert(initialPage != null) {
+    _throwArgumentErrorIfInvalidNumberOfPages(numberOfPages);
+  }
 
   /// Initial page that the controlled [CalendarPageView] should display.
   final int initialPage;
 
-  /// Number of pages that the controlled [CalendarPageView] should be able to display.
-  final int numberOfPages;
+  int numberOfPages;
 
-  /// Registers the given [communicator] (provided by [CalendarPageView]) with this controller.
+  /// Object for communication with attached [CalendarPageView].
+  CalendarPageViewCommunicator _attachedCommunicator;
+
+  void updateControlledItem(T representationOfPageToJumpTo) {
+    _throwExceptionIfNoCommunicatorIsAttached();
+
+    _attachedCommunicator.onControllerChanged(representationOfPageToJumpTo);
+  }
+
+  /// Registers the given [communicator] with this controller.
   ///
   /// If a communicators is already attached, it is replaced with the new one.
   void attach(CalendarPageViewCommunicator communicator) {
     _attachedCommunicator = communicator;
   }
 
-  /// Unregisters the previously attached communicator (that was provided by [CalendarPageView]).
+  /// Unregisters the previously attached communicator.
   void detach() {
     _attachedCommunicator = null;
   }
 
   /// Returns true if there is a [CalendarPageView] attached to this controller.
-  bool isCalendarPageViewAttached() {
+  bool isCommunicatorAttached() {
     return _attachedCommunicator != null;
   }
 
-  /// Returns displayed page in the controlled [CalendarPageView].
+  /// Returns currently displayed page in the controlled [CalendarPageView].
   ///
   /// If no [CalendarPageView] is attached it returns null.
   int displayedPage() {
-    if (isCalendarPageViewAttached()) {
-      return _attachedCommunicator.displayedPage();
-    } else {
-      return null;
-    }
+    _throwExceptionIfNoCommunicatorIsAttached();
+
+    return _attachedCommunicator.displayedPage();
   }
 
   /// Returns a representation of current page in the controlled [CalendarPageView].
@@ -66,7 +72,7 @@ abstract class CalendarPageController<T> {
   ///
   /// If no [CalendarPageView] is attached it does nothing.
   void jumpToPage(int page) {
-    if (isCalendarPageViewAttached()) {
+    if (isCommunicatorAttached()) {
       _attachedCommunicator.jumpToPage(page);
     }
   }
@@ -79,7 +85,7 @@ abstract class CalendarPageController<T> {
     @required Duration duration,
     @required Curve curve,
   }) {
-    if (isCalendarPageViewAttached()) {
+    if (isCommunicatorAttached()) {
       return _attachedCommunicator.animateToPage(
         page,
         duration: duration,
@@ -87,6 +93,26 @@ abstract class CalendarPageController<T> {
       );
     } else {
       return null;
+    }
+  }
+
+  void _throwExceptionIfNoCommunicatorIsAttached() {
+    if (!isCommunicatorAttached()) {
+      throw new Exception("No item is attached to this controller");
+    }
+  }
+
+  void _throwArgumentErrorIfInvalidNumberOfPages(int numberOfPages) {
+    if (numberOfPages == null) {
+      return;
+    } else {
+      if (numberOfPages <= 0) {
+        throw new ArgumentError.value(
+          numberOfPages,
+          "numberOfPages",
+          "numberOfPages must be > 0",
+        );
+      }
     }
   }
 }
