@@ -81,7 +81,7 @@ class MyApp extends StatelessWidget {
                   ),
                   new Divider(height: 0.0),
                   new ListTile(
-                    title: new Text("Month Page View"),
+                    title: new Text("MonthPageView"),
                     subtitle: new Text("MonthPageView Example"),
                     onTap: () {
                       _showWidgetInFullScreenDialog(
@@ -102,12 +102,12 @@ class MyApp extends StatelessWidget {
 
   void _showWidgetInFullScreenDialog(BuildContext context, Widget widget) {
     Navigator.of(context).push(
-          new MaterialPageRoute(
-            fullscreenDialog: true,
-            builder: (BuildContext context) {
-              return widget;
-            },
-          ),
-        );
+      new MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (BuildContext context) {
+          return widget;
+        },
+      ),
+    );
   }
 }

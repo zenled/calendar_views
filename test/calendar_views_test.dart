@@ -1,7 +1,5 @@
-import '_internal_date_time/all.dart' as internal_date_time_test;
-import 'days_page_view/all.dart' as consecutive_days_page_view_test;
+import 'month_page_view/all.dart' as month_page_view;
 
 void main() {
-  internal_date_time_test.main();
-  consecutive_days_page_view_test.main();
+  month_page_view.main();
 }

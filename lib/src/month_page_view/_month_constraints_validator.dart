@@ -11,13 +11,13 @@ class MonthConstraintsValidator {
   final Month minimumMonth;
   final Month maximumMonth;
 
-  void throwArgumentErrorIfInvalidMinimumMonth() {
+  void validateMinimumMonth() {
     if (minimumMonth == null) {
       throw new ArgumentError.notNull("minimumMonth");
     }
   }
 
-  void throwArgumentErrorIfInvalidMaximumMonth() {
+  void validateMaximumMonth() {
     if (maximumMonth == null) {
       return;
     }

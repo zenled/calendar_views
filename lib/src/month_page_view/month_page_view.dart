@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
@@ -26,10 +28,11 @@ class MonthPageView extends StatefulWidget {
         assert(reverse != null) {
     MonthConstraintsValidator validator = new MonthConstraintsValidator(
       minimumMonth: new Month.fromDateTime(minimumMonth),
-      maximumMonth: new Month.fromDateTime(maximumMonth),
+      maximumMonth:
+          maximumMonth != null ? new Month.fromDateTime(maximumMonth) : null,
     );
-    validator.throwArgumentErrorIfInvalidMinimumMonth();
-    validator.throwArgumentErrorIfInvalidMaximumMonth();
+    validator.validateMinimumMonth();
+    validator.validateMaximumMonth();
   }
 
   final DateTime minimumMonth;
@@ -112,7 +115,9 @@ class _MonthPageViewState extends State<MonthPageView> {
   void _createPageMonth() {
     _pageMonth = new PageMonth(
       minimumMonth: new Month.fromDateTime(widget.minimumMonth),
-      maximumMonth: new Month.fromDateTime(widget.maximumMonth),
+      maximumMonth: widget.maximumMonth != null
+          ? new Month.fromDateTime(widget.maximumMonth)
+          : null,
     );
   }
 
@@ -158,14 +163,14 @@ class _MonthPageViewState extends State<MonthPageView> {
     _pageController.jumpToPage(page);
   }
 
-  void _animateToMonth(
+  Future<Null> _animateToMonth(
     DateTime month, {
     @required Duration duration,
     @required Curve curve,
   }) {
     int page = _pageMonth.pageOfMonth(new Month.fromDateTime(month));
 
-    _pageController.animateToPage(
+    return _pageController.animateToPage(
       page,
       duration: duration,
       curve: curve,

@@ -2,8 +2,6 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/src/_internal_date_time/all.dart';
 
-import 'maximum_day_adjuster.dart';
-
 @immutable
 class PageDays {
   PageDays({
