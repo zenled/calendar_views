@@ -1,12 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 import 'package:calendar_views/month_page_view.dart';
 
 import 'axis_to_string.dart';
 import 'page.dart';
-import 'month_picker_dialog.dart';
 
 class MonthPageViewExample extends StatefulWidget {
   @override
@@ -14,55 +11,39 @@ class MonthPageViewExample extends StatefulWidget {
 }
 
 class _MonthPageViewExampleState extends State<MonthPageViewExample> {
-  DateTime _minimumMonth;
-  DateTime _maximumMonth;
-
   MonthPageController _monthPageController;
 
   Axis _scrollDirection;
   bool _pageSnapping;
   bool _reverse;
 
+  String _displayedMonthText;
+
   @override
   void initState() {
     super.initState();
 
-    DateTime now = new DateTime.now();
-    _minimumMonth = now.add(new Duration(days: -40));
-    _maximumMonth = now.add(new Duration(days: 40));
+    DateTime initialMonth = new DateTime.now();
 
     _monthPageController = new MonthPageController(
-      initialMonth: now,
+      initialMonth: initialMonth,
     );
 
     _scrollDirection = Axis.horizontal;
     _pageSnapping = true;
     _reverse = false;
+
+    _displayedMonthText = _monthToString(initialMonth);
   }
 
   void _onMonthChanged(DateTime month) {
-    print(
-      "Displaying: ${_monthToString(month)}",
-    );
+    setState(() {
+      _displayedMonthText = _monthToString(month);
+    });
   }
 
   String _monthToString(DateTime month) {
     return "${month.year}.${month.month}";
-  }
-
-  void _changeMinimumMonth() {
-    showDialog(
-      context: context,
-      builder: (context) => new MonthPickerDialog(
-            initialMonth: _minimumMonth,
-            onConfirm: (newMinimumMonth) {
-              Navigator.of(context).pop();
-              setState(() {
-                _minimumMonth = newMinimumMonth;
-              });
-            },
-          ),
-    );
   }
 
   @override
@@ -77,57 +58,84 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
             child: new Container(
               color: Colors.green.shade200,
               child: new MonthPageView(
-                minimumMonth: _minimumMonth,
-                maximumMonth: _maximumMonth,
-                controller: _monthPageController,
-                pageBuilder: _monthPageBuilder,
-                onMonthChanged: _onMonthChanged,
                 scrollDirection: _scrollDirection,
                 pageSnapping: _pageSnapping,
                 reverse: _reverse,
+                controller: _monthPageController,
+                pageBuilder: _monthPageBuilder,
+                onMonthChanged: _onMonthChanged,
               ),
             ),
           ),
           new Expanded(
             child: new SingleChildScrollView(
               child: new Container(
-                padding: new EdgeInsets.all(16.0),
+                padding: new EdgeInsets.symmetric(vertical: 16.0),
                 child: new Column(
                   children: <Widget>[
-                    new RaisedButton(
-                      child: new Text("Jump To Today-Month"),
-                      onPressed: () {
-                        _monthPageController.jumpToMonth(
-                          new DateTime.now(),
-                        );
-                      },
-                    ),
-                    new Divider(),
                     new ListTile(
-                      title: new Text("Minimum Month"),
-                      trailing: new Text(_monthToString(_minimumMonth)),
-                      onTap: _changeMinimumMonth,
+                      title: new Text("Displayed month: $_displayedMonthText"),
                     ),
-                    new Divider(),
-                    new Divider(),
+                    new Divider(height: 0.0),
+                    new Container(
+                      padding: new EdgeInsets.all(4.0),
+                      child: new Center(
+                        child: new RaisedButton(
+                          child: new Text("Jump To Today-Month"),
+                          onPressed: () {
+                            _monthPageController.jumpToMonth(
+                              new DateTime.now(),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    new Divider(height: 0.0),
                     new ListTile(
                       title: new Text("Scroll Direction"),
                       trailing: new DropdownButton<Axis>(
                         value: _scrollDirection,
                         items: <Axis>[Axis.horizontal, Axis.vertical]
-                            .map((axis) => new DropdownMenuItem<Axis>(
-                                  value: axis,
-                                  child: new Text("${axisToString(axis)}"),
-                                ))
+                            .map(
+                              (axis) => new DropdownMenuItem<Axis>(
+                                    value: axis,
+                                    child: new Text("${axisToString(axis)}"),
+                                  ),
+                            )
                             .toList(),
                         onChanged: (Axis value) {
                           setState(() {
                             this._scrollDirection = value;
                           });
+
+                          showDialog(
+                            context: context,
+                            builder: (context) => new AlertDialog(
+                                  title:
+                                      new Text("This feature might not work"),
+                                  content: new Text(
+                                    """
+MothPageView internally uses a PageView.
+
+Due to a bug in PageView, changing scrollDirection during runtime might not work correctly.
+
+https://github.com/flutter/flutter/issues/16481
+""",
+                                  ),
+                                  actions: <Widget>[
+                                    new FlatButton(
+                                      child: new Text("OK"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    )
+                                  ],
+                                ),
+                          );
                         },
                       ),
                     ),
-                    new Divider(),
+                    new Divider(height: 0.0),
                     new CheckboxListTile(
                       title: new Text("Page snapping"),
                       value: _pageSnapping,
@@ -137,7 +145,7 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
                         });
                       },
                     ),
-                    new Divider(),
+                    new Divider(height: 0.0),
                     new CheckboxListTile(
                       title: new Text("Reverse"),
                       value: _reverse,
@@ -147,7 +155,6 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
                         });
                       },
                     ),
-                    new Divider(),
                   ],
                 ),
               ),
@@ -164,23 +171,3 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
     );
   }
 }
-
-//DateTime _addMonths(DateTime date, int numOfMonths) {
-//  int yearChange = numOfMonths ~/ 12;
-//  int monthChange = (numOfMonths.abs() % 12) * numOfMonths.sign;
-//
-//  int newYear = date.year + yearChange;
-//  int newMonthBase0 = (date.month - 1) + monthChange;
-//  if (newMonthBase0 > 11) {
-//    newYear++;
-//  }
-//  if (newMonthBase0 < 0) {
-//    newYear--;
-//  }
-//  newMonthBase0 = newMonthBase0 % 12;
-//
-//  return new DateTime(
-//    newYear,
-//    newMonthBase0 + 1,
-//  );
-//}

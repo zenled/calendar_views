@@ -2,27 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 import 'package:calendar_views/src/_internal_date_time/all.dart';
-import 'package:calendar_views/src/custom_page_view/all.dart';
+import 'package:calendar_views/src/calendar_page_view/all.dart';
 
-import '_constriants_validator.dart';
 import '_page_month.dart';
 import 'month_page_builder.dart';
-import 'month_page_communicator.dart';
 import 'month_page_controller.dart';
+import 'month_page_link.dart';
 
-class MonthPageView extends CustomPageView<Month> {
+/// Widget similar to [PageView] but instead of page-number it gives each page a month.
+///
+/// The number of months that can be displayed is virtually infinite.
+class MonthPageView extends CalendarPageView {
   MonthPageView({
-    @required this.minimumMonth,
-    this.maximumMonth,
+    Axis scrollDirection = CalendarPageView.default_scroll_direction,
+    bool pageSnapping = CalendarPageView.default_page_snapping,
+    bool reverse = CalendarPageView.default_reverse,
+    ScrollPhysics physics = CalendarPageView.default_physics,
     MonthPageController controller,
     @required this.pageBuilder,
     this.onMonthChanged,
-    Axis scrollDirection = CustomPageView.default_scroll_direction,
-    bool pageSnapping = CustomPageView.default_page_snapping,
-    bool reverse = CustomPageView.default_reverse,
-    ScrollPhysics physics = CustomPageView.default_physics,
   })  : this.controller = controller ?? new MonthPageController(),
-        assert(minimumMonth != null),
         assert(controller != null),
         assert(pageBuilder != null),
         super(
@@ -30,28 +29,12 @@ class MonthPageView extends CustomPageView<Month> {
           pageSnapping: pageSnapping,
           reverse: reverse,
           physics: physics,
-        ) {
-    ConstraintsValidator validator = new ConstraintsValidator(
-      minimumMonth: new Month.fromDateTime(minimumMonth),
-      maximumMonth:
-          maximumMonth != null ? new Month.fromDateTime(maximumMonth) : null,
-    );
-    validator.validateMinimumMonth();
-    validator.validateMaximumMonth();
-  }
+        );
 
-  /// Minimum month (inclusive).
-  final DateTime minimumMonth;
-
-  /// Maximum month (inclusive).
-  ///
-  /// If [maximumMonth] is null the [MonthPageView] is infinite.
-  final DateTime maximumMonth;
-
-  /// Object for controlling this [MonthPageView].
+  /// Object for controlling this widget.
   final MonthPageController controller;
 
-  /// Function that builds a page inside [MonthPageView].
+  /// Function that builds a page.
   final MonthPageBuilder pageBuilder;
 
   /// Called whenever the displayed month changes.
@@ -60,17 +43,22 @@ class MonthPageView extends CustomPageView<Month> {
   final ValueChanged<DateTime> onMonthChanged;
 
   @override
-  _MonthPageViewState createState() => new _MonthPageViewState();
+  CalendarPageViewState createState() => new _MonthPageViewState();
 }
 
-class _MonthPageViewState extends CustomPageViewState<MonthPageView, Month> {
+class _MonthPageViewState extends CalendarPageViewState<MonthPageView, Month> {
   PageMonth _pageMonth;
 
   @override
   void initState() {
     super.initState();
 
-    _pageMonth = _createPageMonth();
+    Month initialMonth = new Month.fromDateTime(widget.controller.initialMonth);
+    _pageMonth = new PageMonth(
+      initialPage: CalendarPageViewState.initial_page,
+      initialMonth: initialMonth,
+    );
+
     _attachToController();
   }
 
@@ -78,43 +66,55 @@ class _MonthPageViewState extends CustomPageViewState<MonthPageView, Month> {
   void didUpdateWidget(MonthPageView oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    _pageMonth = _createPageMonth();
-
     if (widget.controller != oldWidget.controller) {
       oldWidget.controller.detach();
       _attachToController();
     }
   }
 
-  PageMonth _createPageMonth() {
-    DateTime minimumMonth = widget.minimumMonth;
-    DateTime maximumMonth = widget.maximumMonth;
-
-    return new PageMonth(
-      minimumMonth: new Month.fromDateTime(minimumMonth),
-      maximumMonth:
-          maximumMonth != null ? new Month.fromDateTime(maximumMonth) : null,
+  void _attachToController() {
+    widget.controller.attach(
+      _createMonthPageLink(),
     );
   }
 
-  void _attachToController() {
-    widget.controller.attach(_createMonthPageCommunicator());
-  }
-
-  MonthPageCommunicator _createMonthPageCommunicator() {
-    return new MonthPageCommunicator(
-      currentMonth: () => currentRepresentation.toDateTime(),
-      jumpToMonth: (DateTime month) {
-        int page = getPageOfRepresentation(new Month.fromDateTime(month));
-        jumpToPage(page);
-      },
-      animateToMonth: (DateTime month, {duration, curve}) {
-        int page = getPageOfRepresentation(new Month.fromDateTime(month));
-        return animateToPage(page, duration: duration, curve: curve);
-      },
-      currentPage: () => currentPage,
+  MonthPageLink _createMonthPageLink() {
+    return new MonthPageLink(
+      currentMonth: _getCurrentMonth,
+      jumpToMonth: _jumpToMonth,
+      animateToMonth: _animateToMonth,
+      currentPage: getCurrentPage,
       jumpToPage: jumpToPage,
       animateToPage: animateToPage,
+    );
+  }
+
+  DateTime _getCurrentMonth() {
+    int currentPage = getCurrentPage();
+    Month currentMonth = getRepresentationOfPage(currentPage);
+
+    return currentMonth.toDateTime();
+  }
+
+  void _jumpToMonth(DateTime month) {
+    Month m = new Month.fromDateTime(month);
+    int page = getPageOfRepresentation(m);
+
+    jumpToPage(page);
+  }
+
+  Future<Null> _animateToMonth(
+    DateTime month, {
+    @required Duration duration,
+    @required Curve curve,
+  }) {
+    Month m = new Month.fromDateTime(month);
+    int page = getPageOfRepresentation(m);
+
+    return animateToPage(
+      page,
+      duration: duration,
+      curve: curve,
     );
   }
 
@@ -129,30 +129,17 @@ class _MonthPageViewState extends CustomPageViewState<MonthPageView, Month> {
   }
 
   @override
-  int get initialPage {
-    Month initialMonth = new Month.fromDateTime(widget.controller.initialMonth);
-    return getPageOfRepresentation(initialMonth);
-  }
-
-  @override
-  int get numberOfPages {
-    return _pageMonth.numberOfPages;
-  }
-
-  @override
-  bool areRepresentationsTheSame(Month representation1, Month representation2) {
-    return representation1 == representation2;
-  }
-
-  @override
-  onPageChanged(Month representationOfPage) {
+  onRepresentationChanged(Month representation) {
     if (widget.onMonthChanged != null) {
-      widget.onMonthChanged(representationOfPage.toDateTime());
+      DateTime month = representation.toDateTime();
+      widget.onMonthChanged(month);
     }
   }
 
   @override
   Widget itemBuilder(BuildContext context, Month representation) {
-    return widget.pageBuilder(context, representation.toDateTime());
+    DateTime month = representation.toDateTime();
+
+    return widget.pageBuilder(context, month);
   }
 }

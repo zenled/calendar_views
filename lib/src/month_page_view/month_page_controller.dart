@@ -3,70 +3,65 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/custom_page_view/all.dart';
+import 'package:calendar_views/src/calendar_page_view/all.dart';
 
-import 'month_page_communicator.dart';
+import 'month_page_link.dart';
 import 'month_page_view.dart';
 
-/// Controller for a [MonthPageView].
-class MonthPageController extends CustomPageViewController {
-  MonthPageController._internal({
-    @required this.initialMonth,
-  });
-
+/// Controller for [MonthPageView].
+class MonthPageController extends CalendarPageController {
   /// Creates a new [MonthPageController].
   ///
   /// If [initialMonth] is null it is set to whatever month is today.
-  factory MonthPageController({
+  MonthPageController({
     DateTime initialMonth,
-  }) {
-    initialMonth ??= new DateTime.now();
+  })  : this.initialMonth = initialMonth ?? new DateTime.now(),
+        assert(initialMonth != null);
 
-    return new MonthPageController._internal(
-      initialMonth: initialMonth,
-    );
-  }
-
-  /// Month to be displayed when first creating [MonthPageView].
+  /// Month to display when first creating [MonthPageView].
   final DateTime initialMonth;
 
-  MonthPageCommunicator attachedItem;
+  MonthPageLink attachedItem;
 
-  /// Attaches [communicator] to this controller.
+  /// Attaches an item to this controller.
   ///
-  /// If a previous communicator is attached it is replaced with the new one.
-  void attach(MonthPageCommunicator communicator) {
-    attachedItem = communicator;
+  /// If a previous item is attached it is replaced with the new one.
+  void attach(MonthPageLink link) {
+    attachedItem = link;
   }
 
-  /// Detaches the previously attached communicator.
+  /// Detaches the previously attached item.
   void detach() {
     attachedItem = null;
   }
 
   /// Returns the current month displayed in the attached [MonthPageView].
   ///
-  /// If no [MonthPageView] is attached it throws an exception.
+  /// Properties of returned month except for year and month are set to their default values.
   ///
-  /// Properties of month except for year and month are set to their default values.
+  /// If no [MonthPageView] is attached to this controller it throws an exception.
   DateTime get currentMonth {
     throwExceptionIfNoItemAttached();
 
     return attachedItem.currentMonth();
   }
 
-  /// Tells the attached [MonthPageView] to jump to a specific month.
+  /// Tels the controlled [MonthPageView] to jump to the given [month].
   ///
-  /// If no [MonthPageView] is attached it throws an exception.
+  /// Works similar as [PageController.jumpToPage].
+  ///
+  /// If nothing is attached to this controller it throws an exception.
   void jumpToMonth(DateTime month) {
     throwExceptionIfNoItemAttached();
 
     attachedItem.jumpToMonth(month);
   }
 
-  /// Tells the attached [MonthPageView] to animate to a specific month.
+  /// Tels the controlled [MonthPageView] to animate to the given [month].
   ///
-  /// If no [MonthPageView] is attached it throws an exception.
+  /// Works similar as [PageController.animateToPage].
+  ///
+  /// If nothing is attached to this controller it throws an exception.
   Future<Null> animateToMonth(
     DateTime month, {
     @required Duration duration,

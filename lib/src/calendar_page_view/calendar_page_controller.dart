@@ -3,116 +3,67 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import 'calendar_page_view_communicator.dart';
 import 'calendar_page_view.dart';
+import 'calendar_page_link.dart';
 
-/// Base class of a controller for a [CalendarPageView].
-///
-/// Each page of the controlled [CalendarPageView] should be representable
-/// with an unique object of type [T].
-abstract class CalendarPageController<T> {
-  CalendarPageController({
-    @required this.initialPage,
-    @required this.numberOfPages,
-  }) : assert(initialPage != null) {
-    _throwArgumentErrorIfInvalidNumberOfPages(numberOfPages);
-  }
+/// Base class for a controller for [CalendarPageView].
+abstract class CalendarPageController {
+  const CalendarPageController();
 
-  /// Initial page that the controlled [CalendarPageView] should display.
-  final int initialPage;
+  /// Gets the item attached to this controller.
+  @protected
+  CalendarPageLink get attachedItem;
 
-  int numberOfPages;
+  /// Returns true if [CalendarPageLink] is attached to this controller.
+  @protected
+  bool get isItemAttached => attachedItem != null;
 
-  /// Object for communication with attached [CalendarPageView].
-  CalendarPageViewCommunicator _attachedCommunicator;
-
-  void updateControlledItem(T representationOfPageToJumpTo) {
-    _throwExceptionIfNoCommunicatorIsAttached();
-
-    _attachedCommunicator.onControllerChanged(representationOfPageToJumpTo);
-  }
-
-  /// Registers the given [communicator] with this controller.
+  /// Returns the current page displayed in the attached [CalendarPageView].
   ///
-  /// If a communicators is already attached, it is replaced with the new one.
-  void attach(CalendarPageViewCommunicator communicator) {
-    _attachedCommunicator = communicator;
+  /// If nothing is attached to this controller it throws an exception.
+  int get currentPage {
+    throwExceptionIfNoItemAttached();
+
+    return attachedItem.currentPage();
   }
 
-  /// Unregisters the previously attached communicator.
-  void detach() {
-    _attachedCommunicator = null;
-  }
-
-  /// Returns true if there is a [CalendarPageView] attached to this controller.
-  bool isCommunicatorAttached() {
-    return _attachedCommunicator != null;
-  }
-
-  /// Returns currently displayed page in the controlled [CalendarPageView].
+  /// Tels the controlled [CalendarPageView] to jump to the given [page].
   ///
-  /// If no [CalendarPageView] is attached it returns null.
-  int displayedPage() {
-    _throwExceptionIfNoCommunicatorIsAttached();
-
-    return _attachedCommunicator.displayedPage();
-  }
-
-  /// Returns a representation of current page in the controlled [CalendarPageView].
+  /// Works similar as [PageController.jumpToPage].
   ///
-  /// If no [CalendarPageView] is attached it returns null.
-  T representationOfCurrentPage();
-
-  /// Returns index of page that displays [pageRepresentation].
-  ///
-  /// If none of the pages displays [pageRepresentation] it returns index of page that is closest to desired page.
-  int indexOfPageThatRepresents(T pageRepresentation);
-
-  /// Changes which [page] is displayed in the controlled [CalendarPageView].
-  ///
-  /// If no [CalendarPageView] is attached it does nothing.
+  /// If nothing is attached to this controller it throws an exception.
   void jumpToPage(int page) {
-    if (isCommunicatorAttached()) {
-      _attachedCommunicator.jumpToPage(page);
-    }
+    throwExceptionIfNoItemAttached();
+
+    attachedItem.jumpToPage(page);
   }
 
-  /// Animates the controlled [CalendarPageView] to the given [page].
+  /// Tels the controlled [CalendarPageView] to animate to the given [page].
   ///
-  /// If no [CalendarPageView] is attached it does nothing.
+  /// Works similar as [PageController.animateToPage].
+  ///
+  /// If nothing is attached to this controller it throws an exception.
   Future<Null> animateToPage(
     int page, {
     @required Duration duration,
     @required Curve curve,
   }) {
-    if (isCommunicatorAttached()) {
-      return _attachedCommunicator.animateToPage(
-        page,
-        duration: duration,
-        curve: curve,
+    throwExceptionIfNoItemAttached();
+
+    return attachedItem.animateToPage(
+      page,
+      duration: duration,
+      curve: curve,
+    );
+  }
+
+  /// Throws an exception in no [CalendarPageLink] is attached to this controller.
+  @protected
+  void throwExceptionIfNoItemAttached() {
+    if (!isItemAttached) {
+      throw new Exception(
+        "Could not perform action, no item is attached to this controller",
       );
-    } else {
-      return null;
-    }
-  }
-
-  void _throwExceptionIfNoCommunicatorIsAttached() {
-    if (!isCommunicatorAttached()) {
-      throw new Exception("No item is attached to this controller");
-    }
-  }
-
-  void _throwArgumentErrorIfInvalidNumberOfPages(int numberOfPages) {
-    if (numberOfPages == null) {
-      return;
-    } else {
-      if (numberOfPages <= 0) {
-        throw new ArgumentError.value(
-          numberOfPages,
-          "numberOfPages",
-          "numberOfPages must be > 0",
-        );
-      }
     }
   }
 }

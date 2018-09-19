@@ -1,197 +1,117 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import 'calendar_page_view_communicator.dart';
-import 'calendar_page_controller.dart';
-
-/// Base class for for a pageView that can be controlled with [CalendarPageController].
+/// Base class for a custom page view where each page is given a representation.
 ///
-/// Internally this is a wrapper around a [PageView],
-/// so behaviour and properties might sometimes be similar.
-///
-/// **Important**
-///
-/// The working of this widget is a bodge.
-/// I could not find another way to keep the same page
-/// (eg. same date, not just page number as does [PageView]),
-/// when changing properties of internal [PageView].
-/// There might also be a bug in [PageView] that prevents it from correctly changing scrollDirection at runtime
-/// [bug issue](https://github.com/flutter/flutter/issues/16481).
-/// I tried to make a workaround.
-///
-/// Due to this workaround
-/// state of all pages will be lost if [controller] or [scrollDirection] is changed at runtime.
-/// State will be lost even when using [PageStorage], [AutomaticKeepAliveClientMixin]
-/// or similar state-storing solutions.
-/// This is because internally an entirely new (with new State) [PageView]
-/// is created when changing those properties.
+/// [CalendarPageView] has virtually infinite number of pages.
 abstract class CalendarPageView extends StatefulWidget {
+  static const default_scroll_direction = Axis.horizontal;
+  static const default_page_snapping = true;
+  static const default_reverse = false;
+  static const ScrollPhysics default_physics = null;
+
   CalendarPageView({
-    @required this.scrollDirection,
-    @required this.reverse,
-    @required this.physics,
-    @required this.pageSnapping,
+    this.scrollDirection = default_scroll_direction,
+    this.pageSnapping = default_page_snapping,
+    this.reverse = default_reverse,
+    this.physics = default_physics,
   })  : assert(scrollDirection != null),
-        assert(reverse != null),
-        assert(pageSnapping != null);
+        assert(pageSnapping != null),
+        assert(reverse != null);
 
-  /// Same as [PageView.scrollDirection].
   final Axis scrollDirection;
-
-  /// Same as [PageView.reverse].
+  final bool pageSnapping;
   final bool reverse;
-
-  /// Same as [PageView.physics].
   final ScrollPhysics physics;
 
-  /// Same as [PageView.pageSnapping].
-  final bool pageSnapping;
-
-  /// Returns object that is in charge of controlling this [CalendarPageView].
-  CalendarPageController get controller;
+  @override
+  CalendarPageViewState createState();
 }
 
-abstract class CalendarPageViewState<T extends CalendarPageView>
-    extends State<T> {
-  PageView _pageView;
-  PageController _pageController;
+/// Base class for a [CalendarPageView] state.
+///
+/// Each page in [CalendarPageViewState] is given an object of type [REPRESENTATION].
+abstract class CalendarPageViewState<WIDGET extends CalendarPageView,
+    REPRESENTATION> extends State<WIDGET> {
+  static const initial_page = 100000;
 
-  Key _keyOfPageView;
+  @protected
+  PageController pageController;
+
+  /// Returns representation of [page].
+  @protected
+  REPRESENTATION getRepresentationOfPage(int page);
+
+  /// Returns page of [representation].
+  @protected
+  int getPageOfRepresentation(REPRESENTATION representation);
 
   @override
   void initState() {
     super.initState();
 
-    _pageController = _createPageController(
-      initialPage: widget.controller.initialPage,
+    pageController = new PageController(
+      initialPage: initial_page,
     );
-
-    _pageView = _createPageView(
-      withNewUniqueKey: false,
-    );
-
-    _attachToController();
   }
 
-  @override
-  void dispose() {
-    widget.controller?.detach();
-
-    super.dispose();
+  void _onPageChanged(int page) {
+    REPRESENTATION representation = getRepresentationOfPage(page);
+    onRepresentationChanged(representation);
   }
 
-  @override
-  void didUpdateWidget(T oldWidget) {
-    super.didUpdateWidget(oldWidget);
+  /// Called whenever the current page and thus the representation changes.
+  @protected
+  onRepresentationChanged(REPRESENTATION representation);
 
-    if (widget.scrollDirection != oldWidget.scrollDirection ||
-        widget.reverse != oldWidget.reverse ||
-        widget.physics != oldWidget.physics ||
-        widget.pageSnapping != oldWidget.pageSnapping ||
-        hasAnythingChanged(oldWidget)) {
-      dynamic representationOfCurrentPage =
-          oldWidget.controller.representationOfCurrentPage();
-
-      int initialPageOnNewPageController = widget.controller
-          .indexOfPageThatRepresents(representationOfCurrentPage);
-
-      _pageController = _createPageController(
-        initialPage: initialPageOnNewPageController,
-      );
-
-      oldWidget.controller.detach();
-      _attachToController();
-
-      bool useUniqueKeyWhenCreatingPageView =
-          widget.scrollDirection != oldWidget.scrollDirection ||
-              widget.controller != oldWidget.controller;
-
-      setState(() {
-        _pageView = _createPageView(
-          withNewUniqueKey: useUniqueKeyWhenCreatingPageView,
-        );
-      });
-    }
+  /// Returns currently displayed page.
+  @protected
+  int getCurrentPage() {
+    return pageController.page.round();
   }
 
-  /// Returns true if this.widget is different from [oldWidget].
-  ///
-  /// Only properties of this (not super) should be checked.
-  bool hasAnythingChanged(T oldWidget);
+  /// Jumps to the given page.
+  @protected
+  void jumpToPage(int page) {
+    pageController.jumpToPage(page);
+  }
 
-  PageController _createPageController({
-    @required int initialPage,
+  /// Animates to the given page.
+  @protected
+  Future<Null> animateToPage(
+    int page, {
+    @required Duration duration,
+    @required Curve curve,
   }) {
-    assert(initialPage != null);
-
-    return new PageController(
-      initialPage: initialPage,
+    return pageController.animateToPage(
+      page,
+      duration: duration,
+      curve: curve,
     );
   }
-
-  PageView _createPageView({
-    @required bool withNewUniqueKey,
-  }) {
-    if (withNewUniqueKey || _keyOfPageView == null) {
-      _keyOfPageView = new UniqueKey();
-    }
-
-    return new PageView.builder(
-      controller: _pageController,
-      itemCount: widget.controller.numberOfPages,
-      itemBuilder: pageBuilder,
-      onPageChanged: onPageChanged,
-      scrollDirection: widget.scrollDirection,
-      reverse: widget.reverse,
-      physics: widget.physics,
-      pageSnapping: widget.pageSnapping,
-      key: _keyOfPageView,
-    );
-  }
-
-  void _attachToController() {
-    widget.controller.attach(
-      _createCommunicator(),
-    );
-  }
-
-  CalendarPageViewCommunicator _createCommunicator() {
-    return new CalendarPageViewCommunicator(
-      jumpToPage: _pageController.jumpToPage,
-      animateToPage: _pageController.animateToPage,
-      displayedPage: () {
-        return _pageController.page.round();
-      },
-      onControllerChanged: onControllerChanged,
-    );
-  }
-
-  void onControllerChanged(dynamic representationOfCurrentPage) {
-    int initialPageOnNewPageController = widget.controller
-        .indexOfPageThatRepresents(representationOfCurrentPage);
-
-    _pageController = _createPageController(
-      initialPage: initialPageOnNewPageController,
-    );
-
-    widget.controller.attach(_createCommunicator());
-
-    setState(() {
-      _pageView = _createPageView(
-        withNewUniqueKey: true,
-      );
-    });
-  }
-
-  Widget pageBuilder(BuildContext context, int page);
-
-  /// Called whenever the page changes.
-  ///
-  /// This method is not called if page is changed because of new constraints (eg. minimumDay, maximumDay).
-  void onPageChanged(int page);
 
   @override
   Widget build(BuildContext context) {
-    return _pageView;
+    return new PageView.builder(
+      scrollDirection: widget.scrollDirection,
+      pageSnapping: widget.pageSnapping,
+      reverse: widget.reverse,
+      physics: widget.physics,
+      onPageChanged: _onPageChanged,
+      controller: pageController,
+      itemBuilder: _itemBuilder,
+    );
   }
+
+  Widget _itemBuilder(BuildContext context, int page) {
+    REPRESENTATION representation = getRepresentationOfPage(page);
+
+    return itemBuilder(context, representation);
+  }
+
+  /// Builds a page in the [CalendarPageView].
+  @protected
+  Widget itemBuilder(BuildContext context, REPRESENTATION representation);
 }

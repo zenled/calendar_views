@@ -3,25 +3,29 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import 'custom_page_view.dart';
-import 'custom_page_view_controller.dart';
+import 'calendar_page_view.dart';
+import 'calendar_page_controller.dart';
 
-/// Signature for a function that tells [CustomPageView] to jump to specific page.
+/// Signature for a function that changes which page is displayed in the [CalendarPageView].
+///
+/// Works similar as [PageController.jumpToPage].
 typedef void JumpToPageCallback(
   int page,
 );
 
-/// Signature for a function that tells [CustomPageView] to animate to specific page.
+/// Signature for a function that animates [CalendarPageView] to the given page.
+///
+/// Works similar as [PageController.animateToPage].
 typedef Future<Null> AnimateToPageCallback(
   int page, {
   @required Duration duration,
   @required Curve curve,
 });
 
-/// Base class for a communicator between [CustomPageView] and [CustomPageViewController].
+/// Base class for communication between [CalendarPageView] and [CalendarPageController].
 @immutable
-abstract class CustomPageViewCommunicator {
-  CustomPageViewCommunicator({
+abstract class CalendarPageLink {
+  const CalendarPageLink({
     @required this.currentPage,
     @required this.jumpToPage,
     @required this.animateToPage,
