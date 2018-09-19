@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:calendar_views/month_page_view.dart';
 
 import 'axis_to_string.dart';
 import 'page.dart';
+import 'month_picker_dialog.dart';
 
 class MonthPageViewExample extends StatefulWidget {
   @override
@@ -47,6 +50,21 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
     return "${month.year}.${month.month}";
   }
 
+  void _changeMinimumMonth() {
+    showDialog(
+      context: context,
+      builder: (context) => new MonthPickerDialog(
+            initialMonth: _minimumMonth,
+            onConfirm: (newMinimumMonth) {
+              Navigator.of(context).pop();
+              setState(() {
+                _minimumMonth = newMinimumMonth;
+              });
+            },
+          ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -86,9 +104,9 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
                     ),
                     new Divider(),
                     new ListTile(
-                      onTap: () {
-                        showDatePicker(context: null, initialDate: null, firstDate: null, lastDate: null)
-                      },
+                      title: new Text("Minimum Month"),
+                      trailing: new Text(_monthToString(_minimumMonth)),
+                      onTap: _changeMinimumMonth,
                     ),
                     new Divider(),
                     new Divider(),

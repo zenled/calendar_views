@@ -2,8 +2,13 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/src/_internal_date_time/all.dart';
 
-class MonthConstraintsValidator {
-  MonthConstraintsValidator({
+import 'month_page_view.dart';
+
+/// Utility for validating [MonthPageView.minimumMonth] and [MonthPageView.maximumMonth].
+///
+/// If any property is invalid it throws an [ArgumentError].
+class ConstraintsValidator {
+  ConstraintsValidator({
     @required this.minimumMonth,
     @required this.maximumMonth,
   });

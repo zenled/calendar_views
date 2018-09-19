@@ -10,10 +10,12 @@ import 'custom_page_view_communicator.dart';
 abstract class CustomPageViewController {
   const CustomPageViewController();
 
-  CustomPageViewCommunicator get _attachedItem;
+  @protected
+  CustomPageViewCommunicator get attachedItem;
 
   /// Returns true if [CustomPageView] is attached to this controller.
-  bool get isItemAttached => _attachedItem != null;
+  @protected
+  bool get isItemAttached => attachedItem != null;
 
   /// Returns the current page in the attached [CustomPageView].
   ///
@@ -21,7 +23,7 @@ abstract class CustomPageViewController {
   int get currentPage {
     throwExceptionIfNoItemAttached();
 
-    return _attachedItem.currentPage();
+    return attachedItem.currentPage();
   }
 
   /// Tels the controlled [CustomPageView] to jump to a [page].
@@ -30,7 +32,7 @@ abstract class CustomPageViewController {
   void jumpToPage(int page) {
     throwExceptionIfNoItemAttached();
 
-    _attachedItem.jumpToPage(page);
+    attachedItem.jumpToPage(page);
   }
 
   /// Tels the controlled [CustomPageView] to animate to a [page].
@@ -43,7 +45,7 @@ abstract class CustomPageViewController {
   }) {
     throwExceptionIfNoItemAttached();
 
-    return _attachedItem.animateToPage(
+    return attachedItem.animateToPage(
       page,
       duration: duration,
       curve: curve,

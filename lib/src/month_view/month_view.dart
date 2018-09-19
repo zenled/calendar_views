@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
+import 'package:calendar_views/src/_internal_date_time/all.dart';
+
 import '_extended_days_of_month_generator.dart';
 import '_month_view_day.dart';
 import 'day_of_month_properties.dart';
 import 'day_of_month_builder.dart';
-
-import 'package:calendar_views/src/_utils/all.dart' as utils;
 
 /// Widget for displaying a grid of consecutive days all belonging or extended from [month].
 class MonthView extends StatefulWidget {
@@ -18,7 +18,7 @@ class MonthView extends StatefulWidget {
     this.showExtendedDaysAfter = true,
     Key key,
   })  : assert(month != null),
-        assert(firstWeekday != null && utils.isWeekdayValid(firstWeekday)),
+        assert(firstWeekday != null && isWeekdayValid(firstWeekday)),
         assert(dayOfMonthBuilder != null),
         assert(showExtendedDaysBefore != null),
         assert(showExtendedDaysAfter != null),
@@ -57,7 +57,7 @@ class _MonthViewState extends State<MonthView> {
   void didUpdateWidget(MonthView oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (!utils.isSameYearAndMonth(widget.month, oldWidget.month) ||
+    if (!isSameYearAndMonth(widget.month, oldWidget.month) ||
         widget.firstWeekday != oldWidget.firstWeekday) {
       List<DayOfMonthProperties> newDays = _generateExtendedDays();
 

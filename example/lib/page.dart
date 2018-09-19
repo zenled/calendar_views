@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:calendar_views/src/_internal_date_time/all.dart';
 import 'package:calendar_views/calendar_views.dart';
 
 /// A simple widget to be displayed as page in examples of widgets that extend [CalendarPageView].
@@ -54,7 +55,7 @@ class _PageState extends State<Page> with AutomaticKeepAliveClientMixin<Page> {
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+//    super.build(context);
 
     String _makeTextString(DateTime day) {
       String text = "${day.year.toString().padLeft(4, "0")}."

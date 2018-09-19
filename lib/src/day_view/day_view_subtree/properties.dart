@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/_utils/all.dart' as utils;
+import 'package:calendar_views/src/_internal_date_time/all.dart';
 
 @immutable
 class Properties {
@@ -27,7 +27,7 @@ class Properties {
     if (identical(this, other)) {
       return true;
     } else if (other is Properties) {
-      return utils.areListsOfDatesTheSame(days, other.days) &&
+      return areListsOfDatesTheSame(days, other.days) &&
           minimumMinuteOfDay == other.minimumMinuteOfDay &&
           maximumMinuteOfDay == other.maximumMinuteOfDay;
     } else {

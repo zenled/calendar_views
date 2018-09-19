@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'days_page_view.dart';
 import 'day_view_example.dart';
+import 'min_max_page_view_example.dart';
 import 'month_example.dart';
 import 'month_page_view_example.dart';
 import 'month_view_example.dart';
@@ -31,6 +32,9 @@ class MyApp extends StatelessWidget {
                         style: new TextStyle(fontSize: 30.0),
                       ),
                     ),
+                  ),
+                  new Divider(
+                    height: 0.0,
                   ),
                   new Divider(
                     height: 0.0,

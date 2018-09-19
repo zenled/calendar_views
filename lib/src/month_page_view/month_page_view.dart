@@ -1,32 +1,37 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 import 'package:calendar_views/src/_internal_date_time/all.dart';
-import 'package:calendar_views/src/_utils/all.dart';
-import 'package:calendar_views/month_page_view.dart';
+import 'package:calendar_views/src/custom_page_view/all.dart';
 
-import '_month_constraints_validator.dart';
+import '_constriants_validator.dart';
 import '_page_month.dart';
+import 'month_page_builder.dart';
+import 'month_page_communicator.dart';
+import 'month_page_controller.dart';
 
-class MonthPageView extends StatefulWidget {
+class MonthPageView extends CustomPageView<Month> {
   MonthPageView({
     @required this.minimumMonth,
     this.maximumMonth,
-    @required this.controller,
+    MonthPageController controller,
     @required this.pageBuilder,
-    this.scrollDirection = Axis.horizontal,
-    this.pageSnapping = true,
-    this.reverse = false,
     this.onMonthChanged,
-  })  : assert(minimumMonth != null),
+    Axis scrollDirection = CustomPageView.default_scroll_direction,
+    bool pageSnapping = CustomPageView.default_page_snapping,
+    bool reverse = CustomPageView.default_reverse,
+    ScrollPhysics physics = CustomPageView.default_physics,
+  })  : this.controller = controller ?? new MonthPageController(),
+        assert(minimumMonth != null),
         assert(controller != null),
         assert(pageBuilder != null),
-        assert(scrollDirection != null),
-        assert(pageSnapping != null),
-        assert(reverse != null) {
-    MonthConstraintsValidator validator = new MonthConstraintsValidator(
+        super(
+          scrollDirection: scrollDirection,
+          pageSnapping: pageSnapping,
+          reverse: reverse,
+          physics: physics,
+        ) {
+    ConstraintsValidator validator = new ConstraintsValidator(
       minimumMonth: new Month.fromDateTime(minimumMonth),
       maximumMonth:
           maximumMonth != null ? new Month.fromDateTime(maximumMonth) : null,
@@ -35,177 +40,119 @@ class MonthPageView extends StatefulWidget {
     validator.validateMaximumMonth();
   }
 
+  /// Minimum month (inclusive).
   final DateTime minimumMonth;
+
+  /// Maximum month (inclusive).
+  ///
+  /// If [maximumMonth] is null the [MonthPageView] is infinite.
   final DateTime maximumMonth;
 
+  /// Object for controlling this [MonthPageView].
   final MonthPageController controller;
+
+  /// Function that builds a page inside [MonthPageView].
   final MonthPageBuilder pageBuilder;
 
-  final Axis scrollDirection;
-  final bool pageSnapping;
-  final bool reverse;
-
+  /// Called whenever the displayed month changes.
+  ///
+  /// Properties of DateTime except for year and month are set to their default values.
   final ValueChanged<DateTime> onMonthChanged;
 
   @override
-  State createState() => new _MonthPageViewState();
+  _MonthPageViewState createState() => new _MonthPageViewState();
 }
 
-class _MonthPageViewState extends State<MonthPageView> {
-  PageController _pageController;
-  Key _pageViewKey;
-
+class _MonthPageViewState extends CustomPageViewState<MonthPageView, Month> {
   PageMonth _pageMonth;
 
   @override
   void initState() {
     super.initState();
 
-    _createPageMonth();
-    _initPageController();
-    _createNewUniquePageViewKey();
+    _pageMonth = _createPageMonth();
     _attachToController();
-  }
-
-  void _initPageController() {
-    DateTime initialMonth = widget.controller.initialMonth;
-
-    int initialPage =
-        _pageMonth.pageOfMonth(new Month.fromDateTime(initialMonth));
-
-    _createPageController(
-      initialPage: initialPage,
-    );
   }
 
   @override
   void didUpdateWidget(MonthPageView oldWidget) {
     super.didUpdateWidget(oldWidget);
 
+    _pageMonth = _createPageMonth();
+
     if (widget.controller != oldWidget.controller) {
       oldWidget.controller.detach();
       _attachToController();
     }
-
-    if (!isSameYearAndMonth(widget.minimumMonth, oldWidget.minimumMonth) ||
-        _areMaximumMonthsDifferent(
-            widget.maximumMonth, oldWidget.maximumMonth) ||
-        widget.scrollDirection != oldWidget.scrollDirection) {
-      DateTime currentMonth = _getCurrentMonth();
-
-      _createPageMonth();
-
-      int initialPage =
-          _pageMonth.pageOfMonth(new Month.fromDateTime(currentMonth));
-      _createPageController(initialPage: initialPage);
-      _createNewUniquePageViewKey();
-    }
   }
 
-  bool _areMaximumMonthsDifferent(DateTime month1, DateTime month2) {
-    if (month1 == null && month2 == null) {
-      return false;
-    }
-    if (month1 == null || month2 == null) {
-      return true;
-    }
-    return isSameYearAndMonth(month1, month2);
-  }
+  PageMonth _createPageMonth() {
+    DateTime minimumMonth = widget.minimumMonth;
+    DateTime maximumMonth = widget.maximumMonth;
 
-  void _createPageMonth() {
-    _pageMonth = new PageMonth(
-      minimumMonth: new Month.fromDateTime(widget.minimumMonth),
-      maximumMonth: widget.maximumMonth != null
-          ? new Month.fromDateTime(widget.maximumMonth)
-          : null,
-    );
-  }
-
-  void _createNewUniquePageViewKey() {
-    _pageViewKey = new UniqueKey();
-  }
-
-  void _createPageController({
-    @required int initialPage,
-  }) {
-    assert(initialPage != null);
-
-    _pageController = new PageController(
-      initialPage: initialPage,
+    return new PageMonth(
+      minimumMonth: new Month.fromDateTime(minimumMonth),
+      maximumMonth:
+          maximumMonth != null ? new Month.fromDateTime(maximumMonth) : null,
     );
   }
 
   void _attachToController() {
-    widget.controller.attach(
-      _createCommunicator(),
-    );
+    widget.controller.attach(_createMonthPageCommunicator());
   }
 
-  MonthPageCommunicator _createCommunicator() {
+  MonthPageCommunicator _createMonthPageCommunicator() {
     return new MonthPageCommunicator(
-      currentMonth: _getCurrentMonth,
-      jumpToMonth: _jumpToMonth,
-      animateToMonth: _animateToMonth,
-      currentPage: _getCurrentPage,
-      jumpToPage: _pageController.jumpToPage,
-      animateToPage: _pageController.animateToPage,
+      currentMonth: () => currentRepresentation.toDateTime(),
+      jumpToMonth: (DateTime month) {
+        int page = getPageOfRepresentation(new Month.fromDateTime(month));
+        jumpToPage(page);
+      },
+      animateToMonth: (DateTime month, {duration, curve}) {
+        int page = getPageOfRepresentation(new Month.fromDateTime(month));
+        return animateToPage(page, duration: duration, curve: curve);
+      },
+      currentPage: () => currentPage,
+      jumpToPage: jumpToPage,
+      animateToPage: animateToPage,
     );
   }
 
-  DateTime _getCurrentMonth() {
-    int page = _getCurrentPage();
-    return _pageMonth.monthOfPage(page).toDateTime();
+  @override
+  Month getRepresentationOfPage(int page) {
+    return _pageMonth.monthOfPage(page);
   }
 
-  void _jumpToMonth(DateTime month) {
-    int page = _pageMonth.pageOfMonth(new Month.fromDateTime(month));
-
-    _pageController.jumpToPage(page);
+  @override
+  int getPageOfRepresentation(Month representation) {
+    return _pageMonth.pageOfMonth(representation);
   }
 
-  Future<Null> _animateToMonth(
-    DateTime month, {
-    @required Duration duration,
-    @required Curve curve,
-  }) {
-    int page = _pageMonth.pageOfMonth(new Month.fromDateTime(month));
-
-    return _pageController.animateToPage(
-      page,
-      duration: duration,
-      curve: curve,
-    );
+  @override
+  int get initialPage {
+    Month initialMonth = new Month.fromDateTime(widget.controller.initialMonth);
+    return getPageOfRepresentation(initialMonth);
   }
 
-  int _getCurrentPage() {
-    return _pageController.page.round();
+  @override
+  int get numberOfPages {
+    return _pageMonth.numberOfPages;
   }
 
-  void _onPageChanged(int page) {
+  @override
+  bool areRepresentationsTheSame(Month representation1, Month representation2) {
+    return representation1 == representation2;
+  }
+
+  @override
+  onPageChanged(Month representationOfPage) {
     if (widget.onMonthChanged != null) {
-      Month month = _pageMonth.monthOfPage(page);
-
-      widget.onMonthChanged(month.toDateTime());
+      widget.onMonthChanged(representationOfPage.toDateTime());
     }
   }
 
   @override
-  Widget build(BuildContext context) {
-    return new PageView.builder(
-      key: _pageViewKey,
-      controller: _pageController,
-      onPageChanged: _onPageChanged,
-      itemBuilder: _pageBuilder,
-      itemCount: _pageMonth.numberOfPages,
-      scrollDirection: widget.scrollDirection,
-      pageSnapping: widget.pageSnapping,
-      reverse: widget.reverse,
-    );
-  }
-
-  Widget _pageBuilder(BuildContext context, int page) {
-    Month month = _pageMonth.monthOfPage(page);
-
-    return widget.pageBuilder(context, month.toDateTime());
+  Widget itemBuilder(BuildContext context, Month representation) {
+    return widget.pageBuilder(context, representation.toDateTime());
   }
 }

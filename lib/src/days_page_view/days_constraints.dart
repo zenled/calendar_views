@@ -2,7 +2,6 @@ import 'package:meta/meta.dart';
 import 'package:quiver/core.dart';
 
 import 'package:calendar_views/src/_internal_date_time/all.dart';
-import 'package:calendar_views/src/_utils/all.dart';
 
 import '_helpers/all.dart';
 

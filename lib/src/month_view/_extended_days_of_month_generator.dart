@@ -1,7 +1,6 @@
 import 'package:meta/meta.dart';
 
 import 'package:calendar_views/src/_internal_date_time/all.dart';
-import 'package:calendar_views/src/_utils/all.dart' as utils;
 
 import 'day_of_month_properties.dart';
 
@@ -12,7 +11,7 @@ class ExtendedDaysOfMonthGenerator {
     @required DateTime month,
     @required this.firstWeekday,
   })  : assert(month != null),
-        assert(firstWeekday != null && utils.isWeekdayValid(firstWeekday)),
+        assert(firstWeekday != null && isWeekdayValid(firstWeekday)),
         _month = new Month.fromDateTime(month);
 
   final Month _month;

@@ -3,18 +3,24 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/month_page_view.dart';
+import 'package:calendar_views/src/custom_page_view/all.dart';
 
+import 'month_page_view.dart';
+import 'month_page_controller.dart';
+
+/// Signature for a function that tells [MonthPageView] to jump to specific month.
 typedef void JumpToMonthCallback(
   DateTime month,
 );
 
+/// Signature for a function that tells [MonthPageView] to animate to specific month.
 typedef Future<Null> AnimateToMonthCallback(
   DateTime month, {
   @required Duration duration,
   @required Curve curve,
 });
 
+/// Communicator between [MonthPageView] and [MonthPageController].
 @immutable
 class MonthPageCommunicator extends CustomPageViewCommunicator {
   MonthPageCommunicator({

@@ -1,13 +1,13 @@
 import 'package:test/test.dart';
 
 import 'package:calendar_views/src/_internal_date_time/all.dart';
-import 'package:calendar_views/src/month_page_view/_month_constraints_validator.dart';
+import 'package:calendar_views/src/month_page_view/_constriants_validator.dart';
 
 void main() {
-  group("MonthConstraintsValidator test", () {
+  group("ConstraintsValidator test", () {
     group(".validateMinumumMonth", () {
       test("throws ArgumentError when minimumMonth is null", () {
-        MonthConstraintsValidator validator = new MonthConstraintsValidator(
+        ConstraintsValidator validator = new ConstraintsValidator(
           minimumMonth: null,
           maximumMonth: null,
         );
@@ -23,7 +23,7 @@ void main() {
       test(
           "throws ArgumentError when maximumMonth is before minimumMonth (year is befor, month is same)",
           () {
-        MonthConstraintsValidator validator = new MonthConstraintsValidator(
+        ConstraintsValidator validator = new ConstraintsValidator(
           minimumMonth: new Month(2018, 1),
           maximumMonth: new Month(2017, 1),
         );
@@ -37,7 +37,7 @@ void main() {
       test(
           "throws ArgumentError when maximumMonth is before minimumMonth (year is same, month is before)",
           () {
-        MonthConstraintsValidator validator = new MonthConstraintsValidator(
+        ConstraintsValidator validator = new ConstraintsValidator(
           minimumMonth: new Month(2018, 2),
           maximumMonth: new Month(2018, 1),
         );

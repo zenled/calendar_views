@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 import 'package:quiver/core.dart';
 
-import 'package:calendar_views/src/_utils/all.dart' as utils;
+import 'package:calendar_views/src/_internal_date_time/all.dart';
 
 import 'month_view.dart';
 
@@ -86,9 +86,9 @@ class DayOfMonthProperties {
       identical(this, other) ||
       other is DayOfMonthProperties &&
           runtimeType == other.runtimeType &&
-          utils.isSameDate(date, other.date) &&
+          isSameDate(date, other.date) &&
           isExtended == other.isExtended &&
-          utils.isSameYearAndMonth(date, other.date);
+          isSameYearAndMonth(date, other.date);
 
   @override
   int get hashCode => hash3(

@@ -31,10 +31,10 @@ class CalendarPageViewCommunicator {
         assert(displayedPage != null),
         assert(onControllerChanged != null);
 
-  /// Tells [CalendarPageView] to jump to a specific [page].
+  /// Tells [CalendarPageView] to jump to a specific [_page].
   final JumpToPage jumpToPage;
 
-  /// Tells [CalendarPageView] to animate to a specified [page].
+  /// Tells [CalendarPageView] to animate to a specified [_page].
   final AnimateToPage animateToPage;
 
   /// Requests the current displayed page from the controlled [CalendarPageView].
