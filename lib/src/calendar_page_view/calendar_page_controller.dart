@@ -10,7 +10,7 @@ import 'calendar_page_link.dart';
 abstract class CalendarPageController {
   const CalendarPageController();
 
-  /// Gets the item attached to this controller.
+  /// Returns the item attached to this controller.
   @protected
   CalendarPageLink get attachedItem;
 

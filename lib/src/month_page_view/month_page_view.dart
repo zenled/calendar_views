@@ -39,7 +39,7 @@ class MonthPageView extends CalendarPageView {
 
   /// Called whenever the displayed month changes.
   ///
-  /// Properties of DateTime except for year and month are set to their default values.
+  /// Properties of month except for year and month are set to their default values.
   final ValueChanged<DateTime> onMonthChanged;
 
   @override

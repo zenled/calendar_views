@@ -23,7 +23,7 @@ class PageMonth {
     return initialMonth.addMonths(deltaFromInitialPage);
   }
 
-  /// Returns page that belongs [month].
+  /// Returns page that belongs to [month].
   int pageOfMonth(Month month) {
     int deltaFromInitialMonth = initialMonth.monthsBetween(month);
 
