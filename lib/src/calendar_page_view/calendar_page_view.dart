@@ -31,22 +31,12 @@ abstract class CalendarPageView extends StatefulWidget {
 }
 
 /// Base class for a [CalendarPageView] state.
-///
-/// Each page in [CalendarPageViewState] is given an object of type [REPRESENTATION].
-abstract class CalendarPageViewState<WIDGET extends CalendarPageView,
-    REPRESENTATION> extends State<WIDGET> {
+abstract class CalendarPageViewState<WIDGET extends CalendarPageView>
+    extends State<WIDGET> {
   static const initial_page = 100000;
 
   @protected
   PageController pageController;
-
-  /// Returns representation of [page].
-  @protected
-  REPRESENTATION getRepresentationOfPage(int page);
-
-  /// Returns page of [representation].
-  @protected
-  int getPageOfRepresentation(REPRESENTATION representation);
 
   @override
   void initState() {
@@ -57,14 +47,8 @@ abstract class CalendarPageViewState<WIDGET extends CalendarPageView,
     );
   }
 
-  void _onPageChanged(int page) {
-    REPRESENTATION representation = getRepresentationOfPage(page);
-    onRepresentationChanged(representation);
-  }
-
-  /// Called whenever the current page and thus the representation changes.
   @protected
-  onRepresentationChanged(REPRESENTATION representation);
+  void onPageChanged(int page);
 
   /// Returns currently displayed page.
   @protected
@@ -99,19 +83,12 @@ abstract class CalendarPageViewState<WIDGET extends CalendarPageView,
       pageSnapping: widget.pageSnapping,
       reverse: widget.reverse,
       physics: widget.physics,
-      onPageChanged: _onPageChanged,
+      onPageChanged: onPageChanged,
       controller: pageController,
-      itemBuilder: _itemBuilder,
+      itemBuilder: itemBuilder,
     );
   }
 
-  Widget _itemBuilder(BuildContext context, int page) {
-    REPRESENTATION representation = getRepresentationOfPage(page);
-
-    return itemBuilder(context, representation);
-  }
-
-  /// Builds a page in the [CalendarPageView].
   @protected
-  Widget itemBuilder(BuildContext context, REPRESENTATION representation);
+  Widget itemBuilder(BuildContext context, int page);
 }

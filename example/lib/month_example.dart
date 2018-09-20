@@ -140,11 +140,11 @@ class _MonthExampleState extends State<MonthExample> {
 
   Widget _dayOfMonthBuilder(
     BuildContext context,
-    DayOfMonthProperties properties,
+    DayOfMonth properties,
   ) {
     return new Center(
       child: new Text(
-        "${properties.date.day}",
+        "${properties.day.day}",
         style: new TextStyle(
           fontWeight:
               properties.isExtended ? FontWeight.normal : FontWeight.bold,

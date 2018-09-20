@@ -46,7 +46,7 @@ class MonthPageView extends CalendarPageView {
   CalendarPageViewState createState() => new _MonthPageViewState();
 }
 
-class _MonthPageViewState extends CalendarPageViewState<MonthPageView, Month> {
+class _MonthPageViewState extends CalendarPageViewState<MonthPageView> {
   PageMonth _pageMonth;
 
   @override
@@ -91,14 +91,14 @@ class _MonthPageViewState extends CalendarPageViewState<MonthPageView, Month> {
 
   DateTime _getCurrentMonth() {
     int currentPage = getCurrentPage();
-    Month currentMonth = getRepresentationOfPage(currentPage);
+    Month currentMonth = _pageMonth.monthOfPage(currentPage);
 
     return currentMonth.toDateTime();
   }
 
   void _jumpToMonth(DateTime month) {
     Month m = new Month.fromDateTime(month);
-    int page = getPageOfRepresentation(m);
+    int page = _pageMonth.pageOfMonth(m);
 
     jumpToPage(page);
   }
@@ -109,7 +109,7 @@ class _MonthPageViewState extends CalendarPageViewState<MonthPageView, Month> {
     @required Curve curve,
   }) {
     Month m = new Month.fromDateTime(month);
-    int page = getPageOfRepresentation(m);
+    int page = _pageMonth.pageOfMonth(m);
 
     return animateToPage(
       page,
@@ -119,26 +119,19 @@ class _MonthPageViewState extends CalendarPageViewState<MonthPageView, Month> {
   }
 
   @override
-  Month getRepresentationOfPage(int page) {
-    return _pageMonth.monthOfPage(page);
-  }
-
-  @override
-  int getPageOfRepresentation(Month representation) {
-    return _pageMonth.pageOfMonth(representation);
-  }
-
-  @override
-  onRepresentationChanged(Month representation) {
+  void onPageChanged(int page) {
     if (widget.onMonthChanged != null) {
-      DateTime month = representation.toDateTime();
+      Month m = _pageMonth.monthOfPage(page);
+      DateTime month = m.toDateTime();
+
       widget.onMonthChanged(month);
     }
   }
 
   @override
-  Widget itemBuilder(BuildContext context, Month representation) {
-    DateTime month = representation.toDateTime();
+  Widget itemBuilder(BuildContext context, int page) {
+    Month m = _pageMonth.monthOfPage(page);
+    DateTime month = m.toDateTime();
 
     return widget.pageBuilder(context, month);
   }
