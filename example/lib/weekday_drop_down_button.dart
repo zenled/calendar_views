@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-String _weekdayToName(int weekday) {
+String weekdayToName(int weekday) {
   switch (weekday) {
     case DateTime.monday:
       return "Monday";
@@ -21,6 +21,28 @@ String _weekdayToName(int weekday) {
       return "Error";
   }
 }
+
+String weekdayToAbbreviatedName(int weekday) {
+  switch (weekday) {
+    case DateTime.monday:
+      return "Mon";
+    case DateTime.tuesday:
+      return "Tue";
+    case DateTime.wednesday:
+      return "Wed";
+    case DateTime.thursday:
+      return "Thu";
+    case DateTime.friday:
+      return "Fri";
+    case DateTime.saturday:
+      return "Sat";
+    case DateTime.sunday:
+      return "Sun";
+    default:
+      return "Err";
+  }
+}
+
 
 class WeekdayDropDownButton extends StatelessWidget {
   WeekdayDropDownButton({
@@ -49,7 +71,7 @@ class WeekdayDropDownButton extends StatelessWidget {
           .map(
             (weekday) => new DropdownMenuItem<int>(
                   value: weekday,
-                  child: new Text(_weekdayToName(weekday)),
+                  child: new Text(weekdayToName(weekday)),
                 ),
           )
           .toList(),

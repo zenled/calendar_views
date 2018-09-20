@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 import 'package:calendar_views/month_view.dart';
 
 import 'weekday_drop_down_button.dart';
+import 'month_picker_dialog.dart';
 
 class MonthViewExample extends StatefulWidget {
   @override
@@ -14,6 +14,8 @@ class _MonthViewExampleState extends State<MonthViewExample> {
   DateTime _month;
   int _firstWeekday;
 
+  bool _shouldShowHeader;
+
   bool _showExtendedDaysBefore;
   bool _showExtendedDaysAfter;
 
@@ -23,6 +25,8 @@ class _MonthViewExampleState extends State<MonthViewExample> {
 
     _month = new DateTime.now();
     _firstWeekday = DateTime.monday;
+
+    _shouldShowHeader = true;
 
     _showExtendedDaysBefore = true;
     _showExtendedDaysAfter = true;
@@ -36,34 +40,46 @@ class _MonthViewExampleState extends State<MonthViewExample> {
       ),
       body: new Column(
         children: <Widget>[
-          new Container(
-            padding: new EdgeInsets.symmetric(vertical: 8.0),
-            child: new Text(
-              "${_month.year}.${_month.month.toString().padLeft(2, "0")}",
-            ),
-          ),
-          new Divider(
-            height: 0.0,
-          ),
           new Expanded(
             child: new Container(
               color: Colors.green.shade200,
               child: new MonthView(
-                showExtendedDaysBefore: _showExtendedDaysBefore,
-                showExtendedDaysAfter: _showExtendedDaysAfter,
                 month: _month,
                 firstWeekday: _firstWeekday,
                 dayOfMonthBuilder: _dayOfMonthBuilder,
+                headerItemBuilder:
+                    _shouldShowHeader ? _monthViewHeaderItemBuilder : null,
+                showExtendedDaysBefore: _showExtendedDaysBefore,
+                showExtendedDaysAfter: _showExtendedDaysAfter,
               ),
             ),
           ),
-          new Divider(),
           new Expanded(
             child: new SingleChildScrollView(
               child: new Column(
                 children: <Widget>[
                   new ListTile(
-                    title: new Text("First Day of Month"),
+                    title: new Center(
+                      child: new Text("Month: ${_month.year}.${_month.month}"),
+                    ),
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => new MonthPickerDialog(
+                              initialMonth: _month,
+                              onConfirm: (month) {
+                                Navigator.of(context).pop();
+                                setState(() {
+                                  _month = month;
+                                });
+                              },
+                            ),
+                      );
+                    },
+                  ),
+                  new Divider(height: 0.0),
+                  new ListTile(
+                    title: new Text("First Weekday"),
                     trailing: new WeekdayDropDownButton(
                         value: _firstWeekday,
                         onChanged: (value) {
@@ -72,7 +88,17 @@ class _MonthViewExampleState extends State<MonthViewExample> {
                           });
                         }),
                   ),
-                  new Divider(),
+                  new Divider(height: 0.0),
+                  new CheckboxListTile(
+                    title: new Text("Show Header"),
+                    value: _shouldShowHeader,
+                    onChanged: (value) {
+                      setState(() {
+                        _shouldShowHeader = value;
+                      });
+                    },
+                  ),
+                  new Divider(height: 0.0),
                   new CheckboxListTile(
                     title: new Text("Show Extended Days Before"),
                     value: _showExtendedDaysBefore,
@@ -82,7 +108,7 @@ class _MonthViewExampleState extends State<MonthViewExample> {
                       });
                     },
                   ),
-                  new Divider(),
+                  new Divider(height: 0.0),
                   new CheckboxListTile(
                     title: new Text("Show Extended Days After"),
                     value: _showExtendedDaysAfter,
@@ -92,7 +118,7 @@ class _MonthViewExampleState extends State<MonthViewExample> {
                       });
                     },
                   ),
-                  new Divider(),
+                  new Divider(height: 0.0),
                 ],
               ),
             ),
@@ -102,16 +128,25 @@ class _MonthViewExampleState extends State<MonthViewExample> {
     );
   }
 
-  Widget _dayOfMonthBuilder(
-    BuildContext context,
-    DayOfMonthProperties properties,
-  ) {
-    return new Center(
-      child: new Text(
-        "${properties.date.day}",
-        style: new TextStyle(
-          fontWeight:
-              properties.isExtended ? FontWeight.normal : FontWeight.bold,
+  Widget _monthViewHeaderItemBuilder(BuildContext context, int weekday) {
+    return new Container(
+      color: Colors.green[700],
+      height: 20.0,
+      child: new Center(
+        child: new Text(weekdayToAbbreviatedName(weekday)),
+      ),
+    );
+  }
+
+  Widget _dayOfMonthBuilder(BuildContext context, DayOfMonth dayOfMonth) {
+    return new Container(
+      child: new Center(
+        child: new Text(
+          "${dayOfMonth.day.day}",
+          style: new TextStyle(
+            fontWeight:
+                dayOfMonth.isExtended ? FontWeight.normal : FontWeight.bold,
+          ),
         ),
       ),
     );
