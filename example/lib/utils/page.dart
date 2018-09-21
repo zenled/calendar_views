@@ -1,18 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'package:calendar_views/src/_internal_date_time/all.dart';
-import 'package:calendar_views/calendar_views.dart';
+import 'date_time_to_string.dart';
 
-/// A simple widget that shows a checkbox some date-time information.
+/// A simple widget that shows a checkbox and some date-time information.
 ///
 /// This widget uses [AutomaticKeepAliveClientMixin].
 class Page extends StatefulWidget {
-  Page.forSingleDay({
-    @required DateTime day,
-  })  : showDayOfMonth = true,
-        days = <DateTime>[day];
-
-  Page.forMultipleDays({
+  Page.forDays({
     @required this.days,
   }) : showDayOfMonth = true;
 
@@ -42,14 +36,11 @@ class _PageState extends State<Page> with AutomaticKeepAliveClientMixin<Page> {
   }
 
   String _makeTextString(DateTime day) {
-    String text = "${day.year.toString().padLeft(4, "0")}."
-        "${day.month.toString().padLeft(2, "0")}";
-
     if (widget.showDayOfMonth) {
-      text += ".${day.day.toString().padLeft(2, "0")}";
+      return dateToString(day);
+    } else {
+      return yearAndMonthToString(day);
     }
-
-    return text;
   }
 
   @override

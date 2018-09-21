@@ -3,30 +3,39 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import 'days_page_communicator.dart';
+import 'package:calendar_views/src/calendar_page_view/all.dart';
 
-class DaysPageController {
-  DaysPageController._internal({
-    @required this.initialDay,
-  }) : assert(initialDay != null);
+import 'days_page_link.dart';
+import 'days_page_view.dart';
 
-  factory DaysPageController({
-    DateTime initialDay,
-  }) {
-    initialDay ??= new DateTime.now();
+/// Controller for [DaysPageView].
+class DaysPageController extends CalendarPageController {
+  /// Creates a new [DaysPageController].
+  ///
+  /// If [firstDayOnInitialPage] is null, it is set to whatever day is today.
+  DaysPageController({
+    DateTime firstDayOnInitialPage,
+    this.daysPerPage = DateTime.daysPerWeek,
+  })  : this.firstDayOfInitialPage =
+            firstDayOnInitialPage ?? new DateTime.now(),
+        assert(firstDayOnInitialPage != null),
+        assert(daysPerPage != null && daysPerPage > 0);
 
-    return new DaysPageController._internal(
-      initialDay: initialDay,
-    );
-  }
+  /// Day to display as first day on initial page when first creating [DaysPageView].
+  final DateTime firstDayOfInitialPage;
 
-  final DateTime initialDay;
+  /// Number of days to display on a page in [DaysPageView].
+  ///
+  /// If [DaysPageView] is given a controller with different [daysPerPage] than the initial one,
+  /// the number of days displayed per page will not change.
+  final int daysPerPage;
 
-  DaysPageCommunicator _attachedItem;
+  DaysPageLink _attachedItem;
 
-  bool get isItemAttached => _attachedItem != null;
+  @override
+  DaysPageLink get attachedItem => _attachedItem;
 
-  void attach(DaysPageCommunicator communicator) {
+  void attach(DaysPageLink communicator) {
     _attachedItem = communicator;
   }
 
@@ -34,57 +43,44 @@ class DaysPageController {
     _attachedItem = null;
   }
 
-  List<DateTime> displayedDays() {
-    _throwExceptionIfNoItemAttached();
+  /// Returns the current days displayed in the attached [DaysPageView].
+  ///
+  /// Properties of returned days except for year, month and day are set to their default values.
+  ///
+  /// If no [DaysPageView] is attached to this controller it throws an exception.
+  List<DateTime> currentDays() {
+    throwExceptionIfNoItemAttached();
 
-    return _attachedItem.displayedDays();
+    return attachedItem.currentDays();
   }
 
+  /// Tels the controlled [DaysPageView] to jump to the given [day].
+  ///
+  /// Works similar as [PageController.jumpToPage].
+  ///
+  /// If nothing is attached to this controller it throws an exception.
   void jumpToDay(DateTime day) {
-    _throwExceptionIfNoItemAttached();
+    throwExceptionIfNoItemAttached();
 
-    _attachedItem.jumpToDay(day);
+    attachedItem.jumpToDay(day);
   }
 
+  /// Tels the controlled [DaysPageView] to animate to the given [day].
+  ///
+  /// Works similar as [PageController.animateToPage].
+  ///
+  /// If nothing is attached to this controller it throws an exception.
   Future<Null> animateToDay(
     DateTime day, {
     @required Duration duration,
     @required Curve curve,
   }) {
-    _throwExceptionIfNoItemAttached();
+    throwExceptionIfNoItemAttached();
 
     return _attachedItem.animateToDay(
       day,
       duration: duration,
       curve: curve,
     );
-  }
-
-  void jumpToPage(int page) {
-    _throwExceptionIfNoItemAttached();
-
-    _attachedItem.jumpToPage(page);
-  }
-
-  Future<Null> animateToPage(
-    int page, {
-    @required Duration duration,
-    @required Curve curve,
-  }) {
-    _throwExceptionIfNoItemAttached();
-
-    return _attachedItem.animateToPage(
-      page,
-      duration: duration,
-      curve: curve,
-    );
-  }
-
-  void _throwExceptionIfNoItemAttached() {
-    if (!isItemAttached) {
-      throw new Exception(
-        "Couln not perform action, No item is attached to this controller",
-      );
-    }
   }
 }

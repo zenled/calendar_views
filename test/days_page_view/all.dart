@@ -1,9 +1,9 @@
 import 'package:test/test.dart';
 
-import 'controller/all.dart' as controller_test;
+import '_page_days.dart' as page_days;
 
 void main() {
-  group("days_page_view", () {
-    controller_test.main();
+  group("days_page_view test", () {
+    page_days.main();
   });
 }

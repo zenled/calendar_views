@@ -1,182 +1,145 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
+import 'package:calendar_views/src/calendar_page_view/all.dart';
 import 'package:calendar_views/src/_internal_date_time/all.dart';
 
-import '_helpers/all.dart';
-import 'days_constraints.dart';
+import '_page_days.dart';
 import 'days_page_builder.dart';
-import 'days_page_communicator.dart';
 import 'days_page_controller.dart';
+import 'days_page_link.dart';
 
-class DaysPageView extends StatefulWidget {
+/// Widget similar to [PageView] but instead of page-number it gives each page a list of days.
+///
+/// The number of pages that can be displayed is virtually infinite.
+class DaysPageView extends CalendarPageView {
   DaysPageView({
-    @required this.constraints,
-    @required this.controller,
+    Axis scrollDirection = CalendarPageView.default_scroll_direction,
+    bool pageSnapping = CalendarPageView.default_page_snapping,
+    bool reverse = CalendarPageView.default_reverse,
+    ScrollPhysics physics = CalendarPageView.default_physics,
+    DaysPageController controller,
     @required this.pageBuilder,
     this.onDaysChanged,
-    this.scrollDirection = Axis.horizontal,
-    this.pageSnapping = true,
-    this.reverse = false,
-  })  : assert(constraints != null),
+  })  : this.controller = controller ?? new DaysPageController(),
         assert(controller != null),
         assert(pageBuilder != null),
-        assert(scrollDirection != null),
-        assert(pageSnapping != null),
-        assert(reverse != null);
+        super(
+          scrollDirection: scrollDirection,
+          pageSnapping: pageSnapping,
+          reverse: reverse,
+          physics: physics,
+        );
 
-  final DaysConstraints constraints;
+  /// Object for controlling this widget.
   final DaysPageController controller;
+
+  /// Function that builds a page.
   final DaysPageBuilder pageBuilder;
 
-  final Axis scrollDirection;
-  final bool pageSnapping;
-  final bool reverse;
-
+  /// Called whenever the page and thus displayed days change.
+  ///
+  /// Properties of days except for year, month and day are set to their default values.
   final ValueChanged<List<DateTime>> onDaysChanged;
 
   @override
-  State createState() => new _DaysPageViewState();
+  CalendarPageViewState createState() => new _DaysPageViewState();
 }
 
-class _DaysPageViewState extends State<DaysPageView> {
-  PageController _pageController;
-  Key _pageViewKey;
-
+class _DaysPageViewState extends CalendarPageViewState<DaysPageView> {
   PageDays _pageDays;
 
   @override
   void initState() {
     super.initState();
 
-    _createPageDays();
-    _initPageController();
-    _createNewUniquePageViewKey();
+    Date firstDayOfInitialPage = new Date.fromDateTime(
+      widget.controller.firstDayOfInitialPage,
+    );
+    _pageDays = new PageDays(
+      initialPage: CalendarPageViewState.initial_page,
+      firstDayOfInitialPage: firstDayOfInitialPage,
+      daysPerPage: widget.controller.daysPerPage,
+    );
+
     _attachToController();
-  }
-
-  void _initPageController() {
-    DateTime initialDay = widget.controller.initialDay;
-    Date initialDate = new Date.fromDateTime(initialDay);
-
-    int initialPage = _pageDays.pageOfDate(initialDate);
-
-    _createPageController(initialPage: initialPage);
   }
 
   @override
   void didUpdateWidget(DaysPageView oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    Date representationOfCurrentPage = _getRepresentationOfCurrentPage();
-
     if (widget.controller != oldWidget.controller) {
       oldWidget.controller.detach();
       _attachToController();
     }
-
-    if (widget.constraints != oldWidget.constraints ||
-        widget.scrollDirection != oldWidget.scrollDirection) {
-      _createPageDays();
-
-      int initialPage = _pageDays.pageOfDate(representationOfCurrentPage);
-      _createPageController(initialPage: initialPage);
-      _createNewUniquePageViewKey();
-    }
-  }
-
-  Date _getRepresentationOfCurrentPage() {
-    int currentPage = _pageController.page.round();
-    return _pageDays.getFirstDateOfPage(currentPage);
-  }
-
-  void _createNewUniquePageViewKey() {
-    _pageViewKey = new UniqueKey();
-  }
-
-  void _createPageDays() {
-    _pageDays = new PageDays(
-      daysPerPage: widget.constraints.daysPerPage,
-      minimumDate: new Date.fromDateTime(widget.constraints.minimumDay),
-      maximumDate: widget.constraints.maximumDay != null
-          ? new Date.fromDateTime(widget.constraints.maximumDay)
-          : null,
-    );
-  }
-
-  void _createPageController({
-    @required int initialPage,
-  }) {
-    assert(initialPage != null);
-
-    _pageController = new PageController(
-      initialPage: initialPage,
-    );
-  }
-
-  void _onPageChanged(int page) {
-    if (widget.onDaysChanged == null) return;
-
-    List<DateTime> daysOfPage = _daysOfPage(page);
-    widget.onDaysChanged(daysOfPage);
   }
 
   void _attachToController() {
-    widget.controller.attach(_createCommunicator());
-  }
-
-  DaysPageCommunicator _createCommunicator() {
-    return new DaysPageCommunicator(
-      displayedDays: () {
-        int displayedPage = _pageController.page.round();
-        return _daysOfPage(displayedPage);
-      },
-      jumpToDay: (DateTime day) {
-        Date date = new Date.fromDateTime(day);
-        int page = _pageDays.pageOfDate(date);
-        _pageController.jumpToPage(page);
-      },
-      animateToDay: (
-        DateTime day, {
-        @required Duration duration,
-        @required Curve curve,
-      }) {
-        Date date = new Date.fromDateTime(day);
-        int page = _pageDays.pageOfDate(date);
-        _pageController.animateToPage(
-          page,
-          duration: duration,
-          curve: curve,
-        );
-      },
-      jumpToPage: _pageController.jumpToPage,
-      animateToPage: _pageController.animateToPage,
+    widget.controller.attach(
+      _createDaysPageLink(),
     );
   }
 
-  List<DateTime> _daysOfPage(int page) {
-    List<Date> datesOfPage = _pageDays.datesOfPage(page);
+  DaysPageLink _createDaysPageLink() {
+    return new DaysPageLink(
+      currentDays: _getCurrentDays,
+      jumpToDay: _jumpToDay,
+      animateToDay: _animateToDay,
+      currentPage: getCurrentPage,
+      jumpToPage: jumpToPage,
+      animateToPage: animateToPage,
+    );
+  }
 
-    return datesOfPage.map((date) => date.toDateTime()).toList();
+  List<DateTime> _getCurrentDays() {
+    int currentPage = getCurrentPage();
+    List<Date> currentDates = _pageDays.daysOfPage(currentPage);
+
+    return _datesToDateTime(currentDates);
+  }
+
+  void _jumpToDay(DateTime day) {
+    Date d = new Date.fromDateTime(day);
+    int page = _pageDays.pageOfDay(d);
+
+    jumpToPage(page);
+  }
+
+  Future<Null> _animateToDay(
+    DateTime day, {
+    @required Duration duration,
+    @required Curve curve,
+  }) {
+    Date d = new Date.fromDateTime(day);
+    int page = _pageDays.pageOfDay(d);
+
+    return animateToPage(
+      page,
+      duration: duration,
+      curve: curve,
+    );
   }
 
   @override
-  Widget build(BuildContext context) {
-    return new PageView.builder(
-      key: _pageViewKey,
-      controller: _pageController,
-      onPageChanged: _onPageChanged,
-      itemBuilder: _pageBuilder,
-      itemCount: _pageDays.numberOfPages,
-      scrollDirection: widget.scrollDirection,
-      pageSnapping: widget.pageSnapping,
-      reverse: widget.reverse,
-    );
+  void onPageChanged(int page) {
+    if (widget.onDaysChanged != null) {
+      List<Date> dates = _pageDays.daysOfPage(page);
+      List<DateTime> days = _datesToDateTime(dates);
+
+      widget.onDaysChanged(days);
+    }
   }
 
-  Widget _pageBuilder(BuildContext context, int page) {
-    List<DateTime> daysOfPage = _daysOfPage(page);
+  @override
+  Widget itemBuilder(BuildContext context, int page) {
+    List<Date> dates = _pageDays.daysOfPage(page);
+    List<DateTime> days = _datesToDateTime(dates);
 
-    return widget.pageBuilder(context, daysOfPage);
+    return widget.pageBuilder(context, days);
+  }
+
+  List<DateTime> _datesToDateTime(List<Date> dates) {
+    return dates.map((date) => date.toDateTime()).toList();
   }
 }
