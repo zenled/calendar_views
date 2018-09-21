@@ -5,7 +5,7 @@ import 'package:calendar_views/src/_internal_date_time/all.dart';
 void main() {
   group("Month", () {
     _testFactoryFromDateTime();
-    _testAdd();
+    _testAddMonths();
   });
 }
 
@@ -22,7 +22,7 @@ void _testFactoryFromDateTime() {
   });
 }
 
-void _testAdd() {
+void _testAddMonths() {
   group(".addMonths", () {
     test("add 0", () {
       Month month = new Month(2018, 1);
