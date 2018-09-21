@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:calendar_views/month_view.dart';
 
-import 'weekday_drop_down_button.dart';
-import 'month_picker_dialog.dart';
+import 'utils/all.dart';
 
 class MonthViewExample extends StatefulWidget {
   @override
@@ -60,7 +59,7 @@ class _MonthViewExampleState extends State<MonthViewExample> {
                 children: <Widget>[
                   new ListTile(
                     title: new Center(
-                      child: new Text("Month: ${_month.year}.${_month.month}"),
+                      child: new Text("Month: ${yearAndMonthToString(_month)}"),
                     ),
                     onTap: () {
                       showDialog(
@@ -133,7 +132,7 @@ class _MonthViewExampleState extends State<MonthViewExample> {
       color: Colors.green[700],
       height: 20.0,
       child: new Center(
-        child: new Text(weekdayToAbbreviatedName(weekday)),
+        child: new Text(weekdayToAbbreviatedString(weekday)),
       ),
     );
   }

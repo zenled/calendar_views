@@ -98,7 +98,7 @@ class _MonthPickerDialogState extends State<MonthPickerDialog> {
                 ),
           )
           .toList(),
-      onChanged: (month){
+      onChanged: (month) {
         setState(() {
           _month = month;
         });
