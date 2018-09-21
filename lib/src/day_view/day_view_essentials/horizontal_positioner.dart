@@ -104,7 +104,7 @@ class HorizontalPositioner {
       case DayViewArea.mainArea:
         return mainAreaRight;
       case DayViewArea.startMainArea:
-        return startMainAreaLeft;
+        return startMainAreaRight;
       case DayViewArea.endMainArea:
         return endMainAreaRight;
       case DayViewArea.eventArea:
