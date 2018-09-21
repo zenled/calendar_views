@@ -12,11 +12,13 @@ void main() {
     );
 
     DayViewWidths dayViewWidths = new DayViewWidths(
-      totalAreaStartMargin: 1.0,
-      totalAreaEndMargin: 2.0,
-      timeIndicationAreaWidth: 3.0,
-      separationAreaWidth: 4.0,
-    );
+        totalAreaStartMargin: 1.0,
+        totalAreaEndMargin: 2.0,
+        timeIndicationAreaWidth: 3.0,
+        separationAreaWidth: 4.0,
+        mainAreaStartMargin: 5.0,
+        mainAreaEndMargin: 6.0,
+        daySeparationAreaWidth: 7.0);
 
     double totalWidth = 100.0;
 
@@ -174,6 +176,193 @@ void main() {
       });
     });
 
-    //
+    // mainArea ----------------------------------------------------------------
+    group("mainArea", () {
+      test(".mainAreaWidth", () {
+        expect(
+          horizontalPositioner.mainAreaWidth,
+          90.0,
+        );
+      });
+
+      test(".mainAreaLeft", () {
+        expect(
+          horizontalPositioner.mainAreaLeft,
+          8.0,
+        );
+      });
+
+      test(".mainAreaRight", () {
+        expect(
+          horizontalPositioner.mainAreaRight,
+          98.0,
+        );
+      });
+    });
+
+    // startMainArea -----------------------------------------------------------
+    group("startMainArea", () {
+      test(".startMainAreaWidth", () {
+        expect(
+          horizontalPositioner.startMainAreaWidth,
+          5.0,
+        );
+      });
+
+      test(".startMainAreaLeft", () {
+        expect(
+          horizontalPositioner.startMainAreaLeft,
+          8.0,
+        );
+      });
+
+      test(".startMainAreaRight", () {
+        expect(
+          horizontalPositioner.startMainAreaRight,
+          13.0,
+        );
+      });
+    });
+
+    // endMainArea -----------------------------------------------------------
+    group("endMainArea", () {
+      test(".endMainAreaWidth", () {
+        expect(
+          horizontalPositioner.endMainAreaWidth,
+          6.0,
+        );
+      });
+
+      test(".endMainAreaLeft", () {
+        expect(
+          horizontalPositioner.endMainAreaLeft,
+          92.0,
+        );
+      });
+
+      test(".endMainAreaRight", () {
+        expect(
+          horizontalPositioner.endMainAreaRight,
+          98.0,
+        );
+      });
+    });
+
+    // eventArea ---------------------------------------------------------------
+    group("eventArea", () {
+      test(".eventAreaWidth", () {
+        expect(
+          horizontalPositioner.eventAreaWidth,
+          79.0,
+        );
+      });
+
+      test(".eventAreaLeft", () {
+        expect(
+          horizontalPositioner.eventAreaLeft,
+          13.0,
+        );
+      });
+
+      test(".eventAreaRight", () {
+        expect(
+          horizontalPositioner.eventAreaRight,
+          92.0,
+        );
+      });
+    });
+
+    // dayArea 0 ---------------------------------------------------------------
+    group("dayArea 0", () {
+      int dayNumber = 0;
+
+      test(".dayAreaWidth", () {
+        expect(
+          horizontalPositioner.dayAreaWidth(dayNumber),
+          36.0,
+        );
+      });
+
+      test(".dayAreaLeft", () {
+        expect(
+          horizontalPositioner.dayAreaLeft(dayNumber),
+          13.0,
+        );
+      });
+
+      test(".dayAreaRight", () {
+        expect(
+          horizontalPositioner.dayAreaRight(dayNumber),
+          49.0,
+        );
+      });
+    });
+
+    // dayArea 1 ---------------------------------------------------------------
+    group("dayArea 1", () {
+      int dayNumber = 1;
+
+      test(".dayAreaWidth", () {
+        expect(
+          horizontalPositioner.dayAreaWidth(dayNumber),
+          36.0,
+        );
+      });
+
+      test(".dayAreaLeft", () {
+        expect(
+          horizontalPositioner.dayAreaLeft(dayNumber),
+          56.0,
+        );
+      });
+
+      test(".dayAreaRight", () {
+        expect(
+          horizontalPositioner.dayAreaRight(dayNumber),
+          92.0,
+        );
+      });
+    });
+
+    // daySeparationArea 0 -----------------------------------------------------
+    group("daySeparationArea 0", () {
+      int daySeparationNumber = 0;
+
+      test(".daySeparationAreaWidth", () {
+        expect(
+          horizontalPositioner.daySeparationAreaWidth(daySeparationNumber),
+          7.0,
+        );
+      });
+
+      test(".daySeparationAreaLeft", () {
+        expect(
+          horizontalPositioner.daySeparationAreaLeft(daySeparationNumber),
+          49.0,
+        );
+      });
+
+      test(".daySeparationAreaRight", () {
+        expect(
+          horizontalPositioner.daySeparationAreaRight(daySeparationNumber),
+          56.0,
+        );
+      });
+    });
+
+    // -------------------------------------------------------------------------
+    test("throws argumentError if dayAreaNumber is to big", () {
+      expect(
+        () => horizontalPositioner.dayAreaWidth(2),
+        throwsArgumentError,
+      );
+    });
+
+    test("throws argumentError if daySeparationAreaNumber is to big", () {
+      expect(
+            () => horizontalPositioner.daySeparationAreaWidth(1),
+        throwsArgumentError,
+      );
+    });
   });
 }

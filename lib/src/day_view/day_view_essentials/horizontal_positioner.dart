@@ -221,7 +221,7 @@ class HorizontalPositioner {
 
   double get startMainAreaLeft => mainAreaLeft;
 
-  double get startMainAreaRight => startTotalAreaLeft + startMainAreaWidth;
+  double get startMainAreaRight => startMainAreaLeft + startMainAreaWidth;
 
   // endMainArea ---------------------------------------------------------------
 
@@ -291,7 +291,8 @@ class HorizontalPositioner {
   double daySeparationAreaRight(int daySeparationNumber) {
     throwArgumentErrorIfInvalidDaySeparationNumber(daySeparationNumber);
 
-    return dayAreaLeft(daySeparationNumber) + _constantDaySeparationAreaWidth;
+    return daySeparationAreaLeft(daySeparationNumber) +
+        _constantDaySeparationAreaWidth;
   }
 
   // ---------------------------------------------------------------------------
