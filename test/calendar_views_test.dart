@@ -6,7 +6,7 @@ import 'month_view/all.dart' as month_view;
 
 void main() {
   internal_date_time.main();
-  days_page_view.main();
+  day_view.main();
   days_page_view.main();
   month_page_view.main();
   month_view.main();

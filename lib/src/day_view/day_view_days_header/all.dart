@@ -1,2 +1,2 @@
-export 'day_view_header.dart';
-export 'day_view_header_item_builder.dart';
+export 'day_view_days_header.dart';
+export 'day_view_days_header_item_builder.dart';
