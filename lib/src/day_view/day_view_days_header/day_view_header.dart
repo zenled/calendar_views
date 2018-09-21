@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/day_view.dart';
 
+/// Widget that can display a widget in each [DayViewArea].
 class DayViewHeader extends StatefulWidget {
   DayViewHeader({
     this.verticalAlignment = CrossAxisAlignment.start,
@@ -10,7 +11,9 @@ class DayViewHeader extends StatefulWidget {
   })  : assert(verticalAlignment != null),
         assert(headerItemBuilder != null);
 
+  /// Vertical alignment if items inside this header.
   final CrossAxisAlignment verticalAlignment;
+
   final DayViewHeaderItemBuilder headerItemBuilder;
 
   @override
@@ -18,7 +21,7 @@ class DayViewHeader extends StatefulWidget {
 }
 
 class _DayViewHeaderState extends State<DayViewHeader> {
-  DayViewEssentials _dayViewEssentials;
+  DayViewEssentialsState _dayViewEssentials;
 
   @override
   void didChangeDependencies() {
@@ -56,7 +59,7 @@ class _DayViewHeaderState extends State<DayViewHeader> {
     rowChildren.add(_buildEndingOffset());
 
     return new Container(
-      width: _horizontalPositioner.availableWidth,
+      width: _horizontalPositioner.totalWidth,
       child: new Row(
         crossAxisAlignment: widget.verticalAlignment,
         children: rowChildren,
@@ -107,6 +110,6 @@ class _DayViewHeaderState extends State<DayViewHeader> {
   }
 
   double get _endingOffsetWidth =>
-      _horizontalPositioner.widths.eventAreaEndMargin +
-      _horizontalPositioner.widths.paddingEnd;
+      _horizontalPositioner.widths.mainAreaEndMargin +
+      _horizontalPositioner.widths.totalAreaEndMargin;
 }
