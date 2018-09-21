@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:calendar_views/month_page_view.dart';
 
-import 'axis_to_string.dart';
-import 'page.dart';
+import 'utils/all.dart';
 
 class MonthPageViewExample extends StatefulWidget {
   @override
@@ -33,17 +32,13 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
     _pageSnapping = true;
     _reverse = false;
 
-    _displayedMonthText = _monthToString(initialMonth);
+    _displayedMonthText = yearAndMonthToString(initialMonth);
   }
 
   void _onMonthChanged(DateTime month) {
     setState(() {
-      _displayedMonthText = _monthToString(month);
+      _displayedMonthText = yearAndMonthToString(month);
     });
-  }
-
-  String _monthToString(DateTime month) {
-    return "${month.year}.${month.month}";
   }
 
   @override
@@ -69,94 +64,72 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
           ),
           new Expanded(
             child: new SingleChildScrollView(
-              child: new Container(
-                padding: new EdgeInsets.symmetric(vertical: 16.0),
-                child: new Column(
-                  children: <Widget>[
-                    new ListTile(
-                      title: new Text("Displayed month: $_displayedMonthText"),
+              child: new Column(
+                children: <Widget>[
+                  new ListTile(
+                    title: new Center(
+                      child: new Text("Displayed month: $_displayedMonthText"),
                     ),
-                    new Divider(height: 0.0),
-                    new Container(
-                      padding: new EdgeInsets.all(4.0),
-                      child: new Center(
-                        child: new RaisedButton(
-                          child: new Text("Jump To Today-Month"),
-                          onPressed: () {
-                            _monthPageController.jumpToMonth(
-                              new DateTime.now(),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    new Divider(height: 0.0),
-                    new ListTile(
-                      title: new Text("Scroll Direction"),
-                      trailing: new DropdownButton<Axis>(
-                        value: _scrollDirection,
-                        items: <Axis>[Axis.horizontal, Axis.vertical]
-                            .map(
-                              (axis) => new DropdownMenuItem<Axis>(
-                                    value: axis,
-                                    child: new Text("${axisToString(axis)}"),
-                                  ),
-                            )
-                            .toList(),
-                        onChanged: (Axis value) {
-                          setState(() {
-                            this._scrollDirection = value;
-                          });
-
-                          showDialog(
-                            context: context,
-                            builder: (context) => new AlertDialog(
-                                  title:
-                                      new Text("This feature might not work"),
-                                  content: new Text(
-                                    """
-MothPageView internally uses a PageView.
-
-Due to a bug in PageView, changing scrollDirection during runtime might not work correctly.
-
-https://github.com/flutter/flutter/issues/16481
-""",
-                                  ),
-                                  actions: <Widget>[
-                                    new FlatButton(
-                                      child: new Text("OK"),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    )
-                                  ],
-                                ),
+                  ),
+                  new Divider(height: 0.0),
+                  new Container(
+                    padding: new EdgeInsets.all(4.0),
+                    child: new Center(
+                      child: new RaisedButton(
+                        child: new Text("Jump To Today-Month"),
+                        onPressed: () {
+                          _monthPageController.jumpToMonth(
+                            new DateTime.now(),
                           );
                         },
                       ),
                     ),
-                    new Divider(height: 0.0),
-                    new CheckboxListTile(
-                      title: new Text("Page snapping"),
-                      value: _pageSnapping,
-                      onChanged: (value) {
+                  ),
+                  new Divider(height: 0.0),
+                  new ListTile(
+                    title: new Text("Scroll Direction"),
+                    trailing: new DropdownButton<Axis>(
+                      value: _scrollDirection,
+                      items: <Axis>[Axis.horizontal, Axis.vertical]
+                          .map(
+                            (axis) => new DropdownMenuItem<Axis>(
+                                  value: axis,
+                                  child: new Text("${axisToString(axis)}"),
+                                ),
+                          )
+                          .toList(),
+                      onChanged: (Axis value) {
                         setState(() {
-                          _pageSnapping = value;
+                          this._scrollDirection = value;
                         });
+
+                        showScrollDirectionChangeMightNotWorkDialog(
+                          context: context,
+                        );
                       },
                     ),
-                    new Divider(height: 0.0),
-                    new CheckboxListTile(
-                      title: new Text("Reverse"),
-                      value: _reverse,
-                      onChanged: (value) {
-                        setState(() {
-                          _reverse = value;
-                        });
-                      },
-                    ),
-                  ],
-                ),
+                  ),
+                  new Divider(height: 0.0),
+                  new CheckboxListTile(
+                    title: new Text("Page snapping"),
+                    value: _pageSnapping,
+                    onChanged: (value) {
+                      setState(() {
+                        _pageSnapping = value;
+                      });
+                    },
+                  ),
+                  new Divider(height: 0.0),
+                  new CheckboxListTile(
+                    title: new Text("Reverse"),
+                    value: _reverse,
+                    onChanged: (value) {
+                      setState(() {
+                        _reverse = value;
+                      });
+                    },
+                  ),
+                ],
               ),
             ),
           ),

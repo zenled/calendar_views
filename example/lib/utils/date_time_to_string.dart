@@ -6,5 +6,5 @@ String dateToString(DateTime date) {
 
 String yearAndMonthToString(DateTime month) {
   return "${month.year.toString().padLeft(4, "0")}."
-      "${month.month.toString().padLeft(4, "0")}";
+      "${month.month.toString().padLeft(2, "0")}";
 }

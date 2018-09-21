@@ -37,7 +37,7 @@ class MonthPageView extends CalendarPageView {
   /// Function that builds a page.
   final MonthPageBuilder pageBuilder;
 
-  /// Called whenever the displayed month changes.
+  /// Called whenever the page and thus displayed month changes.
   ///
   /// Properties of month except for year and month are set to their default values.
   final ValueChanged<DateTime> onMonthChanged;
