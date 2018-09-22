@@ -6,10 +6,11 @@ import 'package:calendar_views/src/_internal_date_time/all.dart';
 @immutable
 class DayViewProperties {
   DayViewProperties({
-    @required this.days,
+    @required List<DateTime> days,
     this.minimumMinuteOfDay = 0,
     this.maximumMinuteOfDay = 1440,
   })  : assert(days != null),
+        this.days = days.map((day) => stripDateInformation(day)).toList(),
         assert(minimumMinuteOfDay != null &&
             isMinuteOfDayValid(minimumMinuteOfDay)),
         assert(maximumMinuteOfDay != null &&
@@ -24,14 +25,14 @@ class DayViewProperties {
   /// Maximum minute of day for day-view widgets.
   final int maximumMinuteOfDay;
 
+  /// Number of minutes between [minimumMinuteOfDay] and [maximumMinuteOfDay].
+  int get totalNumberOfMinutes => maximumMinuteOfDay - minimumMinuteOfDay;
+
   /// Number of days for day-view widgets.
   int get numberOfDays => days.length;
 
   /// Number of day separations for day-view widgets.
   int get numberOfDaySeparations => numberOfDays - 1;
-
-  /// Number of minutes between [minimumMinuteOfDay] and [maximumMinuteOfDay].
-  int get totalNumberOfMinutes => maximumMinuteOfDay - minimumMinuteOfDay;
 
   @override
   bool operator ==(Object other) {

@@ -295,6 +295,50 @@ class HorizontalPositioner {
         _constantDaySeparationAreaWidth;
   }
 
+  /// Returns the daySeparationNumber of [DayViewArea.daySeparationArea] that is to the left of the given day.
+  ///
+  /// If there is no day separation to the left of day it returns null.
+  int daySeparationNumberLeftOfDay(int dayNumber) {
+    throwArgumentErrorIfInvalidDayNumber(dayNumber);
+
+    if (isDaySeparationLeftOfDay(dayNumber)) {
+      return dayNumber - 1;
+    } else {
+      return null;
+    }
+  }
+
+  /// Returns the daySeparationNumber of [DayViewArea.daySeparationArea] that is to the right of the given day.
+  ///
+  /// If there is no day separation to the right of day it returns null.
+  int daySeparationNumberRightOfDay(int dayNumber) {
+    throwArgumentErrorIfInvalidDayNumber(dayNumber);
+
+    if (isDaySeparationRightOfDay(dayNumber)) {
+      return dayNumber;
+    } else {
+      return null;
+    }
+  }
+
+  /// Returns true if there is a [DayViewArea.daySeparationArea] to the left of the given day.
+  bool isDaySeparationLeftOfDay(int dayNumber) {
+    throwArgumentErrorIfInvalidDayNumber(dayNumber);
+
+    return dayNumber != 0;
+  }
+
+  /// Returns true if there is a [DayViewArea.daySeparationArea] to the right of the given day.
+  bool isDaySeparationRightOfDay(int dayNumber) {
+    throwArgumentErrorIfInvalidDayNumber(dayNumber);
+
+    if (properties.numberOfDays == 1) {
+      return false;
+    } else {
+      return dayNumber < (properties.numberOfDays - 1);
+    }
+  }
+
   // ---------------------------------------------------------------------------
 
   @override
