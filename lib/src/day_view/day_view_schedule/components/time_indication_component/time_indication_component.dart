@@ -43,11 +43,11 @@ class TimeIndicationComponent implements DayViewComponent {
   @override
   List<Positioned> buildItems({
     @required BuildContext context,
-    @required Properties properties,
+    @required DayViewProperties properties,
     @required Positioner positioner,
   }) {
     List<Positioned> builtItems = <Positioned>[];
-    Area area = positioner.getArea(AreaName.timeIndicationArea);
+    Area area = positioner.getArea(DayViewArea.timeIndicationArea);
 
     for (ItemWithStartDuration item in timeIndicators) {
       builtItems.add(

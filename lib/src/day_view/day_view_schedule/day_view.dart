@@ -53,11 +53,11 @@ class _DayViewState extends State<DayView> {
   Widget build(BuildContext context) {
     return new LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
-        Properties properties = DayViewEssentials.of(context).properties;
+        DayViewProperties properties = DayViewEssentials.of(context).properties;
         Positioner positioner = _createPositioner(constraints.maxHeight);
 
         return new Container(
-          width: positioner.availableWidth,
+          width: positioner.totalWidth,
           height: positioner.nonPaddedAreaHeight,
           child: new Stack(
             children: _buildComponentItems(
@@ -73,17 +73,19 @@ class _DayViewState extends State<DayView> {
 
   List<Positioned> _buildComponentItems({
     @required BuildContext context,
-    @required Properties properties,
+    @required DayViewProperties properties,
     @required Positioner positioner,
   }) {
     List<Positioned> items = <Positioned>[];
 
     for (DayViewComponent component in widget.components) {
-      items.addAll(component.buildItems(
-        context: context,
-        properties: properties,
-        positioner: positioner,
-      ));
+      items.addAll(
+        component.buildItems(
+          context: context,
+          properties: properties,
+          positioner: positioner,
+        ),
+      );
     }
 
     return items;

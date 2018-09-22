@@ -33,11 +33,11 @@ class SupportLineComponent implements DayViewComponent {
   @override
   List<Positioned> buildItems({
     @required BuildContext context,
-    @required Properties properties,
+    @required DayViewProperties properties,
     @required Positioner positioner,
   }) {
     List<Positioned> builtItems = <Positioned>[];
-    Area area = positioner.getArea(AreaName.contentArea);
+    Area area = positioner.getArea(DayViewArea.mainArea);
 
     for (ItemWithTime item in supportLines) {
       builtItems.add(

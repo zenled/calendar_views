@@ -27,7 +27,7 @@ class Area {
         assert(minuteOfDayFromTop != null),
         assert(heightOfDuration != null);
 
-  final AreaName name;
+  final DayViewArea name;
 
   final Size size;
 

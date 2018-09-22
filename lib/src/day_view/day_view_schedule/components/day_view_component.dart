@@ -8,7 +8,7 @@ abstract class DayViewComponent {
 
   List<Positioned> buildItems({
     @required BuildContext context,
-    @required Properties properties,
+    @required DayViewProperties properties,
     @required Positioner positioner,
   });
 }

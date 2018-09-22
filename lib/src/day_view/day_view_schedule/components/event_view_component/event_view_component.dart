@@ -25,7 +25,7 @@ class EventViewComponent implements DayViewComponent {
   @override
   List<Positioned> buildItems({
     @required BuildContext context,
-    @required Properties properties,
+    @required DayViewProperties properties,
     @required Positioner positioner,
   }) {
     List<Positioned> builtItems = <Positioned>[];
@@ -33,7 +33,7 @@ class EventViewComponent implements DayViewComponent {
 
     for (int i = 0; i < days.length; i++) {
       DateTime day = days[i];
-      Area area = positioner.getNumberedArea(AreaName.dayArea, i);
+      Area area = positioner.getNumberedArea(DayViewArea.dayArea, i);
       Set<ItemWithStartDuration> events = getEventsOfDay(day);
 
       builtItems.addAll(

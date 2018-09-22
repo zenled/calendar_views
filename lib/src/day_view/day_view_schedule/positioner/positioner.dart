@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/day_view.dart';
 
-import 'area_name.dart';
+import 'package:calendar_views/src/day_view/day_view_essentials/day_view_area.dart';
 import 'area.dart';
 
 /// Object that assist in positioning components inside a [DayView].
@@ -33,17 +33,17 @@ class Positioner extends HorizontalPositioner {
   }
 
   /// Returns the [Area] of some non-numbered-area.
-  Area getArea(AreaName areaName) {
+  Area getArea(DayViewArea areaName) {
     switch (areaName) {
-      case AreaName.nonPaddedArea:
+      case DayViewArea.contentArea:
         return nonPaddedArea;
-      case AreaName.timeIndicationArea:
+      case DayViewArea.timeIndicationArea:
         return timeIndicationArea;
-      case AreaName.separationArea:
+      case DayViewArea.separationArea:
         return separationArea;
-      case AreaName.contentArea:
+      case DayViewArea.mainArea:
         return contentArea;
-      case AreaName.eventArea:
+      case DayViewArea.eventArea:
         return eventArea;
       default:
         throw ArgumentError.value(
@@ -55,11 +55,11 @@ class Positioner extends HorizontalPositioner {
   }
 
   /// Returns the [Area] of some numbered-area
-  Area getNumberedArea(AreaName areaName, int number) {
+  Area getNumberedArea(DayViewArea areaName, int number) {
     switch (areaName) {
-      case AreaName.dayArea:
+      case DayViewArea.dayArea:
         return dayArea(number);
-      case AreaName.daySeparationArea:
+      case DayViewArea.daySeparationArea:
         return daySeparationArea(number);
       default:
         throw new ArgumentError.value(
@@ -82,15 +82,15 @@ class Positioner extends HorizontalPositioner {
   double get nonPaddedAreaBottom => nonPaddedAreaTop + nonPaddedAreaHeight;
 
   Size get nonPaddedAreaSize => new Size(
-        nonPaddedAreaWidth,
+        contentAreaWidth,
         nonPaddedAreaHeight,
       );
 
   Area get nonPaddedArea => new Area(
-        name: AreaName.nonPaddedArea,
+        name: DayViewArea.contentArea,
         size: nonPaddedAreaSize,
-        left: nonPaddedAreaLeft,
-        right: nonPaddedAreaRight,
+        left: contentAreaLeft,
+        right: contentAreaRight,
         top: nonPaddedAreaTop,
         bottom: nonPaddedAreaBottom,
         minuteOfDayFromTop: minuteOfDayFromTop,
@@ -111,7 +111,7 @@ class Positioner extends HorizontalPositioner {
       );
 
   Area get timeIndicationArea => new Area(
-        name: AreaName.timeIndicationArea,
+        name: DayViewArea.timeIndicationArea,
         size: timeIndicationAreaSize,
         left: timeIndicationAreaLeft,
         right: timeIndicationAreaRight,
@@ -135,7 +135,7 @@ class Positioner extends HorizontalPositioner {
       );
 
   Area get separationArea => new Area(
-        name: AreaName.separationArea,
+        name: DayViewArea.separationArea,
         size: separationAreaSize,
         left: separationAreaLeft,
         right: separationAreaRight,
@@ -154,15 +154,15 @@ class Positioner extends HorizontalPositioner {
   double get contentAreaBottom => nonPaddedAreaBottom;
 
   Size get contentAreaSize => new Size(
-        contentAreaWidth,
+        mainAreaWidth,
         contentAreaHeight,
       );
 
   Area get contentArea => new Area(
-        name: AreaName.contentArea,
+        name: DayViewArea.mainArea,
         size: contentAreaSize,
-        left: contentAreaLeft,
-        right: contentAreaRight,
+        left: mainAreaLeft,
+        right: mainAreaRight,
         top: contentAreaTop,
         bottom: contentAreaBottom,
         minuteOfDayFromTop: minuteOfDayFromTop,
@@ -183,7 +183,7 @@ class Positioner extends HorizontalPositioner {
       );
 
   Area get eventArea => new Area(
-        name: AreaName.eventArea,
+        name: DayViewArea.eventArea,
         size: eventAreaSize,
         left: eventAreaLeft,
         right: eventAreaRight,
@@ -202,7 +202,7 @@ class Positioner extends HorizontalPositioner {
   double get dayAreaBottom => nonPaddedAreaBottom;
 
   Size get dayAreaSize => new Size(
-        dayAreaWidth,
+        dayAreaWidth(0),
         dayAreaHeight,
       );
 
@@ -210,7 +210,7 @@ class Positioner extends HorizontalPositioner {
     throwArgumentErrorIfInvalidDayNumber(dayNumber);
 
     return new Area(
-      name: AreaName.dayArea,
+      name: DayViewArea.dayArea,
       size: dayAreaSize,
       left: dayAreaLeft(dayNumber),
       right: dayAreaRight(dayNumber),
@@ -230,7 +230,7 @@ class Positioner extends HorizontalPositioner {
   double get daySeparationAreaBottom => nonPaddedAreaBottom;
 
   Size get daySeparationAreaSize => new Size(
-        daySeparationAreaWidth,
+        daySeparationAreaWidth(0),
         daySeparationAreaHeight,
       );
 
@@ -238,7 +238,7 @@ class Positioner extends HorizontalPositioner {
     throwArgumentErrorIfInvalidDaySeparationNumber(daySeparationNumber);
 
     return new Area(
-      name: AreaName.daySeparationArea,
+      name: DayViewArea.daySeparationArea,
       size: daySeparationAreaSize,
       left: daySeparationAreaLeft(daySeparationNumber),
       right: daySeparationAreaRight(daySeparationNumber),

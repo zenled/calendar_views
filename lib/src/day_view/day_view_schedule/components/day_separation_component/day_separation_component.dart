@@ -21,7 +21,7 @@ class DaySeparationComponent implements DayViewComponent {
   @override
   List<Positioned> buildItems({
     @required BuildContext context,
-    @required Properties properties,
+    @required DayViewProperties properties,
     @required Positioner positioner,
   }) {
     List<Positioned> builtItems = <Positioned>[];
@@ -30,7 +30,7 @@ class DaySeparationComponent implements DayViewComponent {
         daySeparation < properties.numberOfDaySeparations;
         daySeparation++) {
       Area area =
-          positioner.getNumberedArea(AreaName.daySeparationArea, daySeparation);
+          positioner.getNumberedArea(DayViewArea.daySeparationArea, daySeparation);
       double topExtensionHeight = positioner.topExtensionHeight;
       double bottomExtensionHeight = positioner.bottomExtensionHeight;
 
