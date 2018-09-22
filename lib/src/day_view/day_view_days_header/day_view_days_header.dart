@@ -3,12 +3,13 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/day_view.dart';
 
-/// Widget that can display a widget in each [DayViewArea].
+/// Widget that builds a child in place of each day in a day-view.
 class DayViewDaysHeader extends StatefulWidget {
   DayViewDaysHeader({
     @required this.headerItemBuilder,
   }) : assert(headerItemBuilder != null);
 
+  /// Function that builds a header item.
   final DayViewDaysHeaderItemBuilder headerItemBuilder;
 
   @override
@@ -28,6 +29,17 @@ class _DayViewDaysHeaderState extends State<DayViewDaysHeader> {
     super.didChangeDependencies();
 
     _dayViewEssentials = DayViewEssentials.of(context);
+    if (_dayViewEssentials == null) {
+      _throwNoDayViewEssentialsError();
+    }
+  }
+
+  void _throwNoDayViewEssentialsError() {
+    throw new FlutterError("""
+Could not inherit DayViewEssentials.
+
+This widget must be a decendant of DayViewEssentials.
+    """);
   }
 
   @override
@@ -80,8 +92,10 @@ class _DayViewDaysHeaderState extends State<DayViewDaysHeader> {
         ),
       );
 
-      if (_isDaySeparationAfterDay(dayNumber)) {
-        int daySeparationNumber = _daySeparationNumberOfDayNumber(dayNumber);
+      if (_horizontalPositioner.isDaySeparationRightOfDay(dayNumber)) {
+        int daySeparationNumber =
+            _horizontalPositioner.daySeparationNumberRightOfDay(dayNumber);
+
         daysAndSeparations.add(
           _buildDaySeparation(
             context: context,
@@ -103,22 +117,6 @@ class _DayViewDaysHeaderState extends State<DayViewDaysHeader> {
       width: _horizontalPositioner.dayAreaWidth(dayNumber),
       child: widget.headerItemBuilder(context, day),
     );
-  }
-
-  bool _isDaySeparationAfterDay(int dayNumber) {
-    if (!_isLastDay(dayNumber)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  bool _isLastDay(int dayNumber) {
-    return dayNumber == (_dayViewProperties.numberOfDays - 1);
-  }
-
-  int _daySeparationNumberOfDayNumber(int dayNumber) {
-    return dayNumber;
   }
 
   Widget _buildDaySeparation({
