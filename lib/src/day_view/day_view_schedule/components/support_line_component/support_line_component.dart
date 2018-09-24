@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 import 'package:calendar_views/day_view.dart';
 
 @immutable
-class SupportLineComponent implements DayViewComponent {
+class SupportLineComponent implements ScheduleComponent {
   SupportLineComponent({
     @required this.supportLines,
     @required this.supportLineItemBuilder,
@@ -15,7 +15,7 @@ class SupportLineComponent implements DayViewComponent {
   final ItemWithTimeBuilder supportLineItemBuilder;
 
   ItemPosition _getItemPosition({
-    @required Area area,
+    @required SchedulingArea area,
     @required ItemWithTime item,
   }) {
     return new ItemPosition(
@@ -25,7 +25,7 @@ class SupportLineComponent implements DayViewComponent {
   }
 
   double _getItemWidth({
-    @required Area area,
+    @required SchedulingArea area,
   }) {
     return area.size.width;
   }
@@ -34,10 +34,10 @@ class SupportLineComponent implements DayViewComponent {
   List<Positioned> buildItems({
     @required BuildContext context,
     @required DayViewProperties properties,
-    @required Positioner positioner,
+    @required SchedulePositioner positioner,
   }) {
     List<Positioned> builtItems = <Positioned>[];
-    Area area = positioner.getArea(DayViewArea.mainArea);
+    SchedulingArea area = positioner.getNonNumberedArea(DayViewArea.mainArea);
 
     for (ItemWithTime item in supportLines) {
       builtItems.add(

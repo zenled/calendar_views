@@ -5,8 +5,12 @@ import 'package:calendar_views/day_view.dart';
 
 class LinearDayView extends StatefulWidget {
   LinearDayView({
+    this.alignment = Alignment.topCenter,
     @required this.items,
-  }) : assert(items != null);
+  })  : assert(alignment != null),
+        assert(items != null);
+
+  final Alignment alignment;
 
   final List<LinearDayViewItem> items;
 
@@ -32,6 +36,7 @@ class _LinearDayViewState extends State<LinearDayView> {
     return new Container(
       width: _horizontalPositioner.totalAreaWidth,
       child: new Stack(
+        alignment: widget.alignment,
         children: _buildStackChildren(),
       ),
     );

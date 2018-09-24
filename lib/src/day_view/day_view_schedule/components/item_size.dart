@@ -2,7 +2,7 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/day_view.dart';
 
-/// Guideline size that an item inside a [DayView] should take.
+/// Recommendation for size of an item inside a [DayViewSchedule].
 @immutable
 class ItemSize {
   ItemSize({
@@ -11,9 +11,9 @@ class ItemSize {
   })  : assert(width != null && width >= 0),
         assert(height != null && height >= 0);
 
-  /// Width of the item.
+  /// Width recommendation for item.
   final double width;
 
-  /// Height of the item.
+  /// Height recommendation for item.
   final double height;
 }

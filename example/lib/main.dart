@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'days_page_view.dart';
+import 'days_page_view_example.dart';
 import 'day_view_example.dart';
-import 'min_max_page_view_example.dart';
 import 'month_example.dart';
 import 'month_page_view_example.dart';
 import 'month_view_example.dart';
@@ -65,7 +64,7 @@ class MyApp extends StatelessWidget {
                   ),
                   new Divider(height: 0.0),
                   new ListTile(
-                    title: new Text("Month View"),
+                    title: new Text("MonthView"),
                     subtitle: new Text("MonthView Example"),
                     onTap: () {
                       _showWidgetInFullScreenDialog(
@@ -76,7 +75,7 @@ class MyApp extends StatelessWidget {
                   ),
                   new Divider(height: 0.0),
                   new ListTile(
-                    title: new Text("Days Page View"),
+                    title: new Text("DaysPageView"),
                     subtitle: new Text("DaysPageView Example"),
                     onTap: () {
                       _showWidgetInFullScreenDialog(

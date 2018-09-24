@@ -20,7 +20,7 @@ class DayBuilder {
   final BuildContext context;
 
   final Set<ItemWithStartDuration> events;
-  final Area area;
+  final SchedulingArea area;
   final EventViewArranger eventsArranger;
   final ItemWithStartDurationBuilder eventItemBuilder;
 

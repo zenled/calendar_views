@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 import 'package:calendar_views/day_view.dart';
 
 @immutable
-class DaySeparationComponent implements DayViewComponent {
+class DaySeparationComponent implements ScheduleComponent {
   DaySeparationComponent({
     @required this.daySeparationItemBuilder,
     this.extendOverTopExtension = true,
@@ -13,7 +13,7 @@ class DaySeparationComponent implements DayViewComponent {
         assert(extendOverTopExtension != null),
         assert(extendOverBottomExtension != null);
 
-  final ItemWithGeneratedPositionBuilder daySeparationItemBuilder;
+  final ScheduleComponentItemBuilder daySeparationItemBuilder;
 
   final bool extendOverTopExtension;
   final bool extendOverBottomExtension;
@@ -22,15 +22,15 @@ class DaySeparationComponent implements DayViewComponent {
   List<Positioned> buildItems({
     @required BuildContext context,
     @required DayViewProperties properties,
-    @required Positioner positioner,
+    @required SchedulePositioner positioner,
   }) {
     List<Positioned> builtItems = <Positioned>[];
 
     for (int daySeparation = 0;
         daySeparation < properties.numberOfDaySeparations;
         daySeparation++) {
-      Area area =
-          positioner.getNumberedArea(DayViewArea.daySeparationArea, daySeparation);
+      SchedulingArea area = positioner.getNumberedArea(
+          DayViewArea.daySeparationArea, daySeparation);
       double topExtensionHeight = positioner.topExtensionHeight;
       double bottomExtensionHeight = positioner.bottomExtensionHeight;
 
@@ -57,7 +57,7 @@ class DaySeparationComponent implements DayViewComponent {
   }
 
   ItemPosition _makeItemPosition({
-    @required Area area,
+    @required SchedulingArea area,
     @required double topExtensionHeight,
   }) {
     double top = area.top;
@@ -72,7 +72,7 @@ class DaySeparationComponent implements DayViewComponent {
   }
 
   ItemSize _makeItemSize({
-    @required Area area,
+    @required SchedulingArea area,
     @required double topExtensionHeight,
     @required double bottomExtensionHeight,
   }) {

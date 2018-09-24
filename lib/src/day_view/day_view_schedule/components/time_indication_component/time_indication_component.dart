@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 import 'package:calendar_views/day_view.dart';
 
 @immutable
-class TimeIndicationComponent implements DayViewComponent {
+class TimeIndicationComponent implements ScheduleComponent {
   const TimeIndicationComponent({
     @required this.timeIndicators,
     @required this.timeIndicatorItemBuilder,
@@ -15,7 +15,7 @@ class TimeIndicationComponent implements DayViewComponent {
   final ItemWithStartDurationBuilder timeIndicatorItemBuilder;
 
   ItemPosition _getItemPosition({
-    @required Area area,
+    @required SchedulingArea area,
     @required ItemWithStartDuration item,
   }) {
     assert(area != null);
@@ -28,7 +28,7 @@ class TimeIndicationComponent implements DayViewComponent {
   }
 
   ItemSize _getItemSize({
-    @required Area area,
+    @required SchedulingArea area,
     @required ItemWithStartDuration properties,
   }) {
     assert(area != null);
@@ -44,10 +44,10 @@ class TimeIndicationComponent implements DayViewComponent {
   List<Positioned> buildItems({
     @required BuildContext context,
     @required DayViewProperties properties,
-    @required Positioner positioner,
+    @required SchedulePositioner positioner,
   }) {
     List<Positioned> builtItems = <Positioned>[];
-    Area area = positioner.getArea(DayViewArea.timeIndicationArea);
+    SchedulingArea area = positioner.getNonNumberedArea(DayViewArea.timeIndicationArea);
 
     for (ItemWithStartDuration item in timeIndicators) {
       builtItems.add(

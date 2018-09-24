@@ -47,9 +47,9 @@ class SupportLineItemCreator {
       top: positioningAssistant
               .minuteOfDayFromTopInsideContentArea(minuteOfDay) +
           positioningAssistant.contentAreaTop,
-      left: positioningAssistant.contentAreaLeft,
+      left: positioningAssistant.mainAreaLeft,
     );
   }
 
-  double get _itemWidth => positioningAssistant.contentAreaWidth;
+  double get _itemWidth => positioningAssistant.mainAreaWidth;
 }

@@ -60,7 +60,7 @@ class _DayViewInstanceState extends State<DayViewInstance> {
         builder: (BuildContext context, BoxConstraints constraints) {
           return new SizeConstraints(
             sizeConstraintsData: new SizeConstraintsData(
-              availableWidth: constraints.maxWidth,
+              totalWidth: constraints.maxWidth,
             ),
             child: new Builder(builder: (BuildContext context) {
               // A Builder is needed so PositioningAssistantGenerator can access SizeConstraints.

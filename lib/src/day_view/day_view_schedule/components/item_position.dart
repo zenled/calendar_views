@@ -2,7 +2,7 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/day_view.dart';
 
-/// Guideline position that an item inside a [DayView] should take.
+/// Recommendation for position of an item inside a [DayViewSchedule].
 @immutable
 class ItemPosition {
   const ItemPosition({
@@ -11,9 +11,9 @@ class ItemPosition {
   })  : assert(top != null),
         assert(left != null);
 
-  /// Position of item from top.
+  /// Position from top edge of [DayViewSchedule].
   final double top;
 
-  /// Position of item from left.
+  /// Position from left edge of [DayViewSchedule].
   final double left;
 }

@@ -10,7 +10,7 @@ typedef Set<ItemWithStartDuration> GetEventsOfDayCallback(
 );
 
 @immutable
-class EventViewComponent implements DayViewComponent {
+class EventViewComponent implements ScheduleComponent {
   EventViewComponent({
     @required this.getEventsOfDay,
     this.eventsArranger = const ChainsEventsArranger(),
@@ -26,14 +26,14 @@ class EventViewComponent implements DayViewComponent {
   List<Positioned> buildItems({
     @required BuildContext context,
     @required DayViewProperties properties,
-    @required Positioner positioner,
+    @required SchedulePositioner positioner,
   }) {
     List<Positioned> builtItems = <Positioned>[];
     List<DateTime> days = properties.days;
 
     for (int i = 0; i < days.length; i++) {
       DateTime day = days[i];
-      Area area = positioner.getNumberedArea(DayViewArea.dayArea, i);
+      SchedulingArea area = positioner.getNumberedArea(DayViewArea.dayArea, i);
       Set<ItemWithStartDuration> events = getEventsOfDay(day);
 
       builtItems.addAll(
@@ -51,7 +51,7 @@ class EventViewComponent implements DayViewComponent {
   List<Positioned> _buildDay({
     @required BuildContext context,
     @required Set<ItemWithStartDuration> events,
-    @required Area area,
+    @required SchedulingArea area,
   }) {
     DayBuilder dayBuilder = new DayBuilder(
       context: context,
