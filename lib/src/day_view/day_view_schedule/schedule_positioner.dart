@@ -29,16 +29,16 @@ class SchedulePositioner extends HorizontalPositioner {
       bottomExtensionHeight;
 
   /// Height that some item with the given [duration] should have.
+  ///
+  /// [duration] can be less than 0.
   double heightOfDuration(int duration) {
-    _throwArgumentErrorIfInvalidDuration(duration);
-
     return heightPerMinute * duration;
   }
 
   /// Distance (from top) of a given [minuteOfDay] inside a [DayViewSchedule].
+  ///
+  /// [minuteOfDay] can be less than 0.
   double minuteOfDayFromTop(int minuteOfDay) {
-    _throwArgumentErrorIfInvalidMinuteOfDay(minuteOfDay);
-
     double r = topExtensionHeight;
     r += heightOfDuration(
       _minutesFromMinimumMinute(minuteOfDay),
@@ -48,25 +48,5 @@ class SchedulePositioner extends HorizontalPositioner {
 
   int _minutesFromMinimumMinute(int minuteOfDay) {
     return minuteOfDay - properties.minimumMinuteOfDay;
-  }
-
-  void _throwArgumentErrorIfInvalidDuration(int duration) {
-    if (duration < 0) {
-      throw new ArgumentError.value(
-        duration,
-        "duration",
-        "duration must not be < 0",
-      );
-    }
-  }
-
-  void _throwArgumentErrorIfInvalidMinuteOfDay(int minuteOfDay) {
-    if (!isMinuteOfDayValid(minuteOfDay)) {
-      throw new ArgumentError.value(
-        minuteOfDay,
-        "minuteOfDay",
-        "invalid minute of day",
-      );
-    }
   }
 }
