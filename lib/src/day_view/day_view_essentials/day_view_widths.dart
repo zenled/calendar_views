@@ -4,8 +4,8 @@ import 'package:meta/meta.dart';
 @immutable
 class DayViewWidths {
   const DayViewWidths({
-    this.totalAreaStartMargin = 0.0,
-    this.totalAreaEndMargin = 0.0,
+    this.totalAreaStartMargin = 8.0,
+    this.totalAreaEndMargin = 8.0,
     this.timeIndicationAreaWidth = 60.0,
     this.separationAreaWidth = 4.0,
     this.mainAreaStartMargin = 8.0,
