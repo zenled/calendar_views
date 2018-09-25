@@ -3,18 +3,19 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/day_view.dart';
 
-/// Widget that display a day view schedule with the given [components].
+/// Widget for display a day view schedule with the given [components].
 class DayViewSchedule extends StatefulWidget {
   DayViewSchedule({
     this.heightPerMinute,
     this.topExtensionHeight = 16.0,
     this.bottomExtensionHeight = 16.0,
     @required this.components,
-  })  : assert(topExtensionHeight != null && topExtensionHeight >= 0.0),
+  })  : assert(heightPerMinute == null || heightPerMinute > 0.0),
+        assert(topExtensionHeight != null && topExtensionHeight >= 0.0),
         assert(bottomExtensionHeight != null && bottomExtensionHeight >= 0.0),
         assert(components != null);
 
-  /// Height that a minute inside a [DayViewSchedule] will occupy.
+  /// Height that a minute inside a [DayViewSchedule] will take.
   ///
   /// If null the [DayViewSchedule] will be as big as possible.
   final double heightPerMinute;
@@ -63,7 +64,9 @@ This widget must be a decendant of DayViewEssentials.
   double _determineHeightPerMinute(double availableHeight) {
     _throwErrorIfCannotDetermineHeightPerMinute(availableHeight);
 
-    if (widget.heightPerMinute == null) {
+    if (widget.heightPerMinute != null) {
+      return widget.heightPerMinute;
+    } else {
       double heightWithoutExtensions = availableHeight -
           widget.topExtensionHeight -
           widget.bottomExtensionHeight;
@@ -71,8 +74,6 @@ This widget must be a decendant of DayViewEssentials.
       int totalNumberOfMinutes = _dayViewProperties.totalNumberOfMinutes;
 
       return heightWithoutExtensions / totalNumberOfMinutes;
-    } else {
-      return widget.heightPerMinute;
     }
   }
 
@@ -86,7 +87,7 @@ Eather heightPerMinute must be provider or this widget placed as a child of a wi
     }
   }
 
-  SchedulePositioner _createPositioner(double heightPerMinute) {
+  SchedulePositioner _createSchedulePositioner(double heightPerMinute) {
     return new SchedulePositioner(
       horizontalPositioner: _horizontalPositioner,
       heightPerMinute: heightPerMinute,
@@ -102,7 +103,8 @@ Eather heightPerMinute must be provider or this widget placed as a child of a wi
         double heightPerMinute =
             _determineHeightPerMinute(constraints.maxHeight);
 
-        SchedulePositioner positioner = _createPositioner(heightPerMinute);
+        SchedulePositioner positioner =
+            _createSchedulePositioner(heightPerMinute);
 
         return new Container(
           width: positioner.totalWidth,
@@ -127,9 +129,9 @@ Eather heightPerMinute must be provider or this widget placed as a child of a wi
     for (ScheduleComponent component in widget.components) {
       items.addAll(
         component.buildItems(
-          context: context,
-          properties: _dayViewProperties,
-          positioner: positioner,
+          context,
+          _dayViewProperties,
+          positioner,
         ),
       );
     }

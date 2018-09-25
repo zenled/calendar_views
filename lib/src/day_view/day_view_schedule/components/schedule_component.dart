@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 import 'package:calendar_views/day_view.dart';
 
@@ -8,9 +7,9 @@ abstract class ScheduleComponent {
   const ScheduleComponent();
 
   /// Builds a list of [Positioned] widget that will be displayed as children of [DayViewSchedule].
-  List<Positioned> buildItems({
-    @required BuildContext context,
-    @required DayViewProperties properties,
-    @required SchedulePositioner positioner,
-  });
+  List<Positioned> buildItems(
+    BuildContext context,
+    DayViewProperties properties,
+    SchedulePositioner positioner,
+  );
 }

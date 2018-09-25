@@ -4,50 +4,51 @@ import 'package:meta/meta.dart';
 import 'package:calendar_views/day_view.dart';
 import 'package:calendar_views/src/_internal_date_time/all.dart';
 
-/// Signature for a function that builds an item to be displayed as child of [DayViewSchedule].
-typedef Positioned ScheduleComponentItemBuilder(
+/// Signature for a function that builds a [StartDurationItem] to be displayed as child of [DayViewSchedule].
+typedef Positioned StartDurationItemBuilder(
   BuildContext context,
   ItemPosition itemPosition,
   ItemSize itemSize,
 );
 
-/// Base class for an item that can be provided to some implementation of [ScheduleComponent].
-@immutable
-abstract class ScheduleComponentItem {
-  ScheduleComponentItem({
-    @required this.builder,
-  }) : assert(builder != null);
-
-  /// function that builds this item.
-  final ScheduleComponentItemBuilder builder;
-}
-
 /// Item with [startMinuteOfDay] and [duration] that can be provided to some implementations of [ScheduleComponent].
-class StartDurationItem extends ScheduleComponentItem {
+class StartDurationItem {
   StartDurationItem({
     @required this.startMinuteOfDay,
     @required this.duration,
-    @required ScheduleComponentItemBuilder builder,
+    @required this.builder,
   })  : assert(
             startMinuteOfDay != null && isMinuteOfDayValid(startMinuteOfDay)),
         assert(duration != null && duration >= 0),
-        super(builder: builder);
+        assert(builder != null);
 
   /// Minute of day at which this item starts.
   final int startMinuteOfDay;
 
   /// Amount of minutes that this item occupies.
   final int duration;
+
+  /// Function that builds this item.
+  final StartDurationItemBuilder builder;
 }
 
+/// Signature for a function that builds a [TimeItem] to be displayed as child of [DayViewSchedule].
+typedef Positioned TimeItemBuilder(
+  BuildContext context,
+  ItemPosition itemPosition,
+  double itemWidth,
+);
+
 /// Item with [minuteOfDay]  that can be provided to some implementations of [ScheduleComponent].
-class TimeItem extends ScheduleComponentItem {
+class TimeItem {
   TimeItem({
     @required this.minuteOfDay,
-    @required ScheduleComponentItemBuilder builder,
+    @required this.builder,
   })  : assert(minuteOfDay != null && isMinuteOfDayValid(minuteOfDay)),
-        super(builder: builder);
+        assert(builder != null);
 
   /// Minuter of day at which this item happens.
   final int minuteOfDay;
+
+  final TimeItemBuilder builder;
 }

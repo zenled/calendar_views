@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 import 'package:calendar_views/day_view.dart';
 import 'package:calendar_views/src/_internal_date_time/all.dart';
 
-/// Object that assist in positioning components and their items inside a [DayViewSchedule].
+/// Object that assist in positioning component items inside a [DayViewSchedule].
 @immutable
 class SchedulePositioner extends HorizontalPositioner {
   SchedulePositioner({
@@ -12,9 +12,13 @@ class SchedulePositioner extends HorizontalPositioner {
     @required this.heightPerMinute,
     @required this.topExtensionHeight,
     @required this.bottomExtensionHeight,
-  }) : super.fromHorizontalPositioner(horizontalPositioner);
+  })  : assert(heightPerMinute != null && heightPerMinute > 0.0),
+        assert(topExtensionHeight != null && topExtensionHeight >= 0.0),
+        assert(bottomExtensionHeight != null && bottomExtensionHeight >= 0.0),
+        super.fromHorizontalPositioner(horizontalPositioner);
 
   final double heightPerMinute;
+
   final double topExtensionHeight;
   final double bottomExtensionHeight;
 
