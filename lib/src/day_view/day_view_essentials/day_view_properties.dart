@@ -14,7 +14,8 @@ class DayViewProperties {
         assert(minimumMinuteOfDay != null &&
             isMinuteOfDayValid(minimumMinuteOfDay)),
         assert(maximumMinuteOfDay != null &&
-            isMinuteOfDayValid(maximumMinuteOfDay));
+            isMinuteOfDayValid(maximumMinuteOfDay)),
+        assert(minimumMinuteOfDay < maximumMinuteOfDay);
 
   /// List of days for day-view widgets.
   final List<DateTime> days;
