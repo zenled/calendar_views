@@ -2,68 +2,194 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 import 'package:calendar_views/day_view.dart';
+import 'package:calendar_views/src/_internal_date_time/all.dart';
 
+/// Signature for a function that builds a generated support line.
+typedef Positioned GeneratedSupportLineItemBuilder(
+  BuildContext context,
+  ItemPosition itemPosition,
+  double itemWidth,
+  int minuteOfDay,
+);
+
+/// [ScheduleComponent] for displaying support lines in the [DayViewArea.mainArea] of [DayViewSchedule].
 @immutable
 class SupportLineComponent implements ScheduleComponent {
-  SupportLineComponent({
-    @required this.supportLines,
-    @required this.supportLineItemBuilder,
-  })  : assert(supportLines != null),
-        assert(supportLineItemBuilder != null);
+  SupportLineComponent._internal({
+    @required this.extendOverStartMainArea,
+    @required this.extendOverEndMainArea,
+    this.supportLines,
+    this.minuteOfDayOfFirstSupportLine,
+    this.interval,
+    this.generatedSupportLineItemBuilder,
+  })  : assert(extendOverStartMainArea != null),
+        assert(extendOverEndMainArea != null);
 
-  final List<ItemWithTime> supportLines;
-  final ItemWithTimeBuilder supportLineItemBuilder;
-
-  ItemPosition _getItemPosition({
-    @required SchedulingArea area,
-    @required ItemWithTime item,
+  /// Creates a [ScheduleComponent] that displays the given [supportLines].
+  factory SupportLineComponent({
+    bool extendOverStartMainArea = true,
+    bool extendOverEndMainArea = true,
+    @required List<TimeItem> supportLines,
   }) {
-    return new ItemPosition(
-      top: area.minuteOfDayFromTop(item.minuteOfDay),
-      left: area.left,
+    assert(supportLines != null);
+
+    return new SupportLineComponent._internal(
+      extendOverStartMainArea: extendOverStartMainArea,
+      extendOverEndMainArea: extendOverEndMainArea,
+      supportLines: supportLines,
     );
   }
 
-  double _getItemWidth({
-    @required SchedulingArea area,
+  /// Creates a [ScheduleComponent] that generates and then displays support lines.
+  factory SupportLineComponent.intervalGenerated({
+    bool extendOverStartMainArea = true,
+    bool extendOverEndMainArea = true,
+    int minuteOfDayOfFirstSupportLine = 0,
+    int interval = 60,
+    @required GeneratedSupportLineItemBuilder generatedSupportLineItemBuilder,
   }) {
-    return area.size.width;
+    assert(minuteOfDayOfFirstSupportLine != null &&
+        isMinuteOfDayValid(minuteOfDayOfFirstSupportLine));
+    assert(interval != null && interval > 0);
+    assert(generatedSupportLineItemBuilder != null);
+
+    return new SupportLineComponent._internal(
+      extendOverStartMainArea: extendOverStartMainArea,
+      extendOverEndMainArea: extendOverEndMainArea,
+      minuteOfDayOfFirstSupportLine: minuteOfDayOfFirstSupportLine,
+      interval: interval,
+      generatedSupportLineItemBuilder: generatedSupportLineItemBuilder,
+    );
+  }
+
+  /// If true support lines will extend over [DayViewArea.startMainArea].
+  final bool extendOverStartMainArea;
+
+  /// If true support lines will extend over [DayViewArea.endMainArea].
+  final bool extendOverEndMainArea;
+
+  // provided support lines ----------------------------------------------------
+  /// List of support lines to be displayed by this component.
+  final List<TimeItem> supportLines;
+
+  // generated support lines ---------------------------------------------------
+  /// Minute of day at which the first generated support line will be displayed.
+  final int minuteOfDayOfFirstSupportLine;
+
+  /// Minutes between each generated support line.
+  final int interval;
+
+  /// Function that builds a generated support line.
+  final GeneratedSupportLineItemBuilder generatedSupportLineItemBuilder;
+
+  bool get _shouldGenerateSupportLines => supportLines == null;
+
+  ItemPosition _makeItemPosition({
+    @required SchedulePositioner positioner,
+    @required int minuteOfDay,
+  }) {
+    double left;
+    if (extendOverStartMainArea) {
+      left = positioner.startMainAreaLeft;
+    } else {
+      left = positioner.startMainAreaRight;
+    }
+
+    return new ItemPosition(
+      top: positioner.minuteOfDayFromTop(minuteOfDay),
+      left: left,
+    );
+  }
+
+  double _calculateItemWidth({
+    @required SchedulePositioner positioner,
+  }) {
+    double width = positioner.mainAreaWidth;
+    if (!extendOverStartMainArea) {
+      width -= positioner.startMainAreaWidth;
+    }
+    if (!extendOverEndMainArea) {
+      width -= positioner.endMainAreaWidth;
+    }
+
+    return width;
   }
 
   @override
-  List<Positioned> buildItems({
-    @required BuildContext context,
-    @required DayViewProperties properties,
-    @required SchedulePositioner positioner,
-  }) {
-    List<Positioned> builtItems = <Positioned>[];
-    SchedulingArea area = positioner.getNonNumberedArea(DayViewArea.mainArea);
-
-    for (ItemWithTime item in supportLines) {
-      builtItems.add(
-        _buildItem(
-          context: context,
-          itemPosition: _getItemPosition(area: area, item: item),
-          itemWidth: _getItemWidth(area: area),
-          item: item,
-        ),
+  List<Positioned> buildItems(
+    BuildContext context,
+    DayViewProperties properties,
+    SchedulePositioner positioner,
+  ) {
+    if (_shouldGenerateSupportLines) {
+      return _buildGeneratedSupportLines(
+        context: context,
+        positioner: positioner,
+      );
+    } else {
+      return _buildProvidedSupportLines(
+        context: context,
+        positioner: positioner,
       );
     }
-
-    return builtItems;
   }
 
-  Positioned _buildItem({
+  List<Positioned> _buildGeneratedSupportLines({
     @required BuildContext context,
-    @required ItemPosition itemPosition,
-    @required double itemWidth,
-    @required ItemWithTime item,
+    @required SchedulePositioner positioner,
   }) {
-    return supportLineItemBuilder(
-      context: context,
-      position: itemPosition,
-      width: itemWidth,
-      item: item,
-    );
+    List<Positioned> items = <Positioned>[];
+
+    for (int minuteOfDay = minuteOfDayOfFirstSupportLine;
+        minuteOfDay <= maximum_minute_of_day;
+        minuteOfDay += interval) {
+      ItemPosition itemPosition = _makeItemPosition(
+        positioner: positioner,
+        minuteOfDay: minuteOfDay,
+      );
+
+      double itemWidth = _calculateItemWidth(
+        positioner: positioner,
+      );
+
+      Positioned item = generatedSupportLineItemBuilder(
+        context,
+        itemPosition,
+        itemWidth,
+        minuteOfDay,
+      );
+
+      items.add(item);
+    }
+
+    return items;
+  }
+
+  List<Positioned> _buildProvidedSupportLines({
+    @required BuildContext context,
+    @required SchedulePositioner positioner,
+  }) {
+    List<Positioned> items = <Positioned>[];
+
+    for (TimeItem timeItem in supportLines) {
+      ItemPosition itemPosition = _makeItemPosition(
+        positioner: positioner,
+        minuteOfDay: timeItem.minuteOfDay,
+      );
+
+      double itemWidth = _calculateItemWidth(
+        positioner: positioner,
+      );
+
+      Positioned item = timeItem.builder(
+        context,
+        itemPosition,
+        itemWidth,
+      );
+
+      items.add(item);
+    }
+
+    return items;
   }
 }
