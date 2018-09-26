@@ -1,7 +1,7 @@
 //import 'package:flutter/material.dart';
 //import 'package:meta/meta.dart';
 //
-//import 'package:calendar_views/day_view.dart';
+//import 'package:calendar_views/day_view_schedule.dart';
 //
 //import 'package:calendar_views/src/day_view/components/item_position.dart';
 //

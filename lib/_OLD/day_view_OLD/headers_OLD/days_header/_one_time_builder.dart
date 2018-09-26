@@ -71,7 +71,7 @@ class OneTimeBuilder {
 
   Widget _buildStartPadding() {
     double width = 0.0;
-    width += positioningAssistant.contentAreaLeft;
+    width += positioningAssistant.mainAreaLeft;
     if (!extendOverEventsAreaStartMargin) {
       width += positioningAssistant.dimensionsData.eventsAreaStartMargin;
     }

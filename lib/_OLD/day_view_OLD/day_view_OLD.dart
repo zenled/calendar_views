@@ -124,7 +124,7 @@ class _DayViewState extends State<DayViewOLD> {
     PositioningAssistant positioningAssistant = _getPositioningAssistant();
 
     return new Container(
-      width: positioningAssistant.nonPaddedAreaWidth,
+      width: positioningAssistant.contentAreaWidth,
       height: positioningAssistant.nonPaddedAreaHeight,
       child: new Stack(
         children: _buildComponentItems(),

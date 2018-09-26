@@ -34,13 +34,10 @@ class PageDays {
   /// Returns page of which [day] is part of.
   int pageOfDay(Date day) {
     int deltaDays = firstDayOfInitialPage.daysBetween(day);
-    int deltaPages = deltaDays ~/ daysPerPage;
+    double deltaPages = deltaDays / daysPerPage;
+    int deltaPagesInt = deltaPages.floor();
 
-    if (deltaDays.isNegative && deltaDays % daysPerPage != 0) {
-      deltaPages -= 1;
-    }
-
-    return initialPage + deltaPages;
+    return initialPage + deltaPagesInt;
   }
 
   Date _getFirstDayOfPage(int page) {

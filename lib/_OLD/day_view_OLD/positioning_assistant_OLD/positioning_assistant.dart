@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 import 'package:calendar_views/src/day_view/properties/all.dart';
-import 'package:calendar_views/src/day_view/day_view/day_view.dart';
+import 'package:calendar_views/src/day_view/day_view/day_view_schedule.dart';
 
 import 'area_OLD.dart';
 import 'area_name_OLD.dart';
@@ -93,7 +93,7 @@ class PositioningAssistant {
       );
 
   /// Width that the [DayView] should occupy.
-  double get totalAreaWidth => sizeConstraintsData.availableWidth;
+  double get totalAreaWidth => sizeConstraintsData.totalWidth;
 
   /// Height that the [DayView] should occupy.
   double get totalAreaHeight =>
@@ -357,7 +357,7 @@ class PositioningAssistant {
 
     double r = eventsAreaWidth;
     // remove separation between days
-    r -= (_numberOfDays - 1) * dimensionsData.daySeparationWidth;
+    r -= (_numberOfDays - 1) * dimensionsData.daySeparationAreaWidth;
     // divide the rest of the are between days
     r /= _numberOfDays;
 
@@ -387,7 +387,7 @@ class PositioningAssistant {
     _throwArgumentErrorIfInvalidDayNumber(dayNumber);
 
     double r = eventsAreaLeft;
-    r += dimensionsData.daySeparationWidth * dayNumber;
+    r += dimensionsData.daySeparationAreaWidth * dayNumber;
     r += dayAreaWidth(dayNumber) * dayNumber;
     return r;
   }
@@ -452,7 +452,7 @@ class PositioningAssistant {
   double daySeparationAreaWidth(int daySeparationNumber) {
     _throwArgumentErrorIfInvalidDaySeparationNumber(daySeparationNumber);
 
-    return dimensionsData.daySeparationWidth;
+    return dimensionsData.daySeparationAreaWidth;
   }
 
   double daySeparationAreaHeight(int daySeparationNumber) {
@@ -543,7 +543,7 @@ class PositioningAssistant {
   double extendedDaySeparationAreaWidth(int daySeparationNumber) {
     _throwArgumentErrorIfInvalidDaySeparationNumber(daySeparationNumber);
 
-    return dimensionsData.daySeparationWidth;
+    return dimensionsData.daySeparationAreaWidth;
   }
 
   double extendedDaySeparationAreaHeight(int daySeparationNumber) {

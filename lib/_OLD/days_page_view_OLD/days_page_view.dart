@@ -120,7 +120,7 @@ class _DaysPageViewStateOLD extends CalendarPageViewState<DaysPageViewOLD> {
   }
 
   @override
-  void onPageChanged(int page) {
+  void onRepresentationChanged(int page) {
     if (widget.onDaysChanged != null) {
       List<DateTime> days = widget.controller.daysOfPage(page);
 
