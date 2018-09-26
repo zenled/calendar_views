@@ -3,90 +3,100 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/day_view.dart';
 
+/// Signature for a function that builds a generated day separator.
+typedef Positioned GeneratedDaySeparatorBuilder(
+  BuildContext context,
+  ItemPosition itemPosition,
+  ItemSize itemSize,
+  int daySeparatorNumber,
+);
+
+/// [ScheduleComponent] for displaying day separators in every [DayViewArea.daySeparationArea] of [DayViewSchedule].
 @immutable
 class DaySeparationComponent implements ScheduleComponent {
   DaySeparationComponent({
-    @required this.daySeparationItemBuilder,
-    this.extendOverTopExtension = true,
-    this.extendOverBottomExtension = true,
-  })  : assert(daySeparationItemBuilder != null),
-        assert(extendOverTopExtension != null),
-        assert(extendOverBottomExtension != null);
+    this.extendOverTopExtension = false,
+    this.extendOverBottomExtension = false,
+    @required this.generatedDaySeparatorBuilder,
+  })  : assert(extendOverTopExtension != null),
+        assert(extendOverBottomExtension != null),
+        assert(generatedDaySeparatorBuilder != null);
 
-  final ScheduleComponentItemBuilder daySeparationItemBuilder;
-
+  /// If true day separators will extend over top extension of [DayViewSchedule].
   final bool extendOverTopExtension;
+
+  /// If true day separators will extend over bottom extension of [DayViewSchedule].
   final bool extendOverBottomExtension;
 
-  @override
-  List<Positioned> buildItems({
-    @required BuildContext context,
-    @required DayViewProperties properties,
-    @required SchedulePositioner positioner,
-  }) {
-    List<Positioned> builtItems = <Positioned>[];
-
-    for (int daySeparation = 0;
-        daySeparation < properties.numberOfDaySeparations;
-        daySeparation++) {
-      SchedulingArea area = positioner.getNumberedArea(
-          DayViewArea.daySeparationArea, daySeparation);
-      double topExtensionHeight = positioner.topExtensionHeight;
-      double bottomExtensionHeight = positioner.bottomExtensionHeight;
-
-      ItemPosition position = _makeItemPosition(
-        area: area,
-        topExtensionHeight: topExtensionHeight,
-      );
-      ItemSize size = _makeItemSize(
-        area: area,
-        topExtensionHeight: topExtensionHeight,
-        bottomExtensionHeight: bottomExtensionHeight,
-      );
-
-      builtItems.add(
-        daySeparationItemBuilder(
-          context: context,
-          position: position,
-          size: size,
-        ),
-      );
-    }
-
-    return builtItems;
-  }
+  /// Function that builds a generated day separator.
+  final GeneratedDaySeparatorBuilder generatedDaySeparatorBuilder;
 
   ItemPosition _makeItemPosition({
-    @required SchedulingArea area,
-    @required double topExtensionHeight,
+    @required SchedulePositioner positioner,
+    @required daySeparatorNumber,
   }) {
-    double top = area.top;
-    if (!extendOverTopExtension) {
-      top += topExtensionHeight;
+    double top;
+    if (extendOverTopExtension) {
+      top = 0.0;
+    } else {
+      top = positioner.topExtensionHeight;
     }
 
     return new ItemPosition(
       top: top,
-      left: area.left,
+      left: positioner.daySeparationAreaLeft(daySeparatorNumber),
     );
   }
 
   ItemSize _makeItemSize({
-    @required SchedulingArea area,
-    @required double topExtensionHeight,
-    @required double bottomExtensionHeight,
+    @required SchedulePositioner positioner,
+    @required int daySeparatorNumber,
   }) {
-    double height = area.size.height;
+    double height = positioner.totalHeight;
     if (!extendOverTopExtension) {
-      height -= topExtensionHeight;
+      height -= positioner.topExtensionHeight;
     }
     if (!extendOverBottomExtension) {
-      height -= bottomExtensionHeight;
+      height -= positioner.bottomExtensionHeight;
     }
 
     return new ItemSize(
-      width: area.size.width,
+      width: positioner.daySeparationAreaWidth(daySeparatorNumber),
       height: height,
     );
+  }
+
+  @override
+  List<Positioned> buildItems(
+    BuildContext context,
+    DayViewProperties properties,
+    SchedulePositioner positioner,
+  ) {
+    List<Positioned> items = <Positioned>[];
+
+    for (int daySeparatorNumber = 0;
+        daySeparatorNumber < properties.numberOfDaySeparations;
+        daySeparatorNumber++) {
+      ItemPosition itemPosition = _makeItemPosition(
+        positioner: positioner,
+        daySeparatorNumber: daySeparatorNumber,
+      );
+
+      ItemSize itemSize = _makeItemSize(
+        positioner: positioner,
+        daySeparatorNumber: daySeparatorNumber,
+      );
+
+      Positioned item = generatedDaySeparatorBuilder(
+        context,
+        itemPosition,
+        itemSize,
+        daySeparatorNumber,
+      );
+
+      items.add(item);
+    }
+
+    return items;
   }
 }
