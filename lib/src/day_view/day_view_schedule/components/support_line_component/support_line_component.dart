@@ -5,7 +5,7 @@ import 'package:calendar_views/day_view.dart';
 import 'package:calendar_views/src/_internal_date_time/all.dart';
 
 /// Signature for a function that builds a generated support line.
-typedef Positioned GeneratedSupportLineItemBuilder(
+typedef Positioned GeneratedSupportLineBuilder(
   BuildContext context,
   ItemPosition itemPosition,
   double itemWidth,
@@ -21,7 +21,7 @@ class SupportLineComponent implements ScheduleComponent {
     this.supportLines,
     this.minuteOfDayOfFirstSupportLine,
     this.interval,
-    this.generatedSupportLineItemBuilder,
+    this.generatedSupportLineBuilder,
   })  : assert(extendOverStartMainArea != null),
         assert(extendOverEndMainArea != null);
 
@@ -46,19 +46,19 @@ class SupportLineComponent implements ScheduleComponent {
     bool extendOverEndMainArea = true,
     int minuteOfDayOfFirstSupportLine = 0,
     int interval = 60,
-    @required GeneratedSupportLineItemBuilder generatedSupportLineItemBuilder,
+    @required GeneratedSupportLineBuilder generatedSupportLineBuilder,
   }) {
     assert(minuteOfDayOfFirstSupportLine != null &&
         isMinuteOfDayValid(minuteOfDayOfFirstSupportLine));
     assert(interval != null && interval > 0);
-    assert(generatedSupportLineItemBuilder != null);
+    assert(generatedSupportLineBuilder != null);
 
     return new SupportLineComponent._internal(
       extendOverStartMainArea: extendOverStartMainArea,
       extendOverEndMainArea: extendOverEndMainArea,
       minuteOfDayOfFirstSupportLine: minuteOfDayOfFirstSupportLine,
       interval: interval,
-      generatedSupportLineItemBuilder: generatedSupportLineItemBuilder,
+      generatedSupportLineBuilder: generatedSupportLineBuilder,
     );
   }
 
@@ -76,11 +76,11 @@ class SupportLineComponent implements ScheduleComponent {
   /// Minute of day at which the first generated support line will be displayed.
   final int minuteOfDayOfFirstSupportLine;
 
-  /// Minutes between each generated support line.
+  /// Number of minutes between generated support lines.
   final int interval;
 
   /// Function that builds a generated support line.
-  final GeneratedSupportLineItemBuilder generatedSupportLineItemBuilder;
+  final GeneratedSupportLineBuilder generatedSupportLineBuilder;
 
   bool get _shouldGenerateSupportLines => supportLines == null;
 
@@ -152,7 +152,7 @@ class SupportLineComponent implements ScheduleComponent {
         positioner: positioner,
       );
 
-      Positioned item = generatedSupportLineItemBuilder(
+      Positioned item = generatedSupportLineBuilder(
         context,
         itemPosition,
         itemWidth,

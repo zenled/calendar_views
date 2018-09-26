@@ -5,7 +5,7 @@ import 'package:calendar_views/day_view.dart';
 import 'package:calendar_views/src/_internal_date_time/all.dart';
 
 /// Signature for a function that builds a generated time indicator.
-typedef Positioned GeneratedTimeIndicatorItemBuilder(
+typedef Positioned GeneratedTimeIndicatorBuilder(
   BuildContext context,
   ItemPosition itemPosition,
   ItemSize itemSize,
@@ -25,7 +25,7 @@ class TimeIndicationComponent implements ScheduleComponent {
   })  : assert(timeIndicators != null),
         minuteOfDayOfFirstTimeIndicator = null,
         timeIndicatorDuration = null,
-        generatedTimeIndicatorItemBuilder = null;
+        generatedTimeIndicatorBuilder = null;
 
   /// Creates a [ScheduleComponent] that generates and then displays time indicators.
   ///
@@ -35,11 +35,11 @@ class TimeIndicationComponent implements ScheduleComponent {
   TimeIndicationComponent.intervalGenerated({
     this.minuteOfDayOfFirstTimeIndicator = 0,
     this.timeIndicatorDuration = 60,
-    @required this.generatedTimeIndicatorItemBuilder,
+    @required this.generatedTimeIndicatorBuilder,
   })  : assert(minuteOfDayOfFirstTimeIndicator != null &&
             isMinuteOfDayValid(minuteOfDayOfFirstTimeIndicator)),
         assert(timeIndicatorDuration != null && timeIndicatorDuration > 0),
-        assert(generatedTimeIndicatorItemBuilder != null),
+        assert(generatedTimeIndicatorBuilder != null),
         timeIndicators = null;
 
   // provided time indicators --------------------------------------------------
@@ -54,7 +54,7 @@ class TimeIndicationComponent implements ScheduleComponent {
   final int timeIndicatorDuration;
 
   /// Function that builds a generated time indicator.
-  final GeneratedTimeIndicatorItemBuilder generatedTimeIndicatorItemBuilder;
+  final GeneratedTimeIndicatorBuilder generatedTimeIndicatorBuilder;
 
   bool get _shouldGenerateTimeIndicators => timeIndicators == null;
 
@@ -121,7 +121,7 @@ class TimeIndicationComponent implements ScheduleComponent {
         duration: timeIndicatorDuration,
       );
 
-      Positioned item = generatedTimeIndicatorItemBuilder(
+      Positioned item = generatedTimeIndicatorBuilder(
         context,
         itemPosition,
         itemSize,
