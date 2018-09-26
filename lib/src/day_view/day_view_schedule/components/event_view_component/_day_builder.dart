@@ -3,26 +3,28 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/day_view.dart';
 
+/// Class that builds events of day displayed by [EventViewComponent].
 @immutable
 class DayBuilder {
   DayBuilder({
     @required this.context,
+    @required this.dayNumber,
     @required this.events,
-    @required this.area,
-    @required this.eventsArranger,
-    @required this.eventItemBuilder,
+    @required this.eventArranger,
+    @required this.positioner,
   })  : assert(context != null),
+        assert(dayNumber != null),
         assert(events != null),
-        assert(area != null),
-        assert(eventsArranger != null),
-        assert(eventItemBuilder != null);
+        assert(eventArranger != null),
+        assert(positioner != null);
 
   final BuildContext context;
 
-  final Set<ItemWithStartDuration> events;
-  final SchedulingArea area;
-  final EventViewArranger eventsArranger;
-  final ItemWithStartDurationBuilder eventItemBuilder;
+  final int dayNumber;
+  final Iterable<StartDurationItem> events;
+  final EventViewArranger eventArranger;
+
+  final SchedulePositioner positioner;
 
   List<Positioned> build() {
     List<ArrangedEvent> arrangedEvents = _arrangeEvents();
@@ -30,46 +32,41 @@ class DayBuilder {
   }
 
   List<ArrangedEvent> _arrangeEvents() {
-    return eventsArranger.arrangeEvents(
-      events: events,
-      constraints: _makeArrangerConstraints(),
+    return eventArranger.arrangeEvents(
+      events,
+      _makeArrangerConstraints(),
     );
   }
 
   ArrangerConstraints _makeArrangerConstraints() {
     return new ArrangerConstraints(
-      areaWidth: area.size.width,
-      areaHeight: area.size.height,
-      positionOfMinuteFromTop: area.minuteOfDayFromTop,
-      heightOfDuration: area.heightOfDuration,
+      areaWidth: positioner.dayAreaWidth(dayNumber),
+      areaHeight: positioner.totalHeight,
+      minuteOfDayFromTop: positioner.minuteOfDayFromTop,
+      heightOfDuration: positioner.heightOfDuration,
     );
   }
 
   List<Positioned> _buildArrangedEvents(List<ArrangedEvent> arrangedEvents) {
-    return arrangedEvents
-        .map(
-          _buildArrangedEvent,
-        )
-        .toList();
+    return arrangedEvents.map(_buildArrangedEvent).toList();
   }
 
   Positioned _buildArrangedEvent(ArrangedEvent arrangedEvent) {
-    return eventItemBuilder(
-      context: context,
-      position: _createItemPosition(arrangedEvent),
-      size: _createItemSize(arrangedEvent),
-      item: arrangedEvent.event,
+    return arrangedEvent.event.builder(
+      context,
+      _makeItemPosition(arrangedEvent),
+      _makeItemSize(arrangedEvent),
     );
   }
 
-  ItemPosition _createItemPosition(ArrangedEvent arrangedEvent) {
+  ItemPosition _makeItemPosition(ArrangedEvent arrangedEvent) {
     return new ItemPosition(
       top: arrangedEvent.top,
-      left: arrangedEvent.left + area.left,
+      left: positioner.dayAreaLeft(dayNumber) + arrangedEvent.left,
     );
   }
 
-  ItemSize _createItemSize(ArrangedEvent arrangedEvent) {
+  ItemSize _makeItemSize(ArrangedEvent arrangedEvent) {
     return new ItemSize(
       width: arrangedEvent.width,
       height: arrangedEvent.height,

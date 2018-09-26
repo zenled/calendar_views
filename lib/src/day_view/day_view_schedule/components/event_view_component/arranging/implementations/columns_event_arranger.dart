@@ -2,14 +2,10 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/day_view.dart';
 
-/// [EventsArranger] that arranges events into columns.
+/// [EventViewArranger] that arranges events into columns.
 @immutable
-class ColumnsEventsArranger implements EventViewArranger {
-  /// Creates a new instance of this class.
-  ///
-  /// If [extendColumns] is true events will be horizontally extended into neighbouring columns
-  /// to fill the available space.
-  const ColumnsEventsArranger({
+class ColumnsEventArranger implements EventViewArranger {
+  const ColumnsEventArranger({
     this.extendColumns = true,
   }) : assert(extendColumns != null);
 
@@ -17,11 +13,11 @@ class ColumnsEventsArranger implements EventViewArranger {
   final bool extendColumns;
 
   @override
-  List<ArrangedEvent> arrangeEvents({
-    @required Set<ItemWithStartDuration> events,
-    @required ArrangerConstraints constraints,
-  }) {
-    List<ItemWithStartDuration> sortedEvents = <ItemWithStartDuration>[];
+  List<ArrangedEvent> arrangeEvents(
+    Iterable<StartDurationItem> events,
+    ArrangerConstraints constraints,
+  ) {
+    List<StartDurationItem> sortedEvents = <StartDurationItem>[];
     sortedEvents.addAll(events);
     _sortEvents(sortedEvents);
 
@@ -35,7 +31,7 @@ class ColumnsEventsArranger implements EventViewArranger {
   }
 }
 
-void _sortEvents(List<ItemWithStartDuration> events) {
+void _sortEvents(List<StartDurationItem> events) {
   events.sort(
     (event1, event2) {
       if (event1.startMinuteOfDay == event2.startMinuteOfDay) {
@@ -47,14 +43,14 @@ void _sortEvents(List<ItemWithStartDuration> events) {
   );
 }
 
-List<_Column> _makeColumns(List<ItemWithStartDuration> events) {
+List<_Column> _makeColumns(List<StartDurationItem> events) {
   List<_Column> columns = new List();
 
   columns.add(
     new _Column(),
   );
 
-  for (ItemWithStartDuration event in events) {
+  for (StartDurationItem event in events) {
     _Reservation reservation = new _Reservation(event);
 
     bool foundColumn = false;
@@ -116,7 +112,7 @@ List<ArrangedEvent> _columnsToArrangedEvents({
 
       arrangedEvents.add(
         new ArrangedEvent(
-          top: constraints.positionOfMinuteFromTop(
+          top: constraints.minuteOfDayFromTop(
             reservationInColumn.event.startMinuteOfDay,
           ),
           left: columnWidth * columnNumber,
@@ -138,7 +134,7 @@ class _Reservation {
     this.event,
   ) : assert(event != null);
 
-  final ItemWithStartDuration event;
+  final StartDurationItem event;
 
   int get fromMinute => event.startMinuteOfDay;
 

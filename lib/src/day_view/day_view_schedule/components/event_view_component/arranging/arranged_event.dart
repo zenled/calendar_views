@@ -2,9 +2,9 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/day_view.dart';
 
-/// Item returned by [EventsArranger].
+/// Item returned by [EventViewArranger].
 ///
-/// It contains an event it's position and size.
+/// It contains an event its position and size.
 @immutable
 class ArrangedEvent {
   ArrangedEvent({
@@ -27,5 +27,5 @@ class ArrangedEvent {
 
   final double height;
 
-  final ItemWithStartDuration event;
+  final StartDurationItem event;
 }

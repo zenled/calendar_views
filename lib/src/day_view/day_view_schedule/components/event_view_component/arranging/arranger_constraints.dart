@@ -1,26 +1,18 @@
 import 'package:meta/meta.dart';
 
-/// Signature for a function that returns the position (from top) of some minute of day.
-typedef double ArrangerConstraintsPositionOfMinuteFromTopCallback(
-  int minuteOfDay,
-);
+import 'package:calendar_views/day_view.dart';
 
-/// Signature for a function that returns a height of some duration of minutes.
-typedef double ArrangerConstraintsHeightOfDurationCallback(
-  int durationInMinutes,
-);
-
-/// Constraints passed to [EventsArranger].
+/// Constraints passed to [EventViewArranger].
 @immutable
 class ArrangerConstraints {
   ArrangerConstraints({
     @required this.areaWidth,
     @required this.areaHeight,
-    @required this.positionOfMinuteFromTop,
+    @required this.minuteOfDayFromTop,
     @required this.heightOfDuration,
   })  : assert(areaWidth != null && areaWidth >= 0),
         assert(areaHeight != null && areaHeight >= 0),
-        assert(positionOfMinuteFromTop != null),
+        assert(minuteOfDayFromTop != null),
         assert(heightOfDuration != null);
 
   /// Width of the area inside of which events should be arranged.
@@ -29,10 +21,9 @@ class ArrangerConstraints {
   /// Height of the area inside of which events should be arranged.
   final double areaHeight;
 
-  /// Callback thar returns a position of some minute of day from top.
-  final ArrangerConstraintsPositionOfMinuteFromTopCallback
-      positionOfMinuteFromTop;
+  /// Callback thar returns the distance from top of some minute of day.
+  final MinuteOfDayFromTopCallback minuteOfDayFromTop;
 
-  /// Callback that returns the recommended height of some item, depending on its duration.
-  final ArrangerConstraintsHeightOfDurationCallback heightOfDuration;
+  /// Callback that returns the height of some item, given its duration.
+  final HeightOfDurationCallback heightOfDuration;
 }

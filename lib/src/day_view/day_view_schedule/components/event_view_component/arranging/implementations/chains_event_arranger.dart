@@ -2,21 +2,18 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/day_view.dart';
 
-/// [EventsArranger] that tries to equally separate overlapping events.
+/// [EventViewArranger] that tries to equally separate overlapping events.
 @immutable
-class ChainsEventsArranger implements EventViewArranger {
-  /// Creates a new instance of this class.
-  ///
-  /// Using some other [eventsSorter] might produce different results.
-  const ChainsEventsArranger();
+class ChainsEventArranger implements EventViewArranger {
+  const ChainsEventArranger();
 
   @override
-  List<ArrangedEvent> arrangeEvents({
-    @required Set<ItemWithStartDuration> events,
-    @required ArrangerConstraints constraints,
-  }) {
+  List<ArrangedEvent> arrangeEvents(
+    Iterable<StartDurationItem> events,
+    ArrangerConstraints constraints,
+  ) {
     // creates a new list with sortedEvents
-    List<ItemWithStartDuration> sortedEvents = <ItemWithStartDuration>[];
+    List<StartDurationItem> sortedEvents = <StartDurationItem>[];
     sortedEvents.addAll(events);
     _sortEvents(sortedEvents);
 
@@ -48,7 +45,7 @@ class ChainsEventsArranger implements EventViewArranger {
     return items
         .map(
           (item) => new ArrangedEvent(
-                top: constraints.positionOfMinuteFromTop(item.start),
+                top: constraints.minuteOfDayFromTop(item.start),
                 left: item.leftPercentage * constraints.areaWidth,
                 width: item.widthPercentage * constraints.areaWidth,
                 height: constraints.heightOfDuration(item.duration),
@@ -59,7 +56,7 @@ class ChainsEventsArranger implements EventViewArranger {
   }
 }
 
-void _sortEvents(List<ItemWithStartDuration> events) {
+void _sortEvents(List<StartDurationItem> events) {
   events.sort(
     (event1, event2) {
       if (event1.startMinuteOfDay == event2.startMinuteOfDay) {
@@ -72,7 +69,7 @@ void _sortEvents(List<ItemWithStartDuration> events) {
 }
 
 /// Creates a list of [_Item]s from [events].
-List<_Item> _makeItems(List<ItemWithStartDuration> events) {
+List<_Item> _makeItems(List<StartDurationItem> events) {
   List<_Item> items = <_Item>[];
 
   for (int i = 0; i < events.length; i++) {
@@ -182,7 +179,7 @@ class _Item {
 
   final int id;
 
-  final ItemWithStartDuration event;
+  final StartDurationItem event;
 
   List<_Item> earlyOverlaps;
 

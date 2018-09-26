@@ -2,7 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 import 'package:calendar_views/day_view.dart';
-import 'package:calendar_views/src/_internal_date_time/all.dart';
+
+/// Signature for a function that returns the height that some item with the given [duration] should have inside a [DayViewSchedule].
+typedef double HeightOfDurationCallback(
+  int durationInMinutes,
+);
+
+/// Signature for a function that returns the distance from top of the given [minuteOdDay] inside a [DayViewSchedule].
+typedef double MinuteOfDayFromTopCallback(
+  int minuteOfDay,
+);
 
 /// Object that assist in positioning component items inside a [DayViewSchedule].
 @immutable
@@ -28,14 +37,14 @@ class SchedulePositioner extends HorizontalPositioner {
       heightOfDuration(properties.totalNumberOfMinutes) +
       bottomExtensionHeight;
 
-  /// Height that some item with the given [duration] should have.
+  /// Height that some item with the given [duration] should have inside a [DayViewSchedule].
   ///
   /// [duration] can be less than 0.
   double heightOfDuration(int duration) {
     return heightPerMinute * duration;
   }
 
-  /// Distance (from top) of a given [minuteOfDay] inside a [DayViewSchedule].
+  /// Distance from top of a given [minuteOfDay] inside a [DayViewSchedule].
   ///
   /// [minuteOfDay] can be less than 0.
   double minuteOfDayFromTop(int minuteOfDay) {
