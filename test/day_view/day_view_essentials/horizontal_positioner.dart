@@ -1,4 +1,4 @@
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 import 'package:calendar_views/src/day_view/day_view_essentials/all.dart';
 
