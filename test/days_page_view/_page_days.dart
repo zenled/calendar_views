@@ -38,7 +38,7 @@ void testDaysOfPage() {
       expect(actual, matcher);
     });
 
-    test("returns correct days when given initialPage + 1", () {
+    test("returns correct days when given initialPage+1", () {
       actual = pageDays.daysOfPage(initialPage + 1);
       matcher = <Date>[
         new Date(2018, 9, 21),
@@ -50,7 +50,7 @@ void testDaysOfPage() {
       expect(actual, matcher);
     });
 
-    test("returns correct days when given initialPage + 2", () {
+    test("returns correct days when given initialPage+2", () {
       actual = pageDays.daysOfPage(initialPage + 2);
       matcher = <Date>[
         new Date(2018, 9, 25),
@@ -62,7 +62,7 @@ void testDaysOfPage() {
       expect(actual, matcher);
     });
 
-    test("returns correct days when given initialPage - 1", () {
+    test("returns correct days when given initialPage-1", () {
       actual = pageDays.daysOfPage(initialPage - 1);
       matcher = <Date>[
         new Date(2018, 9, 13),
@@ -74,7 +74,7 @@ void testDaysOfPage() {
       expect(actual, matcher);
     });
 
-    test("returns correct days when given initialPage - 2", () {
+    test("returns correct days when given initialPage-2", () {
       actual = pageDays.daysOfPage(initialPage - 2);
       matcher = <Date>[
         new Date(2018, 9, 9),
@@ -111,7 +111,7 @@ void testDaysOfPage() {
       expect(actual, matcher);
     });
 
-    test("returns correct day when given initialPage + 1", () {
+    test("returns correct day when given initialPage+1", () {
       actual = pageDays.daysOfPage(initialPage + 1);
       matcher = <Date>[
         new Date(2018, 9, 18),
@@ -120,7 +120,7 @@ void testDaysOfPage() {
       expect(actual, matcher);
     });
 
-    test("returns correct day when given initialPage + 2", () {
+    test("returns correct day when given initialPage+2", () {
       actual = pageDays.daysOfPage(initialPage + 2);
       matcher = <Date>[
         new Date(2018, 9, 19),
@@ -129,7 +129,7 @@ void testDaysOfPage() {
       expect(actual, matcher);
     });
 
-    test("returns correct day when given initialPage - 1", () {
+    test("returns correct day when given initialPage-1", () {
       actual = pageDays.daysOfPage(initialPage - 1);
       matcher = <Date>[
         new Date(2018, 9, 16),
@@ -138,7 +138,7 @@ void testDaysOfPage() {
       expect(actual, matcher);
     });
 
-    test("returns correct day when given initialPage - 2", () {
+    test("returns correct day when given initialPage-2", () {
       actual = pageDays.daysOfPage(initialPage - 2);
       matcher = <Date>[
         new Date(2018, 9, 15),

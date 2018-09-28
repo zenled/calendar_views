@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/day_view.dart';
 
-/// Widget that builds a child in place of each day in a day-view.
+/// Widget that builds a child in place of each day in a day view.
 class DayViewDaysHeader extends StatefulWidget {
   DayViewDaysHeader({
     @required this.headerItemBuilder,
@@ -39,7 +39,7 @@ class _DayViewDaysHeaderState extends State<DayViewDaysHeader> {
 Could not inherit DayViewEssentials.
 
 This widget must be a decendant of DayViewEssentials.
-    """);
+""");
   }
 
   @override
@@ -86,7 +86,6 @@ This widget must be a decendant of DayViewEssentials.
 
       daysAndSeparations.add(
         _buildDay(
-          context: context,
           dayNumber: dayNumber,
           day: day,
         ),
@@ -98,7 +97,6 @@ This widget must be a decendant of DayViewEssentials.
 
         daysAndSeparations.add(
           _buildDaySeparation(
-            context: context,
             daySeparationNumber: daySeparationNumber,
           ),
         );
@@ -109,7 +107,6 @@ This widget must be a decendant of DayViewEssentials.
   }
 
   Widget _buildDay({
-    @required BuildContext context,
     @required int dayNumber,
     @required DateTime day,
   }) {
@@ -120,7 +117,6 @@ This widget must be a decendant of DayViewEssentials.
   }
 
   Widget _buildDaySeparation({
-    @required BuildContext context,
     @required int daySeparationNumber,
   }) {
     return new Container(

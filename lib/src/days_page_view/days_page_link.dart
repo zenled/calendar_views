@@ -24,7 +24,7 @@ typedef Future<Null> AnimateToDayCallback(
   @required Curve curve,
 });
 
-/// Class for communication between [DaysPageView] and [DaysPageController].
+/// Communicator between [DaysPageView] and [DaysPageController].
 @immutable
 class DaysPageLink extends CalendarPageLink {
   DaysPageLink({

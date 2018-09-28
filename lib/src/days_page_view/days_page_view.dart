@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/calendar_page_view/all.dart';
 import 'package:calendar_views/src/_internal_date_time/all.dart';
+import 'package:calendar_views/src/calendar_page_view/all.dart';
 
 import '_page_days.dart';
 import 'days_page_builder.dart';
 import 'days_page_controller.dart';
 import 'days_page_link.dart';
 
-/// Widget similar to [PageView] but instead of page-number it gives each page a list of days.
+/// Widget similar to [PageView], but instead of page-number it gives each page a list of days.
 ///
 /// The number of pages that can be displayed is virtually infinite.
 class DaysPageView extends CalendarPageView {

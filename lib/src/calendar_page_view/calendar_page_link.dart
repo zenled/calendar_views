@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import 'calendar_page_view.dart';
 import 'calendar_page_controller.dart';
+import 'calendar_page_view.dart';
 
 /// Signature for a function that changes which page is displayed in the [CalendarPageView].
 ///
@@ -22,7 +22,7 @@ typedef Future<Null> AnimateToPageCallback(
   @required Curve curve,
 });
 
-/// Base class for communication between [CalendarPageView] and [CalendarPageController].
+/// Base class for a communicator between [CalendarPageView] and [CalendarPageController].
 @immutable
 abstract class CalendarPageLink {
   const CalendarPageLink({

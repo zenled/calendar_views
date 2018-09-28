@@ -47,7 +47,7 @@ class DaysPageController extends CalendarPageController {
   ///
   /// Properties of returned days except for year, month and day are set to their default values.
   ///
-  /// If no [DaysPageView] is attached to this controller it throws an exception.
+  /// If nothing is attached to this controller it throws an exception.
   List<DateTime> currentDays() {
     throwExceptionIfNoItemAttached();
 

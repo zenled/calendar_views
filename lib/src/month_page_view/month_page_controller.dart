@@ -42,7 +42,7 @@ class MonthPageController extends CalendarPageController {
   ///
   /// Properties of returned month except for year and month are set to their default values.
   ///
-  /// If no [MonthPageView] is attached to this controller it throws an exception.
+  /// If nothing is attached to this controller it throws an exception.
   DateTime get currentMonth {
     throwExceptionIfNoItemAttached();
 

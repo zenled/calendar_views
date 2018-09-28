@@ -1,34 +1,34 @@
 import 'package:meta/meta.dart';
 
-/// Class that contains information about widths for day-view widgets.
+/// Class that contains information about widths for day view widgets.
 @immutable
 class DayViewWidths {
   const DayViewWidths({
-    this.totalAreaStartMargin = 8.0,
-    this.totalAreaEndMargin = 8.0,
+    this.totalAreaStartPadding = 8.0,
+    this.totalAreaEndPadding = 8.0,
     this.timeIndicationAreaWidth = 60.0,
     this.separationAreaWidth = 4.0,
-    this.mainAreaStartMargin = 8.0,
-    this.mainAreaEndMargin = 8.0,
+    this.mainAreaStartPadding = 8.0,
+    this.mainAreaEndPadding = 8.0,
     this.daySeparationAreaWidth = 20.0,
-  })  : assert(totalAreaStartMargin != null && totalAreaStartMargin >= 0),
-        assert(totalAreaEndMargin != null && totalAreaEndMargin >= 0),
+  })  : assert(totalAreaStartPadding != null && totalAreaStartPadding >= 0),
+        assert(totalAreaEndPadding != null && totalAreaEndPadding >= 0),
         assert(
             timeIndicationAreaWidth != null && timeIndicationAreaWidth >= 0.0),
         assert(separationAreaWidth != null && separationAreaWidth >= 0.0),
-        assert(mainAreaStartMargin != null && mainAreaStartMargin >= 0.0),
-        assert(mainAreaEndMargin != null && mainAreaEndMargin >= 0.0),
+        assert(mainAreaStartPadding != null && mainAreaStartPadding >= 0.0),
+        assert(mainAreaEndPadding != null && mainAreaEndPadding >= 0.0),
         assert(daySeparationAreaWidth != null && daySeparationAreaWidth >= 0.0);
 
-  final double totalAreaStartMargin;
-  final double totalAreaEndMargin;
+  final double totalAreaStartPadding;
+  final double totalAreaEndPadding;
 
   final double timeIndicationAreaWidth;
 
   final double separationAreaWidth;
 
-  final double mainAreaStartMargin;
-  final double mainAreaEndMargin;
+  final double mainAreaStartPadding;
+  final double mainAreaEndPadding;
 
   final double daySeparationAreaWidth;
 
@@ -37,21 +37,21 @@ class DayViewWidths {
       identical(this, other) ||
       other is DayViewWidths &&
           runtimeType == other.runtimeType &&
-          totalAreaStartMargin == other.totalAreaStartMargin &&
-          totalAreaEndMargin == other.totalAreaEndMargin &&
+          totalAreaStartPadding == other.totalAreaStartPadding &&
+          totalAreaEndPadding == other.totalAreaEndPadding &&
           timeIndicationAreaWidth == other.timeIndicationAreaWidth &&
           separationAreaWidth == other.separationAreaWidth &&
-          mainAreaStartMargin == other.mainAreaStartMargin &&
-          mainAreaEndMargin == other.mainAreaEndMargin &&
+          mainAreaStartPadding == other.mainAreaStartPadding &&
+          mainAreaEndPadding == other.mainAreaEndPadding &&
           daySeparationAreaWidth == other.daySeparationAreaWidth;
 
   @override
   int get hashCode =>
-      totalAreaStartMargin.hashCode ^
-      totalAreaEndMargin.hashCode ^
+      totalAreaStartPadding.hashCode ^
+      totalAreaEndPadding.hashCode ^
       timeIndicationAreaWidth.hashCode ^
       separationAreaWidth.hashCode ^
-      mainAreaStartMargin.hashCode ^
-      mainAreaEndMargin.hashCode ^
+      mainAreaStartPadding.hashCode ^
+      mainAreaEndPadding.hashCode ^
       daySeparationAreaWidth.hashCode;
 }

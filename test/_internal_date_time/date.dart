@@ -31,7 +31,7 @@ void _testFactoryFromDateTime() {
 
 void _testFactoryToday() {
   group("factory .today", () {
-    test("test if matches with  new DateTime.now()", () {
+    test("test if matches with DateTime.now()", () {
       Date actual = new Date.today();
       DateTime now = new DateTime.now();
       Date matcher = new Date(
@@ -117,7 +117,7 @@ void _testIsAfter() {
       expect(actual, false);
     });
 
-    test("the same date", () {
+    test("the same day", () {
       Date date = new Date(2017, 12, 31);
 
       bool actual = date.isAfter(date);
@@ -138,7 +138,7 @@ void _testIsAfter() {
 
 void _testDaysBetween() {
   group(".daysBetween", () {
-    test("same date", () {
+    test("this and same day", () {
       Date date = new Date(2018, 1, 1);
 
       int actual = date.daysBetween(date);

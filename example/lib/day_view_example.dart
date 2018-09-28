@@ -37,6 +37,7 @@ List<Event> eventsOfDay1 = <Event>[
   new Event(startMinuteOfDay: 8 * 60, duration: 60, title: "C"),
   new Event(startMinuteOfDay: 8 * 60 + 10, duration: 20, title: "D"),
   new Event(startMinuteOfDay: 8 * 60 + 30, duration: 30, title: "E"),
+  new Event(startMinuteOfDay: 23 * 60, duration: 60, title: "Midnight Snack"),
 ];
 
 class DayViewExample extends StatefulWidget {
@@ -141,6 +142,7 @@ class _DayViewExampleState extends State<DayViewExample> {
   Widget _headerItemBuilder(BuildContext context, DateTime day) {
     return new Container(
       color: Colors.grey[300],
+      padding: new EdgeInsets.symmetric(vertical: 4.0),
       child: new Column(
         children: <Widget>[
           new Text(

@@ -50,5 +50,6 @@ class TimeItem {
   /// Minuter of day at which this item happens.
   final int minuteOfDay;
 
+  /// Function that builds this item.
   final TimeItemBuilder builder;
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import 'weekdat_to_string.dart';
+import 'weekday_to_string.dart';
 
 class WeekdayDropDownButton extends StatelessWidget {
   WeekdayDropDownButton({

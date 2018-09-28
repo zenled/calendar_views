@@ -8,10 +8,9 @@ import 'day_of_month.dart';
 import 'day_of_month_builder.dart';
 import 'month_view_header_item_builder.dart';
 
-/// Widget for displaying a month view and optionally a header.
+/// Widget for displaying a grid of days of some [month] and optionally a header.
 class MonthView extends StatefulWidget {
   MonthView({
-    Key key,
     @required this.month,
     this.firstWeekday = DateTime.monday,
     @required this.dayOfMonthBuilder,
@@ -22,10 +21,9 @@ class MonthView extends StatefulWidget {
         assert(firstWeekday != null && isWeekdayValid(firstWeekday)),
         assert(dayOfMonthBuilder != null),
         assert(showExtendedDaysBefore != null),
-        assert(showExtendedDaysAfter != null),
-        super(key: key);
+        assert(showExtendedDaysAfter != null);
 
-  /// Month to display.
+  /// Month of which days to display.
   final DateTime month;
 
   /// First day of week.
@@ -133,15 +131,17 @@ class _MonthViewState extends State<MonthView> {
   }
 
   Widget _buildHeader() {
-    return new Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: _weekdays
-          .map(
-            (weekday) => new Expanded(
-                  child: widget.headerItemBuilder(context, weekday),
-                ),
-          )
-          .toList(),
+    return new IntrinsicHeight(
+      child: new Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: _weekdays
+            .map(
+              (weekday) => new Expanded(
+                    child: widget.headerItemBuilder(context, weekday),
+                  ),
+            )
+            .toList(),
+      ),
     );
   }
 
@@ -158,7 +158,11 @@ class _MonthViewState extends State<MonthView> {
   }
 
   Widget _buildWeek(List<DayOfMonth> week) {
-    List<Widget> daysOfWeek = week.map((day) => _buildDay(day)).toList();
+    List<Widget> daysOfWeek = week
+        .map(
+          (day) => _buildDay(day),
+        )
+        .toList();
 
     return new Expanded(
       child: new Row(

@@ -11,6 +11,9 @@ void main() => runApp(new MyApp());
 ///
 /// Examples:
 /// * [DayView example](day_view_example.dart)
+/// * [DaysPageView example](days_page_view_example.dart)
+/// * [MonthPageView example](month_page_view_example.dart)
+/// * [MonthView example](month_view_example.dart)
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -35,7 +38,29 @@ class MyApp extends StatelessWidget {
               ),
               new Divider(height: 0.0),
               new ListTile(
-                title: new Text("MonthView"),
+                title: new Text("Days Page View"),
+                subtitle: new Text("DaysPageView Example"),
+                onTap: () {
+                  _showWidgetInFullScreenDialog(
+                    context,
+                    new DaysPageViewExample(),
+                  );
+                },
+              ),
+              new Divider(height: 0.0),
+              new ListTile(
+                title: new Text("Month Page View"),
+                subtitle: new Text("MonthPageView Example"),
+                onTap: () {
+                  _showWidgetInFullScreenDialog(
+                    context,
+                    new MonthPageViewExample(),
+                  );
+                },
+              ),
+              new Divider(height: 0.0),
+              new ListTile(
+                title: new Text("Month View"),
                 subtitle: new Text("MonthView Example"),
                 onTap: () {
                   _showWidgetInFullScreenDialog(
@@ -45,26 +70,6 @@ class MyApp extends StatelessWidget {
                 },
               ),
               new Divider(height: 0.0),
-              new ListTile(
-                title: new Text("DaysPageView"),
-                subtitle: new Text("DaysPageView Example"),
-                onTap: () {
-                  _showWidgetInFullScreenDialog(
-                      context, new DaysPageViewExample());
-                },
-              ),
-              new Divider(height: 0.0),
-              new ListTile(
-                title: new Text("MonthPageView"),
-                subtitle: new Text("MonthPageView Example"),
-                onTap: () {
-                  _showWidgetInFullScreenDialog(
-                    context,
-                    new MonthPageViewExample(),
-                  );
-                },
-              ),
-              new Divider(height: 0.0)
             ],
           );
         }),

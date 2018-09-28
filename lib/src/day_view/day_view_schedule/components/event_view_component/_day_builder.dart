@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/day_view.dart';
 
-/// Class that builds events of day displayed by [EventViewComponent].
+/// Class that builds events of a day displayed by [EventViewComponent].
 @immutable
 class DayBuilder {
   DayBuilder({

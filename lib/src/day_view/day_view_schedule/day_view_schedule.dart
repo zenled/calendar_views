@@ -127,13 +127,13 @@ Eather heightPerMinute must be provider or this widget placed as a child of a wi
     List<Positioned> items = <Positioned>[];
 
     for (ScheduleComponent component in widget.components) {
-      items.addAll(
-        component.buildItems(
-          context,
-          _dayViewProperties,
-          positioner,
-        ),
+      List<Positioned> componentItems = component.buildItems(
+        context,
+        _dayViewProperties,
+        positioner,
       );
+
+      items.addAll(componentItems);
     }
 
     return items;

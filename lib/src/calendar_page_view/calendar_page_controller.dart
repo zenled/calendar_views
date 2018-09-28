@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import 'calendar_page_view.dart';
 import 'calendar_page_link.dart';
+import 'calendar_page_view.dart';
 
 /// Base class for a controller for [CalendarPageView].
 abstract class CalendarPageController {

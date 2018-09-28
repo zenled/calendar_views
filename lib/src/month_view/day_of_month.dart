@@ -18,12 +18,12 @@ class DayOfMonth {
 
   /// Day to which this properties apply to.
   ///
-  /// Properties of day except for year, month and day are set to their default values.
+  /// Properties of [day] except for year, month and day are set to their default values.
   final DateTime day;
 
   /// [MonthView.month] that this day belongs to.
   ///
-  /// Properties of month except for year and month are set to their default values.
+  /// Properties of [month] except for year and month are set to their default values.
   final DateTime month;
 
   /// If true the [day] is not part of [month] but is extended from it.

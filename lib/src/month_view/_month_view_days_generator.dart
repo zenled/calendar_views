@@ -4,7 +4,7 @@ import 'package:calendar_views/src/_internal_date_time/all.dart';
 
 import 'day_of_month.dart';
 
-/// Class that can generate days of month, including extended days.
+/// Class that generates days of month, including extended days.
 @immutable
 class MonthViewDaysGenerator {
   MonthViewDaysGenerator({
@@ -18,71 +18,69 @@ class MonthViewDaysGenerator {
   final int firstWeekday;
 
   List<DayOfMonth> generate() {
-    List<DayOfMonth> daysOfMonth = <DayOfMonth>[];
+    List<Date> dates = <Date>[];
 
-    daysOfMonth.addAll(
-      _generateExtendedDaysBefore(),
+    dates.addAll(
+      _generateExtendedDatesBefore(),
     );
 
-    daysOfMonth.addAll(
-      _generateDaysOfMonth(),
+    dates.addAll(
+      _generateDatesOfMonth(),
     );
 
-    daysOfMonth.addAll(
-      _generateExtendedDaysAfter(),
+    dates.addAll(
+      _generateExtendedDatesAfter(),
     );
 
-    return daysOfMonth;
+    return dates
+        .map(
+          (date) => _dateToDayOfMonth(date),
+        )
+        .toList();
   }
 
-  List<DayOfMonth> _generateExtendedDaysBefore() {
-    List<DayOfMonth> extendedDays = <DayOfMonth>[];
+  List<Date> _generateExtendedDatesBefore() {
+    List<Date> extendedDates = <Date>[];
 
     Date firstExtendedDate =
         month.toDateAsFirstDayOfMonth().lowerToWeekday(firstWeekday);
 
     Date date = firstExtendedDate;
     while (!date.isOfMonth(month)) {
-      extendedDays.add(
-        _dateToDayOfMonth(date),
-      );
+      extendedDates.add(date);
 
       date = date.addDays(1);
     }
 
-    return extendedDays;
+    return extendedDates;
   }
 
-  List<DayOfMonth> _generateDaysOfMonth() {
-    List<DayOfMonth> daysOfMonth = <DayOfMonth>[];
+  List<Date> _generateDatesOfMonth() {
+    List<Date> datesOfMonth = <Date>[];
 
     Date date = month.toDateAsFirstDayOfMonth();
     while (date.isOfMonth(month)) {
-      daysOfMonth.add(
-        _dateToDayOfMonth(date),
-      );
+      datesOfMonth.add(date);
 
       date = date.addDays(1);
     }
 
-    return daysOfMonth;
+    return datesOfMonth;
   }
 
-  List<DayOfMonth> _generateExtendedDaysAfter() {
-    List<DayOfMonth> extendedDays = <DayOfMonth>[];
+  List<Date> _generateExtendedDatesAfter() {
+    List<Date> extendedDates = <Date>[];
 
     Date lastDateOfMonth = month.toDateAsLastDayOfMonth();
 
     Date date = lastDateOfMonth.addDays(1);
     while (date.weekday != firstWeekday) {
-      extendedDays.add(
-        _dateToDayOfMonth(date),
-      );
+      extendedDates.add(date);
 
       date = date.addDays(1);
     }
 
-    return extendedDays;
+    return extendedDates;
   }
 
   DayOfMonth _dateToDayOfMonth(Date date) {

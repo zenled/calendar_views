@@ -21,7 +21,7 @@ class EventViewComponent implements ScheduleComponent {
   })  : assert(getEventsOfDay != null),
         assert(eventArranger != null);
 
-  /// Callback that returns events of some day.
+  /// Function that returns events of some day.
   final GetEventsOfDayCallback getEventsOfDay;
 
   /// Objects that determines positions and sizes of events displayed by this component.

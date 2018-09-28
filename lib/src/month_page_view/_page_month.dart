@@ -2,8 +2,6 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/src/_internal_date_time/all.dart';
 
-import 'month_page_view.dart';
-
 /// Utility for determining which [Month] belongs to which page.
 @immutable
 class PageMonth {

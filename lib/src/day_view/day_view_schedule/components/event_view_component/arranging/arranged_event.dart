@@ -4,7 +4,7 @@ import 'package:calendar_views/day_view.dart';
 
 /// Item returned by [EventViewArranger].
 ///
-/// It contains an event its position and size.
+/// It contains an [event] its position ([top], [left]) and size ([width], [height]).
 @immutable
 class ArrangedEvent {
   ArrangedEvent({

@@ -12,7 +12,7 @@ bool isSameYearAndMonth(DateTime date1, DateTime date2) {
 
 /// Returns true is [list1] and [list2] contain the same dates (year, month, day).
 ///
-/// if [list1], [list2] or both contain a null value, false is returned.
+/// If [list1], [list2] or both contain a null value, false is returned.
 bool areListsOfDatesTheSame(List<DateTime> list1, List<DateTime> list2) {
   if (list1.length != list2.length) {
     return false;

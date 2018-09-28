@@ -11,9 +11,9 @@ class ItemPosition {
   })  : assert(top != null),
         assert(left != null);
 
-  /// Position from top edge of [DayViewSchedule].
+  /// Position recommendation from top edge of [DayViewSchedule].
   final double top;
 
-  /// Position from left edge of [DayViewSchedule].
+  /// Position recommendation from left edge of [DayViewSchedule].
   final double left;
 }

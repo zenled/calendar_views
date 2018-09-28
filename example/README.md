@@ -1,8 +1,3 @@
-# example
+# calendar_views examples
 
-Calendar Views example.
-
-## Getting Started
-
-For help getting started with Flutter, view our online
-[documentation](https://flutter.io/).
+Examples of calendar_views library.

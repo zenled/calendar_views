@@ -4,7 +4,7 @@ import 'day_view_area.dart';
 import 'day_view_properties.dart';
 import 'day_view_widths.dart';
 
-/// Assistant for horizontal positioning for day-view widgets.
+/// Assistant for horizontal positioning for day view widgets.
 @immutable
 class HorizontalPositioner {
   HorizontalPositioner({
@@ -124,7 +124,7 @@ class HorizontalPositioner {
         return daySeparationAreaWidth(areaNumber);
       default:
         throw new Exception(
-          "$area is not a numbered area, try usin getNonNumberedAreaWidth",
+          "$area is a non-numbered area, try usin getNonNumberedAreaWidth",
         );
     }
   }
@@ -137,7 +137,7 @@ class HorizontalPositioner {
         return daySeparationAreaLeft(areaNumber);
       default:
         throw new Exception(
-          "$area is not a numbered area, try usin getNonNumberedAreaLeft",
+          "$area is a non-numbered area, try usin getNonNumberedAreaLeft",
         );
     }
   }
@@ -150,7 +150,7 @@ class HorizontalPositioner {
         return daySeparationAreaRight(areaNumber);
       default:
         throw new Exception(
-          "$area is not a numbered area, try usin getNonNumberedAreaRight",
+          "$area is a non-numbered area, try usin getNonNumberedAreaRight",
         );
     }
   }
@@ -165,7 +165,7 @@ class HorizontalPositioner {
 
   // startTotalArea ------------------------------------------------------------
 
-  double get startTotalAreaWidth => widths.totalAreaStartMargin;
+  double get startTotalAreaWidth => widths.totalAreaStartPadding;
 
   double get startTotalAreaLeft => totalAreaLeft;
 
@@ -173,7 +173,7 @@ class HorizontalPositioner {
 
   // endTotalArea --------------------------------------------------------------
 
-  double get endTotalAreaWidth => widths.totalAreaEndMargin;
+  double get endTotalAreaWidth => widths.totalAreaEndPadding;
 
   double get endTotalAreaLeft => totalAreaRight - endTotalAreaWidth;
 
@@ -217,7 +217,7 @@ class HorizontalPositioner {
 
   // startMainArea -------------------------------------------------------------
 
-  double get startMainAreaWidth => widths.mainAreaStartMargin;
+  double get startMainAreaWidth => widths.mainAreaStartPadding;
 
   double get startMainAreaLeft => mainAreaLeft;
 
@@ -225,7 +225,7 @@ class HorizontalPositioner {
 
   // endMainArea ---------------------------------------------------------------
 
-  double get endMainAreaWidth => widths.mainAreaEndMargin;
+  double get endMainAreaWidth => widths.mainAreaEndPadding;
 
   double get endMainAreaLeft => mainAreaRight - endMainAreaWidth;
 

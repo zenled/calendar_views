@@ -12,11 +12,11 @@ void showScrollDirectionChangeMightNotWorkDialog({
     context: context,
     title: "This feature might not work",
     message: """
-MothPageView internally uses a PageView.
+This widget internally uses a PageView.
 
 Due to a bug in PageView, changing scrollDirection during runtime might not work correctly.
 
-https://github.com/flutter/flutter/issues/16481
-    """,
+github issue: https://github.com/flutter/flutter/issues/16481
+""",
   );
 }

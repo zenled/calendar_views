@@ -57,11 +57,9 @@ class _PageState extends State<Page> with AutomaticKeepAliveClientMixin<Page> {
             child: new Checkbox(
                 value: _isChecked,
                 onChanged: (value) {
-                  setState(
-                    () {
-                      _isChecked = value;
-                    },
-                  );
+                  setState(() {
+                    _isChecked = value;
+                  });
                 }),
           ),
           new Expanded(

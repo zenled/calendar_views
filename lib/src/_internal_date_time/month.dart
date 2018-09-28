@@ -1,8 +1,9 @@
 import 'package:meta/meta.dart';
 
-import 'package:calendar_views/src/_internal_date_time/all.dart';
+import 'date.dart';
+import 'validation.dart';
 
-/// Internal representation of a month.
+/// Internal representation of a month (year, month).
 ///
 /// This class is intended for use by this library only.
 @immutable

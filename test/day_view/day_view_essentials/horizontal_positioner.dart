@@ -12,12 +12,12 @@ void main() {
     );
 
     DayViewWidths dayViewWidths = new DayViewWidths(
-        totalAreaStartMargin: 1.0,
-        totalAreaEndMargin: 2.0,
+        totalAreaStartPadding: 1.0,
+        totalAreaEndPadding: 2.0,
         timeIndicationAreaWidth: 3.0,
         separationAreaWidth: 4.0,
-        mainAreaStartMargin: 5.0,
-        mainAreaEndMargin: 6.0,
+        mainAreaStartPadding: 5.0,
+        mainAreaEndPadding: 6.0,
         daySeparationAreaWidth: 7.0);
 
     double totalWidth = 100.0;
@@ -360,7 +360,7 @@ void main() {
 
     test("throws argumentError if daySeparationAreaNumber is to big", () {
       expect(
-            () => horizontalPositioner.daySeparationAreaWidth(1),
+        () => horizontalPositioner.daySeparationAreaWidth(1),
         throwsArgumentError,
       );
     });

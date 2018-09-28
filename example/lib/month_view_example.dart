@@ -129,8 +129,8 @@ class _MonthViewExampleState extends State<MonthViewExample> {
 
   Widget _monthViewHeaderItemBuilder(BuildContext context, int weekday) {
     return new Container(
-      color: Colors.green[700],
-      height: 20.0,
+      color: Colors.green[400],
+      padding: EdgeInsets.symmetric(vertical: 2.0),
       child: new Center(
         child: new Text(weekdayToAbbreviatedString(weekday)),
       ),

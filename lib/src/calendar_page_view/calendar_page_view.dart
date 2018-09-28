@@ -6,6 +6,8 @@ import 'package:meta/meta.dart';
 /// Base class for a custom page view where each page is given a representation.
 ///
 /// [CalendarPageView] has virtually infinite number of pages.
+///
+/// Internally this widget uses a [PageView].
 abstract class CalendarPageView extends StatefulWidget {
   static const default_scroll_direction = Axis.horizontal;
   static const default_page_snapping = true;
@@ -21,9 +23,16 @@ abstract class CalendarPageView extends StatefulWidget {
         assert(pageSnapping != null),
         assert(reverse != null);
 
+  /// Same as [PageView.scrollDirection].
   final Axis scrollDirection;
+
+  /// Same as [PageView.pageSnapping].
   final bool pageSnapping;
+
+  /// Same as [PageView.reverse].
   final bool reverse;
+
+  /// Same as [PageView.physics].
   final ScrollPhysics physics;
 
   @override

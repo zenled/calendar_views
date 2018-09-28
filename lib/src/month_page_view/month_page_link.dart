@@ -5,8 +5,8 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/src/calendar_page_view/all.dart';
 
-import 'month_page_view.dart';
 import 'month_page_controller.dart';
+import 'month_page_view.dart';
 
 /// Signature for a function that changes which month is displayed in the [MonthPageView].
 ///
@@ -24,7 +24,7 @@ typedef Future<Null> AnimateToMonthCallback(
   @required Curve curve,
 });
 
-/// Class for communication between [MonthPageView] and [MonthPageController].
+/// Communicator between [MonthPageView] and [MonthPageController].
 @immutable
 class MonthPageLink extends CalendarPageLink {
   MonthPageLink({

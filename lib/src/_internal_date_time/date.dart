@@ -1,7 +1,8 @@
 import 'package:meta/meta.dart';
 import 'package:quiver/core.dart';
 
-import 'package:calendar_views/src/_internal_date_time/all.dart';
+import 'month.dart';
+import 'validation.dart';
 
 /// Internal representation of a date (year, month, day).
 ///

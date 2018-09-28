@@ -30,7 +30,8 @@ class TimeIndicationComponent implements ScheduleComponent {
   /// Creates a [ScheduleComponent] that generates and then displays time indicators.
   ///
   /// Time indicators are positioned as if they would start
-  /// *[timeIndicatorDuration] / 2* minutes earlier.
+  /// *[timeIndicatorDuration] / 2*
+  /// minutes earlier.
   /// (Center of the item will be at the position of minute of day that the item represents)
   TimeIndicationComponent.intervalGenerated({
     this.minuteOfDayOfFirstTimeIndicator = 0,

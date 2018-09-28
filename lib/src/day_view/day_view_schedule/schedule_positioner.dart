@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 
 import 'package:calendar_views/day_view.dart';
 
-/// Signature for a function that returns the height that some item with the given [duration] should have inside a [DayViewSchedule].
+/// Signature for a function that returns height that some item with the given [durationInMinutes] should have inside a [DayViewSchedule].
 typedef double HeightOfDurationCallback(
   int durationInMinutes,
 );
@@ -26,12 +26,16 @@ class SchedulePositioner extends HorizontalPositioner {
         assert(bottomExtensionHeight != null && bottomExtensionHeight >= 0.0),
         super.fromHorizontalPositioner(horizontalPositioner);
 
+  /// Height occupied by a single minute inside a [DayViewSchedule].
   final double heightPerMinute;
 
+  /// Height of the extension above the minimum minute of [DayViewSchedule].
   final double topExtensionHeight;
+
+  /// Height of the extension below the maximum minute of [DayViewSchedule].
   final double bottomExtensionHeight;
 
-  /// Returns height a [DayViewSchedule] should have.
+  /// Height a [DayViewSchedule] should have.
   double get totalHeight =>
       topExtensionHeight +
       heightOfDuration(properties.totalNumberOfMinutes) +
