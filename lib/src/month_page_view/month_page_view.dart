@@ -1,6 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
-import 'dart:async';
 
 import 'package:calendar_views/src/_internal_date_time/all.dart';
 import 'package:calendar_views/src/calendar_page_view/all.dart';
