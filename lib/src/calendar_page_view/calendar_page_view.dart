@@ -73,7 +73,7 @@ abstract class CalendarPageViewState<WIDGET extends CalendarPageView>
 
   /// Animates to the given page.
   @protected
-  Future<Null> animateToPage(
+  Future<void> animateToPage(
     int page, {
     @required Duration duration,
     @required Curve curve,

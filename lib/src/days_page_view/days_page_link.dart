@@ -18,7 +18,7 @@ typedef void JumpToDayCallback(
 /// Signature for a function that animates [DaysPageView] to the given day.
 ///
 /// Works similar as [PageController.animateToPage].
-typedef Future<Null> AnimateToDayCallback(
+typedef Future<void> AnimateToDayCallback(
   DateTime day, {
   @required Duration duration,
   @required Curve curve,

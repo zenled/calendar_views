@@ -18,7 +18,7 @@ typedef void JumpToMonthCallback(
 /// Signature for a function that animates [MonthPageView] to the given month.
 ///
 /// Works similar as [PageController.animateToPage].
-typedef Future<Null> AnimateToMonthCallback(
+typedef Future<void> AnimateToMonthCallback(
   DateTime month, {
   @required Duration duration,
   @required Curve curve,
