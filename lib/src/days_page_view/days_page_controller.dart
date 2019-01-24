@@ -70,7 +70,7 @@ class DaysPageController extends CalendarPageController {
   /// Works similar as [PageController.animateToPage].
   ///
   /// If nothing is attached to this controller it throws an exception.
-  Future<Null> animateToDay(
+  Future<void> animateToDay(
     DateTime day, {
     @required Duration duration,
     @required Curve curve,

@@ -191,7 +191,7 @@ class _DaysPageControllerInitialisationDialogState
     _daysPerPage = DateTime.daysPerWeek;
   }
 
-  Future<Null> _changeFirstDayOfInitialPage() async {
+  Future<void> _changeFirstDayOfInitialPage() async {
     DateTime newFirstDayOfInitialPage = await showDatePicker(
       context: context,
       initialDate: _firstDayOfInitialPage,

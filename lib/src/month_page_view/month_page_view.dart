@@ -105,7 +105,7 @@ class _MonthPageViewState extends CalendarPageViewState<MonthPageView> {
     jumpToPage(page);
   }
 
-  Future<Null> _animateToMonth(
+  Future<void> _animateToMonth(
     DateTime month, {
     @required Duration duration,
     @required Curve curve,

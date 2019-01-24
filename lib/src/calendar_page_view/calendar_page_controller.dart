@@ -43,7 +43,7 @@ abstract class CalendarPageController {
   /// Works similar as [PageController.animateToPage].
   ///
   /// If nothing is attached to this controller it throws an exception.
-  Future<Null> animateToPage(
+  Future<void> animateToPage(
     int page, {
     @required Duration duration,
     @required Curve curve,

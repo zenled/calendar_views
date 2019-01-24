@@ -65,7 +65,7 @@ class MonthPageController extends CalendarPageController {
   /// Works similar as [PageController.animateToPage].
   ///
   /// If nothing is attached to this controller it throws an exception.
-  Future<Null> animateToMonth(
+  Future<void> animateToMonth(
     DateTime month, {
     @required Duration duration,
     @required Curve curve,

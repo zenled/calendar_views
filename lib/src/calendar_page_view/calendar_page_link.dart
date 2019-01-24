@@ -16,7 +16,7 @@ typedef void JumpToPageCallback(
 /// Signature for a function that animates [CalendarPageView] to the given page.
 ///
 /// Works similar as [PageController.animateToPage].
-typedef Future<Null> AnimateToPageCallback(
+typedef Future<void> AnimateToPageCallback(
   int page, {
   @required Duration duration,
   @required Curve curve,

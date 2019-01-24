@@ -108,7 +108,7 @@ class _DaysPageViewState extends CalendarPageViewState<DaysPageView> {
     jumpToPage(page);
   }
 
-  Future<Null> _animateToDay(
+  Future<void> _animateToDay(
     DateTime day, {
     @required Duration duration,
     @required Curve curve,
