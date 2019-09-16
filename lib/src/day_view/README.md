@@ -18,7 +18,7 @@ items of those components will then be displayed as children of a **DayViewSched
 
 ### Schedule Positioner
 
-**SchedulePositioner** is an utility that provided information about different areas inside a **DayVieSchedule**.
+**SchedulePositioner** is an utility that provided information about different areas inside a **DayViewSchedule**.
 
 ### Schedule Component
 
