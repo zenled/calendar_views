@@ -6,6 +6,8 @@ environment:
   sdk: '>=2.0.0 <3.0.0'
 
 dependencies:
+  calendarro: ^1.0.1
+  bidirectional_scroll_view: ^0.1.1
   flutter:
     sdk: flutter
   meta: ^1.1.6

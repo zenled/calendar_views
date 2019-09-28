@@ -58,14 +58,11 @@ This widget must be a decendant of DayViewEssentials.
       _buildEndingOffset(),
     );
 
-    return new Container(
-      width: _horizontalPositioner.totalWidth,
-      child: new IntrinsicHeight(
-        child: new Row(
+    return new IntrinsicHeight(
+          child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: rowChildren,
         ),
-      ),
     );
   }
 

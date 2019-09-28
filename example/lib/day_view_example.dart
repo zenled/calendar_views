@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
-
+import 'package:bidirectional_scroll_view/bidirectional_scroll_view.dart';
 import 'package:calendar_views/day_view.dart';
-
+import 'package:calendarro/calendarro.dart';
+import 'package:calendarro/date_utils.dart';
 import 'utils/all.dart';
 
 @immutable
@@ -76,15 +77,15 @@ class _DayViewExampleState extends State<DayViewExample> {
     return events
         .map(
           (event) => new StartDurationItem(
-                startMinuteOfDay: event.startMinuteOfDay,
-                duration: event.duration,
-                builder: (context, itemPosition, itemSize) => _eventBuilder(
-                      context,
-                      itemPosition,
-                      itemSize,
-                      event,
-                    ),
-              ),
+            startMinuteOfDay: event.startMinuteOfDay,
+            duration: event.duration,
+            builder: (context, itemPosition, itemSize) => _eventBuilder(
+              context,
+              itemPosition,
+              itemSize,
+              event,
+            ),
+          ),
         )
         .toList();
   }
@@ -97,28 +98,21 @@ class _DayViewExampleState extends State<DayViewExample> {
       ),
       body: new DayViewEssentials(
         properties: new DayViewProperties(
-          days: <DateTime>[
-            _day0,
-            _day1,
-          ],
+          days: <DateTime>[_day0, _day1, _day0, _day1, _day0 ],
         ),
-        child: new Column(
-          children: <Widget>[
-            new Container(
-              color: Colors.grey[200],
-              child: new DayViewDaysHeader(
-                headerItemBuilder: _headerItemBuilder,
-              ),
-            ),
-            new Expanded(
-              child: new SingleChildScrollView(
-                child: new DayViewSchedule(
+        child: Column(children: <Widget>[
+          Calendarro(
+              startDate: DateUtils.getFirstDayOfCurrentMonth(),
+              endDate: DateUtils.getLastDayOfCurrentMonth()),
+          new Expanded(
+            child: Stack (children: <Widget>[
+              new SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+             child: Stack( children: <Widget>[
+                SingleChildScrollView(
+                child: Stack ( children: <Widget> [ new DayViewSchedule(
                   heightPerMinute: 1.0,
                   components: <ScheduleComponent>[
-                    new TimeIndicationComponent.intervalGenerated(
-                      generatedTimeIndicatorBuilder:
-                          _generatedTimeIndicatorBuilder,
-                    ),
                     new SupportLineComponent.intervalGenerated(
                       generatedSupportLineBuilder: _generatedSupportLineBuilder,
                     ),
@@ -131,10 +125,28 @@ class _DayViewExampleState extends State<DayViewExample> {
                     ),
                   ],
                 ),
+
+              ],)
               ),
+               Container(
+                 color: Colors.grey[200],
+                 child: new DayViewDaysHeader(
+                   headerItemBuilder: _headerItemBuilder,
+                 ),
+               ),
+             ],)
             ),
-          ],
-        ),
+              /*SingleChildScrollView( child:*/new DayViewSchedule(
+                  heightPerMinute: 1.0,
+                  components: <ScheduleComponent>[
+                    new TimeIndicationComponent.intervalGenerated(
+                      generatedTimeIndicatorBuilder:
+                      _generatedTimeIndicatorBuilder,
+                    ),
+                  ]),//),
+          ]),
+          ),
+        ]),
       ),
     );
   }
@@ -183,7 +195,7 @@ class _DayViewExampleState extends State<DayViewExample> {
     return new Positioned(
       top: itemPosition.top,
       left: itemPosition.left,
-      width: itemWidth,
+      width: itemWidth*2,
       child: new Container(
         height: 0.7,
         color: Colors.grey[700],
