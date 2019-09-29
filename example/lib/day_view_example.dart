@@ -48,10 +48,13 @@ class DayViewExample extends StatefulWidget {
 class _DayViewExampleState extends State<DayViewExample> {
   DateTime _day0;
   DateTime _day1;
+  List<DateTime> dayList;
   ScrollController _mycontroller1 =
       new ScrollController(); // make seperate controllers
   ScrollController _mycontroller2 =
       new ScrollController(); // for each scrollables
+  ScrollController _mycontroller3 =
+  new ScrollController(); // for each scrollables
   SyncScrollController _syncScroller;
 
   @override
@@ -61,6 +64,8 @@ class _DayViewExampleState extends State<DayViewExample> {
 
     _day0 = new DateTime.now();
     _day1 = _day0.toUtc().add(new Duration(days: 1)).toLocal();
+    dayList = [_day0, _day1, _day0 ];
+
   }
 
   String _minuteOfDayToHourMinuteString(int minuteOfDay) {
@@ -100,6 +105,24 @@ class _DayViewExampleState extends State<DayViewExample> {
         .toList();
   }
 
+  _onTapDown(TapDownDetails details) {
+    var x = details.globalPosition.dx;
+    var y = details.globalPosition.dy;
+    //print("tap down " + x.toString() + ", " + y.toString());
+   // print("Vertical scroll offset = ${_mycontroller1.offset}" );
+    double minutes = (y + _mycontroller1.offset - 184)/1.5;
+   // print("Minutes of day = $minutes");
+    print("Event Day index = ${((x + _mycontroller3.offset - 64)/140).toInt()%dayList.length}");
+    int startMinute = minutes~/30 * 30;
+    int endMinute =  ((startMinute == 30*47)?30:60) + startMinute;
+    print("Event start minute - end minute: $startMinute - $endMinute");
+  }
+
+  _onTapUp(TapUpDetails details) {
+    var x = details.globalPosition.dx;
+    var y = details.globalPosition.dy;
+    print("tap up " + x.toString() + ", " + y.toString());
+  }
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -108,7 +131,7 @@ class _DayViewExampleState extends State<DayViewExample> {
       ),
       body: new DayViewEssentials(
         properties: new DayViewProperties(
-          days: <DateTime>[_day0, _day1, _day0 ],
+          days: dayList,
         ),
         child: Column(children: <Widget>[
           Calendarro(
@@ -137,11 +160,17 @@ class _DayViewExampleState extends State<DayViewExample> {
               height: MediaQuery.of(context).size.height - 132,
               child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-             child: Stack( children: <Widget>[
+              controller: _mycontroller3,
+                  child: Stack( children: <Widget>[
                NotificationListener<ScrollNotification>(
                child: SingleChildScrollView(
                 controller: _mycontroller1,
-                child: Stack ( children: <Widget> [ new DayViewSchedule(
+                child: Stack ( children: <Widget> [ GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                    onTap: () => print("tapped"),
+                    onTapDown: (TapDownDetails details) => _onTapDown(details),
+                    //  onTapUp: (TapUpDetails details) => _onTapUp(details),
+               child: DayViewSchedule(
                   heightPerMinute: 1.5,
                   components: <ScheduleComponent>[
                     new SupportLineComponent.intervalGenerated(
@@ -155,7 +184,7 @@ class _DayViewExampleState extends State<DayViewExample> {
                       getEventsOfDay: _getEventsOfDay,
                     ),
                   ],
-                ),
+                ),),
 
               ],)
               ),
@@ -279,7 +308,8 @@ class _DayViewExampleState extends State<DayViewExample> {
         margin: new EdgeInsets.only(left: 1.0, right: 1.0, bottom: 1.0),
         padding: new EdgeInsets.all(3.0),
         color: Colors.green[200],
-        child: FlatButton(child: new Text("${event.title}"),onPressed: () async {
+        child: FlatButton(  padding: EdgeInsets.all(0),
+            child: new Text("${event.title}"),onPressed: () async {
           final ConfirmAction action = await _asyncConfirmDialog(context, event.title);
           print("Confirm Action $action" );
         }),
