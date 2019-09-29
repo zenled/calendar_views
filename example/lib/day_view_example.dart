@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
-import 'package:bidirectional_scroll_view/bidirectional_scroll_view.dart';
 import 'package:calendar_views/day_view.dart';
 import 'package:calendarro/calendarro.dart';
 import 'package:calendarro/date_utils.dart';
@@ -109,7 +108,7 @@ class _DayViewExampleState extends State<DayViewExample> {
       ),
       body: new DayViewEssentials(
         properties: new DayViewProperties(
-          days: <DateTime>[_day0,_day1,_day1 ],
+          days: <DateTime>[_day0, _day1, _day0 ],
         ),
         child: Column(children: <Widget>[
           Calendarro(
@@ -121,7 +120,7 @@ class _DayViewExampleState extends State<DayViewExample> {
                 child: SingleChildScrollView(
                   controller:  _mycontroller2,
                   child:new DayViewSchedule(
-                      heightPerMinute: 1.0,
+                      heightPerMinute: 1.5,
                       components: <ScheduleComponent>[
                         new TimeIndicationComponent.intervalGenerated(
                           generatedTimeIndicatorBuilder:
@@ -135,7 +134,7 @@ class _DayViewExampleState extends State<DayViewExample> {
               Positioned(
                 left: 64,
                 width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height - 200,
+              height: MediaQuery.of(context).size.height - 132,
               child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
              child: Stack( children: <Widget>[
@@ -143,7 +142,7 @@ class _DayViewExampleState extends State<DayViewExample> {
                child: SingleChildScrollView(
                 controller: _mycontroller1,
                 child: Stack ( children: <Widget> [ new DayViewSchedule(
-                  heightPerMinute: 1.0,
+                  heightPerMinute: 1.5,
                   components: <ScheduleComponent>[
                     new SupportLineComponent.intervalGenerated(
                       generatedSupportLineBuilder: _generatedSupportLineBuilder,
@@ -241,7 +240,7 @@ class _DayViewExampleState extends State<DayViewExample> {
       width: itemWidth*2,
       child: new Container(
         height: 0.7,
-        color: Colors.grey[700],
+        color: (minuteOfDay%60 == 0)?Colors.grey[700]:Colors.grey[400],
       ),
     );
   }
@@ -265,7 +264,6 @@ class _DayViewExampleState extends State<DayViewExample> {
       ),
     );
   }
-
   Positioned _eventBuilder(
     BuildContext context,
     ItemPosition itemPosition,
@@ -281,12 +279,43 @@ class _DayViewExampleState extends State<DayViewExample> {
         margin: new EdgeInsets.only(left: 1.0, right: 1.0, bottom: 1.0),
         padding: new EdgeInsets.all(3.0),
         color: Colors.green[200],
-        child: new Text("${event.title}"),
+        child: FlatButton(child: new Text("${event.title}"),onPressed: () async {
+          final ConfirmAction action = await _asyncConfirmDialog(context);
+          print("Confirm Action $action" );
+        }),
       ),
     );
   }
 }
 
+enum ConfirmAction { CANCEL, ACCEPT }
+Future<ConfirmAction> _asyncConfirmDialog(BuildContext context) async {
+  return showDialog<ConfirmAction>(
+    context: context,
+    barrierDismissible: false, // user must tap button for close dialog!
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Reset settings?'),
+        content: const Text(
+            'This will reset your device to its default factory settings.'),
+        actions: <Widget>[
+          FlatButton(
+            child: const Text('CANCEL'),
+            onPressed: () {
+              Navigator.of(context).pop(ConfirmAction.CANCEL);
+            },
+          ),
+          FlatButton(
+            child: const Text('ACCEPT'),
+            onPressed: () {
+              Navigator.of(context).pop(ConfirmAction.ACCEPT);
+            },
+          )
+        ],
+      );
+    },
+  );
+}
 
 class SyncScrollController {
   List<ScrollController> _registeredScrollControllers = new List<ScrollController>();

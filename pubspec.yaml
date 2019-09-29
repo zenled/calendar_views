@@ -9,7 +9,6 @@ homepage: https://github.com/ZedTheLed/calendar_views
 documentation:
 
 dependencies:
-  calendarro: ^1.0.1
   flutter:
     sdk: flutter
   meta: ^1.1.5
