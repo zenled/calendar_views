@@ -49,10 +49,16 @@ class DayViewExample extends StatefulWidget {
 class _DayViewExampleState extends State<DayViewExample> {
   DateTime _day0;
   DateTime _day1;
+  ScrollController _mycontroller1 =
+      new ScrollController(); // make seperate controllers
+  ScrollController _mycontroller2 =
+      new ScrollController(); // for each scrollables
+  SyncScrollController _syncScroller;
 
   @override
   void initState() {
     super.initState();
+    _syncScroller = new SyncScrollController([_mycontroller1 , _mycontroller2]);
 
     _day0 = new DateTime.now();
     _day1 = _day0.toUtc().add(new Duration(days: 1)).toLocal();
@@ -64,6 +70,11 @@ class _DayViewExampleState extends State<DayViewExample> {
         "${(minuteOfDay % 60).toString().padLeft(2, "0")}";
   }
 
+
+
+
+
+
   List<StartDurationItem> _getEventsOfDay(DateTime day) {
     List<Event> events;
     if (day.year == _day0.year &&
@@ -74,7 +85,7 @@ class _DayViewExampleState extends State<DayViewExample> {
       events = eventsOfDay1;
     }
 
-    return events
+      return events
         .map(
           (event) => new StartDurationItem(
             startMinuteOfDay: event.startMinuteOfDay,
@@ -98,7 +109,7 @@ class _DayViewExampleState extends State<DayViewExample> {
       ),
       body: new DayViewEssentials(
         properties: new DayViewProperties(
-          days: <DateTime>[_day0, _day1, _day0, _day1, _day0 ],
+          days: <DateTime>[_day0,_day1,_day1 ],
         ),
         child: Column(children: <Widget>[
           Calendarro(
@@ -106,10 +117,31 @@ class _DayViewExampleState extends State<DayViewExample> {
               endDate: DateUtils.getLastDayOfCurrentMonth()),
           new Expanded(
             child: Stack (children: <Widget>[
-              new SingleChildScrollView(
+              NotificationListener<ScrollNotification>(
+                child: SingleChildScrollView(
+                  controller:  _mycontroller2,
+                  child:new DayViewSchedule(
+                      heightPerMinute: 1.0,
+                      components: <ScheduleComponent>[
+                        new TimeIndicationComponent.intervalGenerated(
+                          generatedTimeIndicatorBuilder:
+                          _generatedTimeIndicatorBuilder,
+                        ),
+                      ]),),
+                onNotification:  (ScrollNotification scrollInfo) {
+                  _syncScroller.processNotification(scrollInfo, _mycontroller2);
+                },
+              ),
+              Positioned(
+                left: 64,
+                width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height - 200,
+              child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
              child: Stack( children: <Widget>[
-                SingleChildScrollView(
+               NotificationListener<ScrollNotification>(
+               child: SingleChildScrollView(
+                controller: _mycontroller1,
                 child: Stack ( children: <Widget> [ new DayViewSchedule(
                   heightPerMinute: 1.0,
                   components: <ScheduleComponent>[
@@ -128,6 +160,10 @@ class _DayViewExampleState extends State<DayViewExample> {
 
               ],)
               ),
+                onNotification:  (ScrollNotification scrollInfo) {
+                  _syncScroller.processNotification(scrollInfo, _mycontroller1);
+                }
+               ),
                Container(
                  color: Colors.grey[200],
                  child: new DayViewDaysHeader(
@@ -136,14 +172,8 @@ class _DayViewExampleState extends State<DayViewExample> {
                ),
              ],)
             ),
-              /*SingleChildScrollView( child:*/new DayViewSchedule(
-                  heightPerMinute: 1.0,
-                  components: <ScheduleComponent>[
-                    new TimeIndicationComponent.intervalGenerated(
-                      generatedTimeIndicatorBuilder:
-                      _generatedTimeIndicatorBuilder,
-                    ),
-                  ]),//),
+    ),
+
           ]),
           ),
         ]),
@@ -151,11 +181,24 @@ class _DayViewExampleState extends State<DayViewExample> {
     );
   }
 
+
+  Widget _getUserOfDay(DateTime day) {
+    Widget userName;
+    if (day.year == _day0.year &&
+        day.month == _day0.month &&
+        day.day == _day0.day) {
+      userName = Text("Vikram");
+    } else {
+      userName = Text("Nigel");
+    }
+    return userName;
+  }
+
   Widget _headerItemBuilder(BuildContext context, DateTime day) {
     return new Container(
       color: Colors.grey[300],
       padding: new EdgeInsets.symmetric(vertical: 4.0),
-      child: new Column(
+        child: _getUserOfDay(day)/*new Column(
         children: <Widget>[
           new Text(
             "${weekdayToAbbreviatedString(day.weekday)}",
@@ -163,7 +206,7 @@ class _DayViewExampleState extends State<DayViewExample> {
           ),
           new Text("${day.day}"),
         ],
-      ),
+      ),*/
     );
   }
 
@@ -194,7 +237,7 @@ class _DayViewExampleState extends State<DayViewExample> {
   ) {
     return new Positioned(
       top: itemPosition.top,
-      left: itemPosition.left,
+      left: itemPosition.left - 72,
       width: itemWidth*2,
       child: new Container(
         height: 0.7,
@@ -231,7 +274,7 @@ class _DayViewExampleState extends State<DayViewExample> {
   ) {
     return new Positioned(
       top: itemPosition.top,
-      left: itemPosition.left,
+      left: itemPosition.left - 80,
       width: itemSize.width,
       height: itemSize.height,
       child: new Container(
@@ -241,5 +284,42 @@ class _DayViewExampleState extends State<DayViewExample> {
         child: new Text("${event.title}"),
       ),
     );
+  }
+}
+
+
+class SyncScrollController {
+  List<ScrollController> _registeredScrollControllers = new List<ScrollController>();
+
+  ScrollController _scrollingController;
+  bool _scrollingActive = false;
+
+  SyncScrollController(List<ScrollController> controllers) {
+    controllers.forEach((controller) => registerScrollController(controller));
+  }
+
+  void registerScrollController(ScrollController controller) {
+    _registeredScrollControllers.add(controller);
+  }
+
+  void processNotification(ScrollNotification notification, ScrollController sender) {
+    if (notification is ScrollStartNotification && !_scrollingActive) {
+      _scrollingController = sender;
+      _scrollingActive = true;
+      return;
+    }
+
+    if (identical(sender, _scrollingController) && _scrollingActive) {
+      if (notification is ScrollEndNotification) {
+        _scrollingController = null;
+        _scrollingActive = false;
+        return;
+      }
+
+      if (notification is ScrollUpdateNotification) {
+        _registeredScrollControllers.forEach((controller) => {if (!identical(_scrollingController, controller)) controller..jumpTo(_scrollingController.offset)});
+        return;
+      }
+    }
   }
 }
