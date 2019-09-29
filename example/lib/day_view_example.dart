@@ -253,7 +253,7 @@ class _DayViewExampleState extends State<DayViewExample> {
   ) {
     return new Positioned(
       top: itemPosition.top,
-      left: itemPosition.left,
+      left: itemPosition.left - 80,
       width: itemSize.width,
       height: itemSize.height,
       child: new Center(
