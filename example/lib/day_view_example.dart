@@ -280,7 +280,7 @@ class _DayViewExampleState extends State<DayViewExample> {
         padding: new EdgeInsets.all(3.0),
         color: Colors.green[200],
         child: FlatButton(child: new Text("${event.title}"),onPressed: () async {
-          final ConfirmAction action = await _asyncConfirmDialog(context);
+          final ConfirmAction action = await _asyncConfirmDialog(context, event.title);
           print("Confirm Action $action" );
         }),
       ),
@@ -289,24 +289,17 @@ class _DayViewExampleState extends State<DayViewExample> {
 }
 
 enum ConfirmAction { CANCEL, ACCEPT }
-Future<ConfirmAction> _asyncConfirmDialog(BuildContext context) async {
+Future<ConfirmAction> _asyncConfirmDialog(BuildContext context, String title) async {
   return showDialog<ConfirmAction>(
     context: context,
     barrierDismissible: false, // user must tap button for close dialog!
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Reset settings?'),
-        content: const Text(
-            'This will reset your device to its default factory settings.'),
+        title: Text('$title'),
+        content: Text('$title selected.'),
         actions: <Widget>[
           FlatButton(
-            child: const Text('CANCEL'),
-            onPressed: () {
-              Navigator.of(context).pop(ConfirmAction.CANCEL);
-            },
-          ),
-          FlatButton(
-            child: const Text('ACCEPT'),
+            child: const Text('OK'),
             onPressed: () {
               Navigator.of(context).pop(ConfirmAction.ACCEPT);
             },
