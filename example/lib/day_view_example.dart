@@ -48,24 +48,25 @@ class DayViewExample extends StatefulWidget {
 class _DayViewExampleState extends State<DayViewExample> {
   DateTime _day0;
   DateTime _day1;
+  DateTime startTime;
   List<DateTime> dayList;
   ScrollController _mycontroller1 =
       new ScrollController(); // make seperate controllers
   ScrollController _mycontroller2 =
       new ScrollController(); // for each scrollables
   ScrollController _mycontroller3 =
-  new ScrollController(); // for each scrollables
+      new ScrollController(); // for each scrollables
   SyncScrollController _syncScroller;
 
   @override
   void initState() {
     super.initState();
-    _syncScroller = new SyncScrollController([_mycontroller1 , _mycontroller2]);
+    _syncScroller = new SyncScrollController([_mycontroller1, _mycontroller2]);
 
     _day0 = new DateTime.now();
     _day1 = _day0.toUtc().add(new Duration(days: 1)).toLocal();
-    dayList = [_day0, _day1, _day0 ];
-
+    dayList = [_day0, _day1, _day0];
+    startTime = DateTime.now();
   }
 
   String _minuteOfDayToHourMinuteString(int minuteOfDay) {
@@ -73,11 +74,6 @@ class _DayViewExampleState extends State<DayViewExample> {
         ":"
         "${(minuteOfDay % 60).toString().padLeft(2, "0")}";
   }
-
-
-
-
-
 
   List<StartDurationItem> _getEventsOfDay(DateTime day) {
     List<Event> events;
@@ -89,7 +85,7 @@ class _DayViewExampleState extends State<DayViewExample> {
       events = eventsOfDay1;
     }
 
-      return events
+    return events
         .map(
           (event) => new StartDurationItem(
             startMinuteOfDay: event.startMinuteOfDay,
@@ -109,12 +105,13 @@ class _DayViewExampleState extends State<DayViewExample> {
     var x = details.globalPosition.dx;
     var y = details.globalPosition.dy;
     //print("tap down " + x.toString() + ", " + y.toString());
-   // print("Vertical scroll offset = ${_mycontroller1.offset}" );
-    double minutes = (y + _mycontroller1.offset - 184)/1.5;
-   // print("Minutes of day = $minutes");
-    print("Event Day index = ${((x + _mycontroller3.offset - 64)/140).toInt()%dayList.length}");
-    int startMinute = minutes~/30 * 30;
-    int endMinute =  ((startMinute == 30*47)?30:60) + startMinute;
+    // print("Vertical scroll offset = ${_mycontroller1.offset}" );
+    double minutes = (y + _mycontroller1.offset - 184) / 1.5;
+    // print("Minutes of day = $minutes");
+    print(
+        "Event Day index = ${((x + _mycontroller3.offset - 64) / 140).toInt() % dayList.length}");
+    int startMinute = minutes ~/ 30 * 30;
+    int endMinute = ((startMinute == 30 * 47) ? 30 : 60) + startMinute;
     print("Event start minute - end minute: $startMinute - $endMinute");
   }
 
@@ -123,92 +120,138 @@ class _DayViewExampleState extends State<DayViewExample> {
     var y = details.globalPosition.dy;
     print("tap up " + x.toString() + ", " + y.toString());
   }
+
+  Future<Null> _selectStartDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: startTime,
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
+    DateTime pickedTime = picked.add(Duration(hours:startTime.hour, minutes: startTime.minute));
+    if (picked != null && pickedTime != startTime)
+      setState(() {
+        startTime = pickedTime;
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
+
     return new Scaffold(
       appBar: new AppBar(
         title: new Text("DayView Example"),
+        bottom: PreferredSize(
+          preferredSize: Size(MediaQuery.of(context).size.width, 56.0),
+          child: Column(children: <Widget> [
+            FlatButton(
+                onPressed: () => _selectStartDate(context),
+                child:Row(
+                children:<Widget>[
+                Text("September"),
+                Icon(Icons.arrow_drop_down)])),
+            Calendarro(
+              startDate: DateUtils.getFirstDayOfCurrentMonth(),
+              endDate: DateUtils.getLastDayOfCurrentMonth()),
+        ],),),
       ),
       body: new DayViewEssentials(
         properties: new DayViewProperties(
           days: dayList,
         ),
         child: Column(children: <Widget>[
-          Calendarro(
-              startDate: DateUtils.getFirstDayOfCurrentMonth(),
-              endDate: DateUtils.getLastDayOfCurrentMonth()),
           new Expanded(
-            child: Stack (children: <Widget>[
+            child: Stack(children: <Widget>[
               NotificationListener<ScrollNotification>(
                 child: SingleChildScrollView(
-                  controller:  _mycontroller2,
-                  child:new DayViewSchedule(
+                  controller: _mycontroller2,
+                  child: new DayViewSchedule(
+                      topExtensionHeight: 24,
                       heightPerMinute: 1.5,
                       components: <ScheduleComponent>[
                         new TimeIndicationComponent.intervalGenerated(
                           generatedTimeIndicatorBuilder:
-                          _generatedTimeIndicatorBuilder,
+                              _generatedTimeIndicatorBuilder,
                         ),
-                      ]),),
-                onNotification:  (ScrollNotification scrollInfo) {
+                      ]),
+                ),
+                onNotification: (ScrollNotification scrollInfo) {
                   _syncScroller.processNotification(scrollInfo, _mycontroller2);
                 },
               ),
               Positioned(
                 left: 64,
                 width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height - 132,
-              child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              controller: _mycontroller3,
-                  child: Stack( children: <Widget>[
-               NotificationListener<ScrollNotification>(
-               child: SingleChildScrollView(
-                controller: _mycontroller1,
-                child: Stack ( children: <Widget> [ GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                    onTap: () => print("tapped"),
-                    onTapDown: (TapDownDetails details) => _onTapDown(details),
-                    //  onTapUp: (TapUpDetails details) => _onTapUp(details),
-               child: DayViewSchedule(
-                  heightPerMinute: 1.5,
-                  components: <ScheduleComponent>[
-                    new SupportLineComponent.intervalGenerated(
-                      generatedSupportLineBuilder: _generatedSupportLineBuilder,
-                    ),
-                    new DaySeparationComponent(
-                      generatedDaySeparatorBuilder:
-                          _generatedDaySeparatorBuilder,
-                    ),
-                    new EventViewComponent(
-                      getEventsOfDay: _getEventsOfDay,
-                    ),
-                  ],
-                ),),
+                height: MediaQuery.of(context).size.height - 132,
+                child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    controller: _mycontroller3,
+                    child: Column(
+                      children: <Widget>[
+                        Flex(direction: Axis.vertical, children: <Widget>[
+                          Container(
+                            color: Colors.grey[200],
+                            child: new DayViewDaysHeader(
+                              headerItemBuilder: _headerItemBuilder,
+                            ),
+                          ),
+                          /*
+                          DayViewSchedule(
+                              topExtensionHeight: 0,
+                              heightPerMinute: 0.1,
+                              components: <ScheduleComponent>[
+                                new EventViewComponent(
+                                  getEventsOfDay: _getEventsOfDay,
+                                )
+                              ]
+                          ),
 
-              ],)
+                      */
+                        ]),
+                        NotificationListener<ScrollNotification>(
+                            child: SingleChildScrollView(
+                                controller: _mycontroller1,
+                                child: Stack(
+                                  children: <Widget>[
+                                    GestureDetector(
+                                      behavior: HitTestBehavior.translucent,
+                                      onTap: () => print("tapped"),
+                                      onTapDown: (TapDownDetails details) =>
+                                          _onTapDown(details),
+                                      //  onTapUp: (TapUpDetails details) => _onTapUp(details),
+                                      child: DayViewSchedule(
+                                        heightPerMinute: 1.5,
+                                        topExtensionHeight: 0,
+                                        components: <ScheduleComponent>[
+                                          new SupportLineComponent
+                                              .intervalGenerated(
+                                            generatedSupportLineBuilder:
+                                                _generatedSupportLineBuilder,
+                                          ),
+                                          new DaySeparationComponent(
+                                            generatedDaySeparatorBuilder:
+                                                _generatedDaySeparatorBuilder,
+                                          ),
+                                          new EventViewComponent(
+                                            getEventsOfDay: _getEventsOfDay,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                            onNotification: (ScrollNotification scrollInfo) {
+                              _syncScroller.processNotification(
+                                  scrollInfo, _mycontroller1);
+                            }),
+                      ],
+                    )),
               ),
-                onNotification:  (ScrollNotification scrollInfo) {
-                  _syncScroller.processNotification(scrollInfo, _mycontroller1);
-                }
-               ),
-               Container(
-                 color: Colors.grey[200],
-                 child: new DayViewDaysHeader(
-                   headerItemBuilder: _headerItemBuilder,
-                 ),
-               ),
-             ],)
-            ),
-    ),
-
-          ]),
+            ]),
           ),
         ]),
       ),
     );
   }
-
 
   Widget _getUserOfDay(DateTime day) {
     Widget userName;
@@ -224,9 +267,10 @@ class _DayViewExampleState extends State<DayViewExample> {
 
   Widget _headerItemBuilder(BuildContext context, DateTime day) {
     return new Container(
-      color: Colors.grey[300],
-      padding: new EdgeInsets.symmetric(vertical: 4.0),
-        child: _getUserOfDay(day)/*new Column(
+        color: Colors.grey[300],
+        padding: new EdgeInsets.symmetric(vertical: 4.0),
+        child: _getUserOfDay(
+            day) /*new Column(
         children: <Widget>[
           new Text(
             "${weekdayToAbbreviatedString(day.weekday)}",
@@ -235,7 +279,7 @@ class _DayViewExampleState extends State<DayViewExample> {
           new Text("${day.day}"),
         ],
       ),*/
-    );
+        );
   }
 
   Positioned _generatedTimeIndicatorBuilder(
@@ -266,10 +310,10 @@ class _DayViewExampleState extends State<DayViewExample> {
     return new Positioned(
       top: itemPosition.top,
       left: itemPosition.left - 72,
-      width: itemWidth*2,
+      width: itemWidth * 2,
       child: new Container(
         height: 0.7,
-        color: (minuteOfDay%60 == 0)?Colors.grey[700]:Colors.grey[400],
+        color: (minuteOfDay % 60 == 0) ? Colors.grey[700] : Colors.grey[400],
       ),
     );
   }
@@ -293,6 +337,7 @@ class _DayViewExampleState extends State<DayViewExample> {
       ),
     );
   }
+
   Positioned _eventBuilder(
     BuildContext context,
     ItemPosition itemPosition,
@@ -308,18 +353,22 @@ class _DayViewExampleState extends State<DayViewExample> {
         margin: new EdgeInsets.only(left: 1.0, right: 1.0, bottom: 1.0),
         padding: new EdgeInsets.all(3.0),
         color: Colors.green[200],
-        child: FlatButton(  padding: EdgeInsets.all(0),
-            child: new Text("${event.title}"),onPressed: () async {
-          final ConfirmAction action = await _asyncConfirmDialog(context, event.title);
-          print("Confirm Action $action" );
-        }),
+        child: FlatButton(
+            padding: EdgeInsets.all(0),
+            child: new Text("${event.title}"),
+            onPressed: () async {
+              final ConfirmAction action =
+                  await _asyncConfirmDialog(context, event.title);
+              print("Confirm Action $action");
+            }),
       ),
     );
   }
 }
 
 enum ConfirmAction { CANCEL, ACCEPT }
-Future<ConfirmAction> _asyncConfirmDialog(BuildContext context, String title) async {
+Future<ConfirmAction> _asyncConfirmDialog(
+    BuildContext context, String title) async {
   return showDialog<ConfirmAction>(
     context: context,
     barrierDismissible: false, // user must tap button for close dialog!
@@ -341,7 +390,8 @@ Future<ConfirmAction> _asyncConfirmDialog(BuildContext context, String title) as
 }
 
 class SyncScrollController {
-  List<ScrollController> _registeredScrollControllers = new List<ScrollController>();
+  List<ScrollController> _registeredScrollControllers =
+      new List<ScrollController>();
 
   ScrollController _scrollingController;
   bool _scrollingActive = false;
@@ -354,7 +404,8 @@ class SyncScrollController {
     _registeredScrollControllers.add(controller);
   }
 
-  void processNotification(ScrollNotification notification, ScrollController sender) {
+  void processNotification(
+      ScrollNotification notification, ScrollController sender) {
     if (notification is ScrollStartNotification && !_scrollingActive) {
       _scrollingController = sender;
       _scrollingActive = true;
@@ -369,7 +420,10 @@ class SyncScrollController {
       }
 
       if (notification is ScrollUpdateNotification) {
-        _registeredScrollControllers.forEach((controller) => {if (!identical(_scrollingController, controller)) controller..jumpTo(_scrollingController.offset)});
+        _registeredScrollControllers.forEach((controller) => {
+              if (!identical(_scrollingController, controller))
+                controller..jumpTo(_scrollingController.offset)
+            });
         return;
       }
     }
