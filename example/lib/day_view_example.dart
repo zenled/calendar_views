@@ -76,6 +76,14 @@ class _DayViewExampleState extends State<DayViewExample> {
         "${(minuteOfDay % 60).toString().padLeft(2, "0")}";
   }
 
+  String _minuteOfDayToHourMinuteAmPmString(int minuteOfDay) {
+    return "${((minuteOfDay < 60)?(minuteOfDay ~/ 60 + 12)
+                :(minuteOfDay <= 60*12)?(minuteOfDay ~/ 60)
+                  :(minuteOfDay ~/ 60 - 12)).toString()}"
+        "${(minuteOfDay < 60*12)?" AM":(minuteOfDay == 60*24)?" AM":" PM"}";
+  }
+
+
   List<StartDurationItem> _getEventsOfDay(DateTime day) {
     List<Event> events;
     if (day.year == _day0.year &&
@@ -290,7 +298,7 @@ class _DayViewExampleState extends State<DayViewExample> {
       height: itemSize.height,
       child: new Container(
         child: new Center(
-          child: new Text(_minuteOfDayToHourMinuteString(minuteOfDay)),
+          child: new Text(_minuteOfDayToHourMinuteAmPmString(minuteOfDay),maxLines: 2,),
         ),
       ),
     );
