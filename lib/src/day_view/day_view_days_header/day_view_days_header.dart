@@ -70,7 +70,7 @@ This widget must be a decendant of DayViewEssentials.
     double width = _horizontalPositioner.eventAreaLeft;
 
     return new Container(
-      width: 0,
+      width: width,
     );
   }
 

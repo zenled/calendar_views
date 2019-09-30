@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 import 'package:calendar_views/day_view.dart';
 import 'package:calendarro/calendarro.dart';
 import 'package:calendarro/date_utils.dart';
+import 'package:intl/intl.dart';
 import 'utils/all.dart';
 
 @immutable
@@ -139,29 +140,30 @@ class _DayViewExampleState extends State<DayViewExample> {
 
     return new Scaffold(
       appBar: new AppBar(
+        backgroundColor: Colors.yellow,
         title: new Text("DayView Example"),
         bottom: PreferredSize(
-          preferredSize: Size(MediaQuery.of(context).size.width, 56.0),
+          preferredSize: Size(MediaQuery.of(context).size.width, 80.0),
           child: Column(children: <Widget> [
             FlatButton(
                 onPressed: () => _selectStartDate(context),
                 child:Row(
-                children:<Widget>[
-                Text("September"),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children:<Widget>[
+                Text(DateFormat.yMMMM("en_US").format(startTime)),
                 Icon(Icons.arrow_drop_down)])),
             Calendarro(
-              startDate: DateUtils.getFirstDayOfCurrentMonth(),
-              endDate: DateUtils.getLastDayOfCurrentMonth()),
+              startDate: DateUtils.getFirstDayOfMonth(startTime),
+              endDate: DateUtils.getLastDayOfMonth(startTime),
+              selectedDate: startTime,
+            ),
         ],),),
       ),
       body: new DayViewEssentials(
-        properties: new DayViewProperties(
-          days: dayList,
-        ),
-        child: Column(children: <Widget>[
-          new Expanded(
-            child: Stack(children: <Widget>[
+        properties: new DayViewProperties(days: dayList),
+            child: Row(children: <Widget>[
               NotificationListener<ScrollNotification>(
+                child:SizedBox( width:60.0,
                 child: SingleChildScrollView(
                   controller: _mycontroller2,
                   child: new DayViewSchedule(
@@ -174,20 +176,19 @@ class _DayViewExampleState extends State<DayViewExample> {
                         ),
                       ]),
                 ),
+      ),
                 onNotification: (ScrollNotification scrollInfo) {
                   _syncScroller.processNotification(scrollInfo, _mycontroller2);
                 },
               ),
-              Positioned(
-                left: 64,
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height - 132,
-                child: SingleChildScrollView(
+         SizedBox(
+          width: MediaQuery.of(context).size.width - 60.0,
+               child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     controller: _mycontroller3,
                     child: Column(
                       children: <Widget>[
-                        Flex(direction: Axis.vertical, children: <Widget>[
+                        //Flex(direction: Axis.vertical, children: <Widget>[
                           Container(
                             color: Colors.grey[200],
                             child: new DayViewDaysHeader(
@@ -206,13 +207,12 @@ class _DayViewExampleState extends State<DayViewExample> {
                           ),
 
                       */
-                        ]),
+                       // ]),
                         NotificationListener<ScrollNotification>(
-                            child: SingleChildScrollView(
+                            child: Expanded(child:
+                            SingleChildScrollView(
                                 controller: _mycontroller1,
-                                child: Stack(
-                                  children: <Widget>[
-                                    GestureDetector(
+                                child: GestureDetector(
                                       behavior: HitTestBehavior.translucent,
                                       onTap: () => print("tapped"),
                                       onTapDown: (TapDownDetails details) =>
@@ -236,21 +236,16 @@ class _DayViewExampleState extends State<DayViewExample> {
                                           ),
                                         ],
                                       ),
-                                    ),
-                                  ],
-                                )),
+                                    ),),),
                             onNotification: (ScrollNotification scrollInfo) {
                               _syncScroller.processNotification(
                                   scrollInfo, _mycontroller1);
                             }),
                       ],
                     )),
-              ),
-            ]),
-          ),
-        ]),
-      ),
-    );
+         ),],)
+        ),
+      );
   }
 
   Widget _getUserOfDay(DateTime day) {
