@@ -66,7 +66,7 @@ class _DayViewExampleState extends State<DayViewExample> {
 
     _day0 = new DateTime.now();
     _day1 = _day0.toUtc().add(new Duration(days: 1)).toLocal();
-    dayList = [_day0, _day1, _day0];
+    dayList = [_day0,_day1,_day0];
     startTime = DateTime.now();
   }
 
@@ -286,7 +286,7 @@ class _DayViewExampleState extends State<DayViewExample> {
     return new Positioned(
       top: itemPosition.top,
       left: itemPosition.left,
-      width: itemSize.width,
+      width: itemSize.width + 60.0,
       height: itemSize.height,
       child: new Container(
         child: new Center(
@@ -304,7 +304,7 @@ class _DayViewExampleState extends State<DayViewExample> {
   ) {
     return new Positioned(
       top: itemPosition.top,
-      left: itemPosition.left - 72,
+      left: itemPosition.left,
       width: itemWidth * 2,
       child: new Container(
         height: 0.7,
@@ -321,7 +321,7 @@ class _DayViewExampleState extends State<DayViewExample> {
   ) {
     return new Positioned(
       top: itemPosition.top,
-      left: itemPosition.left - 80,
+      left: itemPosition.left,
       width: itemSize.width,
       height: itemSize.height,
       child: new Center(
@@ -341,7 +341,7 @@ class _DayViewExampleState extends State<DayViewExample> {
   ) {
     return new Positioned(
       top: itemPosition.top,
-      left: itemPosition.left - 80,
+      left: itemPosition.left,
       width: itemSize.width,
       height: itemSize.height,
       child: new Container(

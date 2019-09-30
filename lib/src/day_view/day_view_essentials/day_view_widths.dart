@@ -6,11 +6,11 @@ class DayViewWidths {
   const DayViewWidths({
     this.totalAreaStartPadding = 8.0,
     this.totalAreaEndPadding = 8.0,
-    this.timeIndicationAreaWidth = 60.0,
+    this.timeIndicationAreaWidth = 0.0,
     this.separationAreaWidth = 4.0,
     this.mainAreaStartPadding = 8.0,
     this.mainAreaEndPadding = 8.0,
-    this.daySeparationAreaWidth = 20.0,
+    this.daySeparationAreaWidth = 0.0,
   })  : assert(totalAreaStartPadding != null && totalAreaStartPadding >= 0),
         assert(totalAreaEndPadding != null && totalAreaEndPadding >= 0),
         assert(
