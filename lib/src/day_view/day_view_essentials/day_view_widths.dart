@@ -8,9 +8,9 @@ class DayViewWidths {
     this.totalAreaEndPadding = 8.0,
     this.timeIndicationAreaWidth = 0.0,
     this.separationAreaWidth = 4.0,
-    this.mainAreaStartPadding = 8.0,
-    this.mainAreaEndPadding = 8.0,
-    this.daySeparationAreaWidth = 0.0,
+    this.mainAreaStartPadding = 0.0,
+    this.mainAreaEndPadding = 4.0,
+    this.daySeparationAreaWidth = 1.0,
   })  : assert(totalAreaStartPadding != null && totalAreaStartPadding >= 0),
         assert(totalAreaEndPadding != null && totalAreaEndPadding >= 0),
         assert(
