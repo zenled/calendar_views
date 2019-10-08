@@ -8,4 +8,5 @@ import 'day_view_days_header.dart';
 typedef Widget DayViewDaysHeaderItemBuilder(
   BuildContext context,
   DateTime day,
+    String userId,
 );

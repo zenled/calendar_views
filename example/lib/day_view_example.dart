@@ -1,27 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:calendar_views/day_view.dart';
-import 'package:calendarro/calendarro.dart';
-import 'package:calendarro/date_utils.dart';
+//import 'package:calendarro/calendarro.dart';
+//import 'package:calendarro/date_utils.dart';
+import 'package:flutter_calendar/flutter_calendar.dart';
 import 'package:intl/intl.dart';
 import 'utils/all.dart';
+import 'dart:math';
+
 
 @immutable
 class Event {
   Event({
-    @required this.startMinuteOfDay,
-    @required this.duration,
+    this.startMinuteOfDay,
+    this.duration,
+    this.boCompleted = false,
     @required this.title,
   });
 
   final int startMinuteOfDay;
   final int duration;
-
+  bool boCompleted;
   final String title;
 }
 
 List<Event> eventsOfDay0 = <Event>[
-  new Event(startMinuteOfDay: 0, duration: 60, title: "Midnight Party"),
+  new Event(startMinuteOfDay: 0, duration: 60, title: "Midnight Party", boCompleted: true),
   new Event(
       startMinuteOfDay: 6 * 60, duration: 2 * 60, title: "Morning Routine"),
   new Event(startMinuteOfDay: 6 * 60, duration: 60, title: "Eat Breakfast"),
@@ -41,6 +45,19 @@ List<Event> eventsOfDay1 = <Event>[
   new Event(startMinuteOfDay: 23 * 60, duration: 60, title: "Midnight Snack"),
 ];
 
+List<Event> anytimeEventsOfDay0 = <Event>[
+  new Event(title: "Midnight Party"),
+  new Event(title: "Morning Routine"),
+  new Event(title: "Eat Breakfast"),
+  new Event(title: "Get Dressed"),
+  new Event(title: "Take Dog For A Walk hjhjhjhj"),
+];
+
+List<Event> anytimeEventsOfDay1 = <Event>[
+  new Event(title: "Sleep Walking", boCompleted: true),
+  new Event(title: "Drive To Work"),
+];
+
 class DayViewExample extends StatefulWidget {
   @override
   State createState() => new _DayViewExampleState();
@@ -51,6 +68,7 @@ class _DayViewExampleState extends State<DayViewExample> {
   DateTime _day1;
   DateTime startTime;
   List<DateTime> dayList;
+  List<String> userIds;
   ScrollController _mycontroller1 =
       new ScrollController(); // make seperate controllers
   ScrollController _mycontroller2 =
@@ -66,8 +84,16 @@ class _DayViewExampleState extends State<DayViewExample> {
 
     _day0 = new DateTime.now();
     _day1 = _day0.toUtc().add(new Duration(days: 1)).toLocal();
-    dayList = [_day0,_day1,_day0];
+    dayList = [_day0, _day1, _day0];
+    userIds = ["a","b","c"];
     startTime = DateTime.now();
+  }
+
+  void dispose() {
+    _mycontroller1.dispose();
+    _mycontroller2.dispose();
+    _mycontroller3.dispose();
+    super.dispose();
   }
 
   String _minuteOfDayToHourMinuteString(int minuteOfDay) {
@@ -77,12 +103,9 @@ class _DayViewExampleState extends State<DayViewExample> {
   }
 
   String _minuteOfDayToHourMinuteAmPmString(int minuteOfDay) {
-    return "${((minuteOfDay < 60)?(minuteOfDay ~/ 60 + 12)
-                :(minuteOfDay <= 60*12)?(minuteOfDay ~/ 60)
-                  :(minuteOfDay ~/ 60 - 12)).toString()}"
-        "${(minuteOfDay < 60*12)?" AM":(minuteOfDay == 60*24)?" AM":" PM"}";
+    return "${((minuteOfDay < 60) ? (minuteOfDay ~/ 60 + 12) : (minuteOfDay <= 60 * 12) ? (minuteOfDay ~/ 60) : (minuteOfDay ~/ 60 - 12)).toString()}"
+        "${(minuteOfDay < 60 * 12) ? " AM" : (minuteOfDay == 60 * 24) ? " AM" : " PM"}";
   }
-
 
   List<StartDurationItem> _getEventsOfDay(DateTime day) {
     List<Event> events;
@@ -136,153 +159,197 @@ class _DayViewExampleState extends State<DayViewExample> {
         initialDate: startTime,
         firstDate: DateTime(2015, 8),
         lastDate: DateTime(2101));
-    DateTime pickedTime = picked.add(Duration(hours:startTime.hour, minutes: startTime.minute));
+    DateTime pickedTime =
+        picked.add(Duration(hours: startTime.hour, minutes: startTime.minute));
     if (picked != null && pickedTime != startTime)
       setState(() {
         startTime = pickedTime;
       });
   }
-
+_getHeight()
+{
+//int maxLength = [anytimeEventsOfDay0.length, anytimeEventsOfDay1.length].reduce(max);
+return 72.0;
+}
   @override
   Widget build(BuildContext context) {
-
     return new Scaffold(
       appBar: new AppBar(
-        backgroundColor: Colors.yellow,
         title: new Text("DayView Example"),
         bottom: PreferredSize(
-          preferredSize: Size(MediaQuery.of(context).size.width, 80.0),
-          child: Column(children: <Widget> [
-            FlatButton(
-                onPressed: () => _selectStartDate(context),
-                child:Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children:<Widget>[
-                Text(DateFormat.yMMMM("en_US").format(startTime)),
-                Icon(Icons.arrow_drop_down)])),
-            Calendarro(
-              startDate: DateUtils.getFirstDayOfMonth(startTime),
-              endDate: DateUtils.getLastDayOfMonth(startTime),
-              selectedDate: startTime,
-            ),
-        ],),),
+          preferredSize: Size(MediaQuery.of(context).size.width, 105.0),
+          child: Calendar(),
+          /*Column(
+            children: <Widget>[
+              FlatButton(
+                  onPressed: () => _selectStartDate(context),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(DateFormat.yMMMM("en_US").format(startTime)),
+                        Icon(Icons.arrow_drop_down)
+                      ])),
+              new Calendarro(
+                startDate: DateUtils.getFirstDayOfMonth(startTime),
+                endDate: DateUtils.getLastDayOfMonth(startTime),
+                selectedDate: DateUtils.toMidnight(startTime),
+              ),
+            ],
+          ),*/
+        ),
       ),
       body: new DayViewEssentials(
-        properties: new DayViewProperties(days: dayList),
-            child: Row(children: <Widget>[
+          properties: new DayViewProperties(days: dayList, userIds: userIds),
+          child: Row(
+            children: <Widget>[
               NotificationListener<ScrollNotification>(
-                child:SizedBox( width:60.0,
-                child: SingleChildScrollView(
-                  controller: _mycontroller2,
-                  child: new DayViewSchedule(
-                      topExtensionHeight: 24,
-                      heightPerMinute: 1.5,
-                      components: <ScheduleComponent>[
-                        new TimeIndicationComponent.intervalGenerated(
-                          generatedTimeIndicatorBuilder:
-                              _generatedTimeIndicatorBuilder,
-                        ),
-                      ]),
+                child: SizedBox(
+                  width: 60.0,
+                  child:
+                  Column(
+                    children: <Widget>[
+                      SizedBox(height:30.0, child:IconButton(icon:Icon(Icons.group_add))),
+                      SizedBox(height:_getHeight(), child:Container(
+                          //decoration: BoxDecoration(border:Border.all(),
+                          child:Center(child:Text("Anytime")))),
+                      Expanded(
+                  child:SingleChildScrollView(
+                    controller: _mycontroller2,
+                    child: new DayViewSchedule(
+                        topExtensionHeight: 6,
+                        heightPerMinute: 1.5,
+                        components: <ScheduleComponent>[
+                          new TimeIndicationComponent.intervalGenerated(
+                            generatedTimeIndicatorBuilder:
+                                _generatedTimeIndicatorBuilder,
+                          ),
+                        ]),
+                  ),),],),
                 ),
-      ),
                 onNotification: (ScrollNotification scrollInfo) {
                   _syncScroller.processNotification(scrollInfo, _mycontroller2);
                 },
               ),
-         SizedBox(
-          width: MediaQuery.of(context).size.width - 60.0,
-               child: SingleChildScrollView(
+              SizedBox(
+                width: MediaQuery.of(context).size.width - 60.0,
+                child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     controller: _mycontroller3,
                     child: Column(
                       children: <Widget>[
                         //Flex(direction: Axis.vertical, children: <Widget>[
-                          Container(
-                            color: Colors.grey[200],
-                            child: new DayViewDaysHeader(
-                              headerItemBuilder: _headerItemBuilder,
-                            ),
+                        Flexible(flex:1, child:
+                        Container(
+                          color: Colors.grey[200],
+                          child: new DayViewDaysHeader(
+                            headerItemBuilder: _headerItemBuilder,
                           ),
-                          /*
-                          DayViewSchedule(
-                              topExtensionHeight: 0,
-                              heightPerMinute: 0.1,
-                              components: <ScheduleComponent>[
-                                new EventViewComponent(
-                                  getEventsOfDay: _getEventsOfDay,
-                                )
-                              ]
-                          ),
-
-                      */
-                       // ]),
+                        ),
+                        ),
                         NotificationListener<ScrollNotification>(
-                            child: Expanded(child:
-                            SingleChildScrollView(
+                            child: Expanded(flex:5,
+                              child: SingleChildScrollView(
                                 controller: _mycontroller1,
                                 child: GestureDetector(
-                                      behavior: HitTestBehavior.translucent,
-                                      onTap: () => print("tapped"),
-                                      onTapDown: (TapDownDetails details) =>
-                                          _onTapDown(details),
-                                      //  onTapUp: (TapUpDetails details) => _onTapUp(details),
-                                      child: DayViewSchedule(
-                                        heightPerMinute: 1.5,
-                                        topExtensionHeight: 0,
-                                        components: <ScheduleComponent>[
-                                          new SupportLineComponent
-                                              .intervalGenerated(
-                                            generatedSupportLineBuilder:
-                                                _generatedSupportLineBuilder,
-                                          ),
-                                          new DaySeparationComponent(
-                                            generatedDaySeparatorBuilder:
-                                                _generatedDaySeparatorBuilder,
-                                          ),
-                                          new EventViewComponent(
-                                            getEventsOfDay: _getEventsOfDay,
-                                          ),
-                                        ],
+                                  behavior: HitTestBehavior.translucent,
+                                  onTap: () => print("tapped"),
+                                  onTapDown: (TapDownDetails details) =>
+                                      _onTapDown(details),
+                                  //  onTapUp: (TapUpDetails details) => _onTapUp(details),
+                                  child: DayViewSchedule(
+                                    heightPerMinute: 1.5,
+                                    topExtensionHeight: 0,
+                                    components: <ScheduleComponent>[
+                                      new SupportLineComponent
+                                          .intervalGenerated(
+                                        generatedSupportLineBuilder:
+                                            _generatedSupportLineBuilder,
                                       ),
-                                    ),),),
+                                      new DaySeparationComponent(
+                                        generatedDaySeparatorBuilder:
+                                            _generatedDaySeparatorBuilder,
+                                      ),
+                                      new EventViewComponent(
+                                        getEventsOfDay: _getEventsOfDay,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
                             onNotification: (ScrollNotification scrollInfo) {
                               _syncScroller.processNotification(
                                   scrollInfo, _mycontroller1);
                             }),
                       ],
                     )),
-         ),],)
-        ),
-      );
+              ),
+            ],
+          )),
+    );
   }
 
-  Widget _getUserOfDay(DateTime day) {
+  Widget _getUserOfDay(String userId) {
     Widget userName;
-    if (day.year == _day0.year &&
-        day.month == _day0.month &&
-        day.day == _day0.day) {
-      userName = Text("Vikram");
-    } else {
-      userName = Text("Nigel");
-    }
+      userName = Text(userId, maxLines: 1, overflow: TextOverflow.clip,);
     return userName;
   }
 
-  Widget _headerItemBuilder(BuildContext context, DateTime day) {
+  Widget _getListOfAnytimeEvents(DateTime day) {
+    Widget anytimeEvents;
+    if (day.year == _day0.year &&
+        day.month == _day0.month &&
+        day.day == _day0.day) {
+      anytimeEvents =
+            new Column(
+              children: _listofAnytimeEvents(anytimeEventsOfDay0),
+            );
+
+    } else {
+      anytimeEvents =
+          Column(children: _listofAnytimeEvents(anytimeEventsOfDay1));
+    }
+    return anytimeEvents;
+  }
+
+  List<Widget> _listofAnytimeEvents(List<Event> events) {
+    List<Widget> anyTimeEvents = new List();
+    events.forEach((event) {
+      anyTimeEvents.add(Container(
+          margin: new EdgeInsets.only(left: 0.0, right: 0.0, bottom: 1.0),
+          padding: new EdgeInsets.all(0.0),
+          width: double.infinity,
+          color: Colors.green[200],
+          child: FlatButton(
+              child: Text(
+                event.title,
+                maxLines:1,
+                overflow: TextOverflow.ellipsis,
+                style: (event.boCompleted == true)
+                    ? TextStyle(decoration: TextDecoration.lineThrough)
+                    : null,
+              ),
+              onPressed: () async {
+                final ConfirmAction action =
+                    await _asyncConfirmDialog(context, event.title);
+                print("Confirm Action $action");
+              },
+              color: Colors.green[200])
+      )
+          );
+    });
+    return anyTimeEvents;
+  }
+
+  Widget _headerItemBuilder(BuildContext context, DateTime day, String userId) {
     return new Container(
-        color: Colors.grey[300],
-        padding: new EdgeInsets.symmetric(vertical: 4.0),
-        child: _getUserOfDay(
-            day) /*new Column(
-        children: <Widget>[
-          new Text(
-            "${weekdayToAbbreviatedString(day.weekday)}",
-            style: new TextStyle(fontWeight: FontWeight.bold),
-          ),
-          new Text("${day.day}"),
-        ],
-      ),*/
-        );
+      color: Colors.grey[300],
+      padding: new EdgeInsets.symmetric(vertical: 4.0),
+      child: Column(children: <Widget>[
+        Flexible(flex:1, child:_getUserOfDay(userId),),
+        Flexible(flex:3, child:SingleChildScrollView(child:_getListOfAnytimeEvents(day),))
+      ]),
+    );
   }
 
   Positioned _generatedTimeIndicatorBuilder(
@@ -298,7 +365,10 @@ class _DayViewExampleState extends State<DayViewExample> {
       height: itemSize.height,
       child: new Container(
         child: new Center(
-          child: new Text(_minuteOfDayToHourMinuteAmPmString(minuteOfDay),maxLines: 2,),
+          child: new Text(
+            _minuteOfDayToHourMinuteAmPmString(minuteOfDay),
+            maxLines: 2,
+          ),
         ),
       ),
     );
@@ -358,7 +428,10 @@ class _DayViewExampleState extends State<DayViewExample> {
         color: Colors.green[200],
         child: FlatButton(
             padding: EdgeInsets.all(0),
-            child: new Text("${event.title}"),
+            child: new Text("${event.title}",
+                style: (event.boCompleted == true)
+                    ? TextStyle(decoration: TextDecoration.lineThrough)
+                    : null),
             onPressed: () async {
               final ConfirmAction action =
                   await _asyncConfirmDialog(context, event.title);

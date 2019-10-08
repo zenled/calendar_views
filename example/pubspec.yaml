@@ -6,8 +6,9 @@ environment:
   sdk: '>=2.0.0 <3.0.0'
 
 dependencies:
-  calendarro: ^1.0.1
-  intl: ^0.16.0
+  flutter_calendar:
+  #calendarro: ^1.1.0
+  intl: ^0.15.0
   flutter:
     sdk: flutter
   meta: ^1.1.6

@@ -82,7 +82,7 @@ This widget must be a decendant of DayViewEssentials.
       throw new FlutterError("""
 Could not determine heightPerMinute.
 
-Eather heightPerMinute must be provider or this widget placed as a child of a widget with constrained height.
+Either heightPerMinute must be provided or this widget placed as a child of a widget with constrained height.
 """);
     }
   }
