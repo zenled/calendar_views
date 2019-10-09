@@ -10,6 +10,7 @@ import '_day_builder.dart';
 /// Properties of [day] except for year, month and day are set to their default values.
 typedef Iterable<StartDurationItem> GetEventsOfDayCallback(
   DateTime day,
+  String userId,
 );
 
 /// [ScheduleComponent] for displaying events in every [DayViewArea.dayArea] of [DayViewSchedule].
@@ -36,13 +37,15 @@ class EventViewComponent implements ScheduleComponent {
     List<Positioned> items = <Positioned>[];
 
     List<DateTime> days = properties.days;
+    List<String> userIds = properties.userIds;
     for (int dayNumber = 0; dayNumber < days.length; dayNumber++) {
       DateTime day = days[dayNumber];
+      String userId = userIds[dayNumber];
 
       List<Positioned> itemsOfDay = _buildDay(
         context: context,
         dayNumber: dayNumber,
-        events: getEventsOfDay(day),
+        events: getEventsOfDay(day, userId),
         positioner: positioner,
       );
 

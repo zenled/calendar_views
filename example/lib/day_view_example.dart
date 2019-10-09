@@ -341,7 +341,7 @@ return 72.0;
     return anyTimeEvents;
   }
 
-  Widget _headerItemBuilder(BuildContext context, DateTime day, String userId) {
+  Widget _headerItemBuilder(BuildContext context,  String userId) {
     return new Container(
       color: Colors.grey[300],
       padding: new EdgeInsets.symmetric(vertical: 4.0),
