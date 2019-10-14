@@ -4,14 +4,16 @@ import 'package:calendar_views/src/_internal_date_time/all.dart';
 
 /// Class with information that applies to day view widgets.
 @immutable
-class DayViewProperties {
+class  DayViewProperties {
   DayViewProperties({
     @required List<DateTime> days,
+    @required List<String> userIds,
     this.minimumMinuteOfDay = 0,
     this.maximumMinuteOfDay = 1440,
   })  : assert(days != null),
         this.days = days.map((day) => stripDateInformation(day)).toList(),
-        assert(minimumMinuteOfDay != null &&
+        this.userIds = userIds,
+      assert(minimumMinuteOfDay != null &&
             isMinuteOfDayValid(minimumMinuteOfDay)),
         assert(maximumMinuteOfDay != null &&
             isMinuteOfDayValid(maximumMinuteOfDay)),
@@ -19,6 +21,7 @@ class DayViewProperties {
 
   /// List of days for day view widgets.
   final List<DateTime> days;
+  final List<String> userIds;
 
   /// Minimum minute of day for day view widgets.
   final int minimumMinuteOfDay;

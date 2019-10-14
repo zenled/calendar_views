@@ -54,8 +54,11 @@ This error probably happened because DayViewEssentials is child of an widget wit
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
+
+
     return new LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         _throwExceptionIfInvalidBoxConstraints(constraints);

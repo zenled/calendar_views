@@ -10,7 +10,7 @@ class DayViewDaysHeader extends StatefulWidget {
   }) : assert(headerItemBuilder != null);
 
   /// Function that builds a header item.
-  final DayViewDaysHeaderItemBuilder headerItemBuilder;
+  final DayViewDaysHeaderItemBuilder  headerItemBuilder;
 
   @override
   State createState() => new _DayViewDaysHeaderState();
@@ -58,14 +58,11 @@ This widget must be a decendant of DayViewEssentials.
       _buildEndingOffset(),
     );
 
-    return new Container(
-      width: _horizontalPositioner.totalWidth,
-      child: new IntrinsicHeight(
-        child: new Row(
+    return new IntrinsicHeight(
+          child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: rowChildren,
         ),
-      ),
     );
   }
 
@@ -73,7 +70,7 @@ This widget must be a decendant of DayViewEssentials.
     double width = _horizontalPositioner.eventAreaLeft;
 
     return new Container(
-      width: width,
+      width: width
     );
   }
 
@@ -81,13 +78,16 @@ This widget must be a decendant of DayViewEssentials.
     List<Widget> daysAndSeparations = <Widget>[];
 
     List<DateTime> days = _dayViewProperties.days;
+    List<String> userIds = _dayViewProperties.userIds;
     for (int dayNumber = 0; dayNumber < days.length; dayNumber++) {
       DateTime day = days[dayNumber];
+      String userId = userIds[dayNumber];
 
       daysAndSeparations.add(
         _buildDay(
           dayNumber: dayNumber,
           day: day,
+          userId: userId,
         ),
       );
 
@@ -109,10 +109,11 @@ This widget must be a decendant of DayViewEssentials.
   Widget _buildDay({
     @required int dayNumber,
     @required DateTime day,
+    @required String userId,
   }) {
     return new Container(
       width: _horizontalPositioner.dayAreaWidth(dayNumber),
-      child: widget.headerItemBuilder(context, day),
+      child: widget.headerItemBuilder(context, day, userId),
     );
   }
 

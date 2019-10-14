@@ -45,7 +45,7 @@ class SupportLineComponent implements ScheduleComponent {
     bool extendOverStartMainArea = true,
     bool extendOverEndMainArea = true,
     int minuteOfDayOfFirstSupportLine = 0,
-    int interval = 60,
+    int interval = 30,
     @required GeneratedSupportLineBuilder generatedSupportLineBuilder,
   }) {
     assert(minuteOfDayOfFirstSupportLine != null &&

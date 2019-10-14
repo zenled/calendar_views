@@ -7,7 +7,7 @@ import 'package:calendar_views/day_view.dart';
 class DayViewSchedule extends StatefulWidget {
   DayViewSchedule({
     this.heightPerMinute,
-    this.topExtensionHeight = 16.0,
+    this.topExtensionHeight = 46.0,
     this.bottomExtensionHeight = 16.0,
     @required this.components,
   })  : assert(heightPerMinute == null || heightPerMinute > 0.0),
@@ -82,7 +82,7 @@ This widget must be a decendant of DayViewEssentials.
       throw new FlutterError("""
 Could not determine heightPerMinute.
 
-Eather heightPerMinute must be provider or this widget placed as a child of a widget with constrained height.
+Either heightPerMinute must be provided or this widget placed as a child of a widget with constrained height.
 """);
     }
   }
@@ -106,10 +106,16 @@ Eather heightPerMinute must be provider or this widget placed as a child of a wi
         SchedulePositioner positioner =
             _createSchedulePositioner(heightPerMinute);
 
+        double addWidth = 0;
+        if (positioner.properties.numberOfDays > 2) {
+          addWidth = positioner.dayAreaWidth(2)*(positioner.properties.numberOfDays - 2)
+          + positioner.widths.daySeparationAreaWidth*(positioner.properties.numberOfDays)
+          - positioner.widths.timeIndicationAreaWidth;
+        }
         return new Container(
-          width: positioner.totalWidth,
+          width: positioner.totalWidth + addWidth,
           height: positioner.totalHeight,
-          child: new Stack(
+          child: Stack(
             children: _buildComponentItems(
               context: context,
               positioner: positioner,
