@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:calendar_views/month_page_view.dart';
 
-import 'utils/all.dart';
+import 'utils/all.dart' as Utils;
 
 class MonthPageViewExample extends StatefulWidget {
   @override
@@ -32,12 +32,12 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
     _pageSnapping = true;
     _reverse = false;
 
-    _displayedMonthText = yearAndMonthToString(initialMonth);
+    _displayedMonthText = Utils.yearAndMonthToString(initialMonth);
   }
 
   void _onMonthChanged(DateTime month) {
     setState(() {
-      _displayedMonthText = yearAndMonthToString(month);
+      _displayedMonthText = Utils.yearAndMonthToString(month);
     });
   }
 
@@ -94,7 +94,7 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
                           .map(
                             (axis) => new DropdownMenuItem<Axis>(
                                   value: axis,
-                                  child: new Text("${axisToString(axis)}"),
+                                  child: new Text("${Utils.axisToString(axis)}"),
                                 ),
                           )
                           .toList(),
@@ -103,7 +103,7 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
                           this._scrollDirection = value;
                         });
 
-                        showScrollDirectionChangeMightNotWorkDialog(
+                        Utils.showScrollDirectionChangeMightNotWorkDialog(
                           context: context,
                         );
                       },
@@ -139,7 +139,7 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
   }
 
   Widget _monthPageBuilder(BuildContext context, DateTime month) {
-    return new Page.forMonth(
+    return new Utils.Page.forMonth(
       month: month,
     );
   }
