@@ -49,12 +49,26 @@ class _DayViewExampleState extends State<DayViewExample> {
   DateTime _day0;
   DateTime _day1;
 
+  // To specify start offset to the current time
+  ScrollController _scrollController;
+
   @override
   void initState() {
     super.initState();
 
     _day0 = new DateTime.now();
     _day1 = _day0.toUtc().add(new Duration(days: 1)).toLocal();
+
+    // The number of minutes to the current time.
+    double nowInMinutes = ((_day0.hour * 60) + _day0.minute).toDouble();
+
+    // Scroll controller offsets a certain number of pixels
+    // Each minute has a height of 1 pixel
+    // So, to offset to the current time, we offset the number of minutes
+    _scrollController = new ScrollController(
+      initialScrollOffset: nowInMinutes,
+      keepScrollOffset: true,
+    );
   }
 
   String _minuteOfDayToHourMinuteString(int minuteOfDay) {
@@ -112,6 +126,7 @@ class _DayViewExampleState extends State<DayViewExample> {
             ),
             new Expanded(
               child: new SingleChildScrollView(
+                controller: _scrollController,
                 child: new DayViewSchedule(
                   heightPerMinute: 1.0,
                   components: <ScheduleComponent>[
