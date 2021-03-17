@@ -90,6 +90,6 @@ class _DayViewEssentialsInherited extends InheritedWidget {
   }
 
   static _DayViewEssentialsInherited of(BuildContext context) {
-    return context.inheritFromWidgetOfExactType(_DayViewEssentialsInherited);
+    return context.dependOnInheritedWidgetOfExactType<_DayViewEssentialsInherited>();
   }
 }
