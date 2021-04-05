@@ -44,7 +44,7 @@ void _sortEvents(List<StartDurationItem> events) {
 }
 
 List<_Column> _makeColumns(List<StartDurationItem> events) {
-  List<_Column> columns = new List();
+  List<_Column> columns = [];
 
   columns.add(
     new _Column(),
@@ -142,7 +142,7 @@ class _Reservation {
 }
 
 class _Column {
-  List<_Reservation> reservations = new List();
+  List<_Reservation> reservations = [];
 
   bool isReservationAvailable(_Reservation reservation) {
     for (_Reservation alreadyPlacedReservation in reservations) {
