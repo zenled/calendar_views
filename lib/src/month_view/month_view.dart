@@ -100,7 +100,7 @@ class _MonthViewState extends State<MonthView> {
   }
 
   List<List<DayOfMonth>> _makeWeeks() {
-    List<List<DayOfMonth>> weeks = new List();
+    List<List<DayOfMonth>> weeks = [];
 
     for (int i = 0; i < _days.length; i += DateTime.daysPerWeek) {
       weeks.add(

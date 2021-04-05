@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:calendar_views/month_page_view.dart';
 
-import 'utils/all.dart';
-
+import 'utils/all.dart' as calenderUtils;
 class MonthPageViewExample extends StatefulWidget {
   @override
   _MonthPageViewExampleState createState() => new _MonthPageViewExampleState();
@@ -32,12 +31,12 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
     _pageSnapping = true;
     _reverse = false;
 
-    _displayedMonthText = yearAndMonthToString(initialMonth);
+    _displayedMonthText =calenderUtils.  yearAndMonthToString(initialMonth);
   }
 
   void _onMonthChanged(DateTime month) {
     setState(() {
-      _displayedMonthText = yearAndMonthToString(month);
+      _displayedMonthText =calenderUtils.  yearAndMonthToString(month);
     });
   }
 
@@ -75,7 +74,7 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
                   new Container(
                     padding: new EdgeInsets.all(4.0),
                     child: new Center(
-                      child: new RaisedButton(
+                      child: new ElevatedButton(
                         child: new Text("Jump To Today-Month"),
                         onPressed: () {
                           _monthPageController.jumpToMonth(
@@ -94,7 +93,7 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
                           .map(
                             (axis) => new DropdownMenuItem<Axis>(
                                   value: axis,
-                                  child: new Text("${axisToString(axis)}"),
+                                  child: new Text("${calenderUtils. axisToString(axis)}"),
                                 ),
                           )
                           .toList(),
@@ -103,7 +102,7 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
                           this._scrollDirection = value;
                         });
 
-                        showScrollDirectionChangeMightNotWorkDialog(
+                        calenderUtils. showScrollDirectionChangeMightNotWorkDialog(
                           context: context,
                         );
                       },
@@ -139,7 +138,7 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
   }
 
   Widget _monthPageBuilder(BuildContext context, DateTime month) {
-    return new Page.forMonth(
+    return new calenderUtils.Page.forMonth(
       month: month,
     );
   }

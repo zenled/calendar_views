@@ -57,7 +57,7 @@ class _MonthPickerDialogState extends State<MonthPickerDialog> {
         ],
       ),
       actions: <Widget>[
-        new FlatButton(
+        new TextButton(
           child: new Text("OK"),
           onPressed: () {
             DateTime month = new DateTime(_year, _month);
