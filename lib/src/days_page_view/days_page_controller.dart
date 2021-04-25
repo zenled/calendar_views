@@ -1,23 +1,21 @@
 import 'dart:async';
 
+import 'package:calendar_views/src/calendar_page_view/all.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
-
-import 'package:calendar_views/src/calendar_page_view/all.dart';
 
 import 'days_page_link.dart';
 import 'days_page_view.dart';
 
 /// Controller for [DaysPageView].
 class DaysPageController extends CalendarPageController {
-  /// Creates a new [DaysPageController].
+  /// Creates a [DaysPageController].
   ///
   /// If [firstDayOnInitialPage] is null, it is set to whatever day is today.
   DaysPageController({
     DateTime firstDayOnInitialPage,
     this.daysPerPage = DateTime.daysPerWeek,
-  })  : this.firstDayOfInitialPage =
-            firstDayOnInitialPage ?? new DateTime.now(),
+  })  : this.firstDayOfInitialPage = firstDayOnInitialPage ?? DateTime.now(),
         assert(firstDayOnInitialPage != null),
         assert(daysPerPage != null && daysPerPage > 0);
 

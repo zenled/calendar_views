@@ -9,7 +9,7 @@ import 'validation.dart';
 /// This class is intended only for use by this library only.
 @immutable
 class Date {
-  /// Creates a new Date.
+  /// Creates a Date.
   Date(
     this.year,
     this.month,
@@ -18,20 +18,20 @@ class Date {
         assert(month != null && isMonthValid(month)),
         assert(day != null && day >= 1 && day <= 31);
 
-  /// Creates a new Date from [DateTime].
+  /// Creates a Date from [DateTime].
   factory Date.fromDateTime(DateTime dateTime) {
-    return new Date(
+    return Date(
       dateTime.year,
       dateTime.month,
       dateTime.day,
     );
   }
 
-  /// Creates a new Date set to today.
+  /// Creates a Date set to today.
   factory Date.today() {
-    DateTime now = new DateTime.now();
+    DateTime now = DateTime.now();
 
-    return new Date.fromDateTime(now);
+    return Date.fromDateTime(now);
   }
 
   /// Year of this Date.
@@ -86,20 +86,20 @@ class Date {
     return date;
   }
 
-  /// Returns a new Date with some days added.
+  /// Returns a Date with some days added.
   Date addDays(int days) {
     DateTime dateTimeUTC = toDateTimeUTC();
-    dateTimeUTC = dateTimeUTC.add(new Duration(days: days));
-    return new Date.fromDateTime(dateTimeUTC);
+    dateTimeUTC = dateTimeUTC.add(Duration(days: days));
+    return Date.fromDateTime(dateTimeUTC);
   }
 
-  /// Creates a new Date with some values changed.
+  /// Creates a Date with some values changed.
   Date copyWith({
     int year,
     int month,
     int day,
   }) {
-    return new Date(
+    return Date(
       year ?? this.year,
       month ?? this.month,
       day ?? this.day,
@@ -110,14 +110,14 @@ class Date {
   ///
   /// Values except year, month and day are set to their default values.
   DateTime toDateTime() {
-    return new DateTime(year, month, day);
+    return DateTime(year, month, day);
   }
 
   /// Returns this date as DateTime UTC.
   ///
   /// Values except year, month and day are set to their default values.
   DateTime toDateTimeUTC() {
-    return new DateTime.utc(year, month, day);
+    return DateTime.utc(year, month, day);
   }
 
   @override

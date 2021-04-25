@@ -1,7 +1,6 @@
+import 'package:calendar_views/src/_internal_date_time/all.dart';
 import 'package:meta/meta.dart';
 import 'package:quiver/core.dart';
-
-import 'package:calendar_views/src/_internal_date_time/all.dart';
 
 import 'month_view.dart';
 
@@ -13,8 +12,8 @@ class DayOfMonth {
     @required DateTime month,
   })  : assert(day != null),
         assert(month != null),
-        this.day = new DateTime(day.year, day.month, day.day),
-        this.month = new DateTime(month.year, month.month);
+        this.day = DateTime(day.year, day.month, day.day),
+        this.month = DateTime(month.year, month.month);
 
   /// Day to which this properties apply to.
   ///
@@ -35,9 +34,9 @@ class DayOfMonth {
   /// If true the [day] is extended after the [month].
   bool get isExtendedAfter => _monthOfDay.isAfter(_monthOfMonth);
 
-  Month get _monthOfDay => new Month.fromDateTime(day);
+  Month get _monthOfDay => Month.fromDateTime(day);
 
-  Month get _monthOfMonth => new Month.fromDateTime(month);
+  Month get _monthOfMonth => Month.fromDateTime(month);
 
   @override
   String toString() {

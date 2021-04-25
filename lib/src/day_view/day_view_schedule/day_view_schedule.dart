@@ -1,7 +1,6 @@
+import 'package:calendar_views/day_view.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
-
-import 'package:calendar_views/day_view.dart';
 
 /// Widget for display a day view schedule with the given [components].
 class DayViewSchedule extends StatefulWidget {
@@ -32,7 +31,7 @@ class DayViewSchedule extends StatefulWidget {
   final List<ScheduleComponent> components;
 
   @override
-  State createState() => new _DayViewScheduleState();
+  State createState() => _DayViewScheduleState();
 }
 
 class _DayViewScheduleState extends State<DayViewSchedule> {
@@ -54,7 +53,7 @@ class _DayViewScheduleState extends State<DayViewSchedule> {
   }
 
   void _throwNoDayViewEssentialsError() {
-    throw new FlutterError("""
+    throw FlutterError("""
 Could not inherit DayViewEssentials.
 
 This widget must be a decendant of DayViewEssentials.
@@ -79,7 +78,7 @@ This widget must be a decendant of DayViewEssentials.
 
   void _throwErrorIfCannotDetermineHeightPerMinute(double availableHeight) {
     if (widget.heightPerMinute == null && availableHeight.isInfinite) {
-      throw new FlutterError("""
+      throw FlutterError("""
 Could not determine heightPerMinute.
 
 Eather heightPerMinute must be provider or this widget placed as a child of a widget with constrained height.
@@ -88,7 +87,7 @@ Eather heightPerMinute must be provider or this widget placed as a child of a wi
   }
 
   SchedulePositioner _createSchedulePositioner(double heightPerMinute) {
-    return new SchedulePositioner(
+    return SchedulePositioner(
       horizontalPositioner: _horizontalPositioner,
       heightPerMinute: heightPerMinute,
       topExtensionHeight: widget.topExtensionHeight,
@@ -98,7 +97,7 @@ Eather heightPerMinute must be provider or this widget placed as a child of a wi
 
   @override
   Widget build(BuildContext context) {
-    return new LayoutBuilder(
+    return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         double heightPerMinute =
             _determineHeightPerMinute(constraints.maxHeight);
@@ -106,10 +105,10 @@ Eather heightPerMinute must be provider or this widget placed as a child of a wi
         SchedulePositioner positioner =
             _createSchedulePositioner(heightPerMinute);
 
-        return new Container(
+        return Container(
           width: positioner.totalWidth,
           height: positioner.totalHeight,
-          child: new Stack(
+          child: Stack(
             children: _buildComponentItems(
               context: context,
               positioner: positioner,

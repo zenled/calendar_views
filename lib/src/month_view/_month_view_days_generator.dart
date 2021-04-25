@@ -1,6 +1,5 @@
-import 'package:meta/meta.dart';
-
 import 'package:calendar_views/src/_internal_date_time/all.dart';
+import 'package:meta/meta.dart';
 
 import 'day_of_month.dart';
 
@@ -84,7 +83,7 @@ class MonthViewDaysGenerator {
   }
 
   DayOfMonth _dateToDayOfMonth(Date date) {
-    return new DayOfMonth(
+    return DayOfMonth(
       day: date.toDateTime(),
       month: month.toDateTime(),
     );

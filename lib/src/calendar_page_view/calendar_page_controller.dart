@@ -61,7 +61,7 @@ abstract class CalendarPageController {
   @protected
   void throwExceptionIfNoItemAttached() {
     if (!isItemAttached) {
-      throw new Exception(
+      throw Exception(
         "Could not perform action, no item is attached to this controller",
       );
     }

@@ -16,7 +16,7 @@ class WeekdayDropDownButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new DropdownButton<int>(
+    return DropdownButton<int>(
       value: value,
       items: <int>[
         DateTime.monday,
@@ -28,10 +28,10 @@ class WeekdayDropDownButton extends StatelessWidget {
         DateTime.sunday,
       ]
           .map(
-            (weekday) => new DropdownMenuItem<int>(
-                  value: weekday,
-                  child: new Text(weekdayToString(weekday)),
-                ),
+            (weekday) => DropdownMenuItem<int>(
+              value: weekday,
+              child: Text(weekdayToString(weekday)),
+            ),
           )
           .toList(),
       onChanged: onChanged,

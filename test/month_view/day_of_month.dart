@@ -1,6 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
-
 import 'package:calendar_views/src/month_view/day_of_month.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group("DayOfMonth test", () {
@@ -12,9 +11,9 @@ void main() {
 void testIsExtendedBefore() {
   group(".isExtendedBefore", () {
     test("returns true, if it is extended before", () {
-      DayOfMonth dayOfMonth = new DayOfMonth(
-        day: new DateTime(2018, 8, 31),
-        month: new DateTime(2018, 9, 1),
+      DayOfMonth dayOfMonth = DayOfMonth(
+        day: DateTime(2018, 8, 31),
+        month: DateTime(2018, 9, 1),
       );
 
       expect(
@@ -24,9 +23,9 @@ void testIsExtendedBefore() {
     });
 
     test("returns false, if it is part of month", () {
-      DayOfMonth dayOfMonth = new DayOfMonth(
-        day: new DateTime(2018, 9, 20),
-        month: new DateTime(2018, 9, 1),
+      DayOfMonth dayOfMonth = DayOfMonth(
+        day: DateTime(2018, 9, 20),
+        month: DateTime(2018, 9, 1),
       );
 
       expect(
@@ -36,9 +35,9 @@ void testIsExtendedBefore() {
     });
 
     test("returns false, if it is extended after", () {
-      DayOfMonth dayOfMonth = new DayOfMonth(
-        day: new DateTime(2018, 10, 1),
-        month: new DateTime(2018, 9, 1),
+      DayOfMonth dayOfMonth = DayOfMonth(
+        day: DateTime(2018, 10, 1),
+        month: DateTime(2018, 9, 1),
       );
 
       expect(
@@ -52,9 +51,9 @@ void testIsExtendedBefore() {
 void testIsExtendedAfter() {
   group(".isExtendedAfter", () {
     test("returns true, if it is extended after", () {
-      DayOfMonth dayOfMonth = new DayOfMonth(
-        day: new DateTime(2018, 10, 1),
-        month: new DateTime(2018, 9, 1),
+      DayOfMonth dayOfMonth = DayOfMonth(
+        day: DateTime(2018, 10, 1),
+        month: DateTime(2018, 9, 1),
       );
 
       expect(
@@ -64,9 +63,9 @@ void testIsExtendedAfter() {
     });
 
     test("returns false, if it is part of month", () {
-      DayOfMonth dayOfMonth = new DayOfMonth(
-        day: new DateTime(2018, 9, 20),
-        month: new DateTime(2018, 9, 1),
+      DayOfMonth dayOfMonth = DayOfMonth(
+        day: DateTime(2018, 9, 20),
+        month: DateTime(2018, 9, 1),
       );
 
       expect(
@@ -76,9 +75,9 @@ void testIsExtendedAfter() {
     });
 
     test("returns false, if it is extended before", () {
-      DayOfMonth dayOfMonth = new DayOfMonth(
-        day: new DateTime(2018, 8, 31),
-        month: new DateTime(2018, 9, 1),
+      DayOfMonth dayOfMonth = DayOfMonth(
+        day: DateTime(2018, 8, 31),
+        month: DateTime(2018, 9, 1),
       );
 
       expect(

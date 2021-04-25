@@ -51,7 +51,7 @@ abstract class CalendarPageViewState<WIDGET extends CalendarPageView>
   void initState() {
     super.initState();
 
-    pageController = new PageController(
+    pageController = PageController(
       initialPage: initial_page,
     );
   }
@@ -87,7 +87,7 @@ abstract class CalendarPageViewState<WIDGET extends CalendarPageView>
 
   @override
   Widget build(BuildContext context) {
-    return new PageView.builder(
+    return PageView.builder(
       scrollDirection: widget.scrollDirection,
       pageSnapping: widget.pageSnapping,
       reverse: widget.reverse,

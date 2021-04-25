@@ -1,12 +1,11 @@
-import 'package:flutter/material.dart';
-
 import 'package:calendar_views/month_page_view.dart';
+import 'package:flutter/material.dart';
 
 import 'utils/all.dart';
 
 class MonthPageViewExample extends StatefulWidget {
   @override
-  _MonthPageViewExampleState createState() => new _MonthPageViewExampleState();
+  _MonthPageViewExampleState createState() => _MonthPageViewExampleState();
 }
 
 class _MonthPageViewExampleState extends State<MonthPageViewExample> {
@@ -22,9 +21,9 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
   void initState() {
     super.initState();
 
-    DateTime initialMonth = new DateTime.now();
+    DateTime initialMonth = DateTime.now();
 
-    _monthPageController = new MonthPageController(
+    _monthPageController = MonthPageController(
       initialMonth: initialMonth,
     );
 
@@ -43,16 +42,16 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text("MonthPageView Example"),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("MonthPageView Example"),
       ),
-      body: new Column(
+      body: Column(
         children: <Widget>[
-          new Expanded(
-            child: new Container(
+          Expanded(
+            child: Container(
               color: Colors.green.shade200,
-              child: new MonthPageView(
+              child: MonthPageView(
                 scrollDirection: _scrollDirection,
                 pageSnapping: _pageSnapping,
                 reverse: _reverse,
@@ -62,40 +61,40 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
               ),
             ),
           ),
-          new Expanded(
-            child: new SingleChildScrollView(
-              child: new Column(
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
                 children: <Widget>[
-                  new ListTile(
-                    title: new Center(
-                      child: new Text("Displayed month: $_displayedMonthText"),
+                  ListTile(
+                    title: Center(
+                      child: Text("Displayed month: $_displayedMonthText"),
                     ),
                   ),
-                  new Divider(height: 0.0),
-                  new Container(
-                    padding: new EdgeInsets.all(4.0),
-                    child: new Center(
-                      child: new RaisedButton(
-                        child: new Text("Jump To Today-Month"),
+                  Divider(height: 0.0),
+                  Container(
+                    padding: EdgeInsets.all(4.0),
+                    child: Center(
+                      child: ElevatedButton(
+                        child: Text("Jump To Today-Month"),
                         onPressed: () {
                           _monthPageController.jumpToMonth(
-                            new DateTime.now(),
+                            DateTime.now(),
                           );
                         },
                       ),
                     ),
                   ),
-                  new Divider(height: 0.0),
-                  new ListTile(
-                    title: new Text("Scroll Direction"),
-                    trailing: new DropdownButton<Axis>(
+                  Divider(height: 0.0),
+                  ListTile(
+                    title: Text("Scroll Direction"),
+                    trailing: DropdownButton<Axis>(
                       value: _scrollDirection,
                       items: <Axis>[Axis.horizontal, Axis.vertical]
                           .map(
-                            (axis) => new DropdownMenuItem<Axis>(
-                                  value: axis,
-                                  child: new Text("${axisToString(axis)}"),
-                                ),
+                            (axis) => DropdownMenuItem<Axis>(
+                              value: axis,
+                              child: Text("${axisToString(axis)}"),
+                            ),
                           )
                           .toList(),
                       onChanged: (Axis value) {
@@ -109,9 +108,9 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
                       },
                     ),
                   ),
-                  new Divider(height: 0.0),
-                  new CheckboxListTile(
-                    title: new Text("Page snapping"),
+                  Divider(height: 0.0),
+                  CheckboxListTile(
+                    title: Text("Page snapping"),
                     value: _pageSnapping,
                     onChanged: (value) {
                       setState(() {
@@ -119,9 +118,9 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
                       });
                     },
                   ),
-                  new Divider(height: 0.0),
-                  new CheckboxListTile(
-                    title: new Text("Reverse"),
+                  Divider(height: 0.0),
+                  CheckboxListTile(
+                    title: Text("Reverse"),
                     value: _reverse,
                     onChanged: (value) {
                       setState(() {
@@ -139,7 +138,7 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
   }
 
   Widget _monthPageBuilder(BuildContext context, DateTime month) {
-    return new Page.forMonth(
+    return DatePage.forMonth(
       month: month,
     );
   }

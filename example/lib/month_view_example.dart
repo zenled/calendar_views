@@ -1,12 +1,11 @@
-import 'package:flutter/material.dart';
-
 import 'package:calendar_views/month_view.dart';
+import 'package:flutter/material.dart';
 
 import 'utils/all.dart';
 
 class MonthViewExample extends StatefulWidget {
   @override
-  _MonthViewExampleState createState() => new _MonthViewExampleState();
+  _MonthViewExampleState createState() => _MonthViewExampleState();
 }
 
 class _MonthViewExampleState extends State<MonthViewExample> {
@@ -22,7 +21,7 @@ class _MonthViewExampleState extends State<MonthViewExample> {
   void initState() {
     super.initState();
 
-    _month = new DateTime.now();
+    _month = DateTime.now();
     _firstWeekday = DateTime.monday;
 
     _shouldShowHeader = true;
@@ -33,16 +32,16 @@ class _MonthViewExampleState extends State<MonthViewExample> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text("MonthView Example"),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("MonthView Example"),
       ),
-      body: new Column(
+      body: Column(
         children: <Widget>[
-          new Expanded(
-            child: new Container(
+          Expanded(
+            child: Container(
               color: Colors.green.shade200,
-              child: new MonthView(
+              child: MonthView(
                 month: _month,
                 firstWeekday: _firstWeekday,
                 dayOfMonthBuilder: _dayOfMonthBuilder,
@@ -53,33 +52,33 @@ class _MonthViewExampleState extends State<MonthViewExample> {
               ),
             ),
           ),
-          new Expanded(
-            child: new SingleChildScrollView(
-              child: new Column(
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
                 children: <Widget>[
-                  new ListTile(
-                    title: new Center(
-                      child: new Text("Month: ${yearAndMonthToString(_month)}"),
+                  ListTile(
+                    title: Center(
+                      child: Text("Month: ${yearAndMonthToString(_month)}"),
                     ),
                     onTap: () {
                       showDialog(
                         context: context,
-                        builder: (context) => new MonthPickerDialog(
-                              initialMonth: _month,
-                              onConfirm: (month) {
-                                Navigator.of(context).pop();
-                                setState(() {
-                                  _month = month;
-                                });
-                              },
-                            ),
+                        builder: (context) => MonthPickerDialog(
+                          initialMonth: _month,
+                          onConfirm: (month) {
+                            Navigator.of(context).pop();
+                            setState(() {
+                              _month = month;
+                            });
+                          },
+                        ),
                       );
                     },
                   ),
-                  new Divider(height: 0.0),
-                  new ListTile(
-                    title: new Text("First Weekday"),
-                    trailing: new WeekdayDropDownButton(
+                  Divider(height: 0.0),
+                  ListTile(
+                    title: Text("First Weekday"),
+                    trailing: WeekdayDropDownButton(
                         value: _firstWeekday,
                         onChanged: (value) {
                           setState(() {
@@ -87,9 +86,9 @@ class _MonthViewExampleState extends State<MonthViewExample> {
                           });
                         }),
                   ),
-                  new Divider(height: 0.0),
-                  new CheckboxListTile(
-                    title: new Text("Show Header"),
+                  Divider(height: 0.0),
+                  CheckboxListTile(
+                    title: Text("Show Header"),
                     value: _shouldShowHeader,
                     onChanged: (value) {
                       setState(() {
@@ -97,9 +96,9 @@ class _MonthViewExampleState extends State<MonthViewExample> {
                       });
                     },
                   ),
-                  new Divider(height: 0.0),
-                  new CheckboxListTile(
-                    title: new Text("Show Extended Days Before"),
+                  Divider(height: 0.0),
+                  CheckboxListTile(
+                    title: Text("Show Extended Days Before"),
                     value: _showExtendedDaysBefore,
                     onChanged: (value) {
                       setState(() {
@@ -107,9 +106,9 @@ class _MonthViewExampleState extends State<MonthViewExample> {
                       });
                     },
                   ),
-                  new Divider(height: 0.0),
-                  new CheckboxListTile(
-                    title: new Text("Show Extended Days After"),
+                  Divider(height: 0.0),
+                  CheckboxListTile(
+                    title: Text("Show Extended Days After"),
                     value: _showExtendedDaysAfter,
                     onChanged: (value) {
                       setState(() {
@@ -117,7 +116,7 @@ class _MonthViewExampleState extends State<MonthViewExample> {
                       });
                     },
                   ),
-                  new Divider(height: 0.0),
+                  Divider(height: 0.0),
                 ],
               ),
             ),
@@ -128,21 +127,21 @@ class _MonthViewExampleState extends State<MonthViewExample> {
   }
 
   Widget _monthViewHeaderItemBuilder(BuildContext context, int weekday) {
-    return new Container(
+    return Container(
       color: Colors.green[400],
       padding: EdgeInsets.symmetric(vertical: 2.0),
-      child: new Center(
-        child: new Text(weekdayToAbbreviatedString(weekday)),
+      child: Center(
+        child: Text(weekdayToAbbreviatedString(weekday)),
       ),
     );
   }
 
   Widget _dayOfMonthBuilder(BuildContext context, DayOfMonth dayOfMonth) {
-    return new Container(
-      child: new Center(
-        child: new Text(
+    return Container(
+      child: Center(
+        child: Text(
           "${dayOfMonth.day.day}",
-          style: new TextStyle(
+          style: TextStyle(
             fontWeight:
                 dayOfMonth.isExtended ? FontWeight.normal : FontWeight.bold,
           ),

@@ -1,7 +1,6 @@
+import 'package:calendar_views/src/_internal_date_time/all.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
-
-import 'package:calendar_views/src/_internal_date_time/all.dart';
 
 import '_month_view_days_generator.dart';
 import 'day_of_month.dart';
@@ -48,7 +47,7 @@ class MonthView extends StatefulWidget {
   final bool showExtendedDaysAfter;
 
   @override
-  _MonthViewState createState() => new _MonthViewState();
+  _MonthViewState createState() => _MonthViewState();
 }
 
 class _MonthViewState extends State<MonthView> {
@@ -91,8 +90,8 @@ class _MonthViewState extends State<MonthView> {
   }
 
   List<DayOfMonth> _generateDays() {
-    MonthViewDaysGenerator generator = new MonthViewDaysGenerator(
-      month: new Month.fromDateTime(widget.month),
+    MonthViewDaysGenerator generator = MonthViewDaysGenerator(
+      month: Month.fromDateTime(widget.month),
       firstWeekday: widget.firstWeekday,
     );
 
@@ -100,7 +99,7 @@ class _MonthViewState extends State<MonthView> {
   }
 
   List<List<DayOfMonth>> _makeWeeks() {
-    List<List<DayOfMonth>> weeks = new List();
+    List<List<DayOfMonth>> weeks = [];
 
     for (int i = 0; i < _days.length; i += DateTime.daysPerWeek) {
       weeks.add(
@@ -125,20 +124,20 @@ class _MonthViewState extends State<MonthView> {
       _buildWeeks(),
     );
 
-    return new Column(
+    return Column(
       children: columnItems,
     );
   }
 
   Widget _buildHeader() {
-    return new IntrinsicHeight(
-      child: new Row(
+    return IntrinsicHeight(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: _weekdays
             .map(
-              (weekday) => new Expanded(
-                    child: widget.headerItemBuilder(context, weekday),
-                  ),
+              (weekday) => Expanded(
+                child: widget.headerItemBuilder(context, weekday),
+              ),
             )
             .toList(),
       ),
@@ -164,8 +163,8 @@ class _MonthViewState extends State<MonthView> {
         )
         .toList();
 
-    return new Expanded(
-      child: new Row(
+    return Expanded(
+      child: Row(
         children: daysOfWeek,
       ),
     );
@@ -180,7 +179,7 @@ class _MonthViewState extends State<MonthView> {
       dayWidget = _buildInvisibleDay();
     }
 
-    return new Expanded(
+    return Expanded(
       child: dayWidget,
     );
   }
@@ -202,8 +201,8 @@ class _MonthViewState extends State<MonthView> {
   }
 
   Widget _buildInvisibleDay() {
-    return new Container(
-      constraints: new BoxConstraints.expand(),
+    return Container(
+      constraints: BoxConstraints.expand(),
     );
   }
 }

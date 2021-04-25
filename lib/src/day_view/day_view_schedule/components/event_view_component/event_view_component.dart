@@ -1,7 +1,6 @@
+import 'package:calendar_views/day_view.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
-
-import 'package:calendar_views/day_view.dart';
 
 import '_day_builder.dart';
 
@@ -58,7 +57,7 @@ class EventViewComponent implements ScheduleComponent {
     @required Iterable<StartDurationItem> events,
     @required SchedulePositioner positioner,
   }) {
-    DayBuilder dayBuilder = new DayBuilder(
+    DayBuilder dayBuilder = DayBuilder(
       context: context,
       dayNumber: dayNumber,
       events: events,

@@ -5,12 +5,12 @@ import 'date_time_to_string.dart';
 /// A simple widget that shows a checkbox and some date-time information.
 ///
 /// This widget uses [AutomaticKeepAliveClientMixin].
-class Page extends StatefulWidget {
-  Page.forDays({
+class DatePage extends StatefulWidget {
+  DatePage.forDays({
     @required this.days,
   }) : showDayOfMonth = true;
 
-  Page.forMonth({
+  DatePage.forMonth({
     @required DateTime month,
   })  : showDayOfMonth = false,
         days = <DateTime>[month];
@@ -19,10 +19,11 @@ class Page extends StatefulWidget {
   final List<DateTime> days;
 
   @override
-  _PageState createState() => new _PageState();
+  _DatePageState createState() => _DatePageState();
 }
 
-class _PageState extends State<Page> with AutomaticKeepAliveClientMixin<Page> {
+class _DatePageState extends State<DatePage>
+    with AutomaticKeepAliveClientMixin<DatePage> {
   bool _isChecked;
 
   @override
@@ -47,14 +48,14 @@ class _PageState extends State<Page> with AutomaticKeepAliveClientMixin<Page> {
   Widget build(BuildContext context) {
     super.build(context);
 
-    return new Container(
-      constraints: new BoxConstraints.expand(),
-      padding: new EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      child: new Column(
+    return Container(
+      constraints: BoxConstraints.expand(),
+      padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      child: Column(
         children: <Widget>[
-          new Container(
-            padding: new EdgeInsets.all(4.0),
-            child: new Checkbox(
+          Container(
+            padding: EdgeInsets.all(4.0),
+            child: Checkbox(
                 value: _isChecked,
                 onChanged: (value) {
                   setState(() {
@@ -62,11 +63,11 @@ class _PageState extends State<Page> with AutomaticKeepAliveClientMixin<Page> {
                   });
                 }),
           ),
-          new Expanded(
-            child: new SingleChildScrollView(
-              child: new Column(
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
                 children: widget.days
-                    .map((day) => new Text(_makeTextString(day)))
+                    .map((day) => Text(_makeTextString(day)))
                     .toList(),
               ),
             ),

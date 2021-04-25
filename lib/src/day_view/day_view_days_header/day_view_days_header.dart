@@ -1,7 +1,6 @@
+import 'package:calendar_views/day_view.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
-
-import 'package:calendar_views/day_view.dart';
 
 /// Widget that builds a child in place of each day in a day view.
 class DayViewDaysHeader extends StatefulWidget {
@@ -13,7 +12,7 @@ class DayViewDaysHeader extends StatefulWidget {
   final DayViewDaysHeaderItemBuilder headerItemBuilder;
 
   @override
-  State createState() => new _DayViewDaysHeaderState();
+  State createState() => _DayViewDaysHeaderState();
 }
 
 class _DayViewDaysHeaderState extends State<DayViewDaysHeader> {
@@ -35,7 +34,7 @@ class _DayViewDaysHeaderState extends State<DayViewDaysHeader> {
   }
 
   void _throwNoDayViewEssentialsError() {
-    throw new FlutterError("""
+    throw FlutterError("""
 Could not inherit DayViewEssentials.
 
 This widget must be a decendant of DayViewEssentials.
@@ -58,10 +57,10 @@ This widget must be a decendant of DayViewEssentials.
       _buildEndingOffset(),
     );
 
-    return new Container(
+    return Container(
       width: _horizontalPositioner.totalWidth,
-      child: new IntrinsicHeight(
-        child: new Row(
+      child: IntrinsicHeight(
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: rowChildren,
         ),
@@ -72,7 +71,7 @@ This widget must be a decendant of DayViewEssentials.
   Widget _buildStartingOffset() {
     double width = _horizontalPositioner.eventAreaLeft;
 
-    return new Container(
+    return Container(
       width: width,
     );
   }
@@ -110,7 +109,7 @@ This widget must be a decendant of DayViewEssentials.
     @required int dayNumber,
     @required DateTime day,
   }) {
-    return new Container(
+    return Container(
       width: _horizontalPositioner.dayAreaWidth(dayNumber),
       child: widget.headerItemBuilder(context, day),
     );
@@ -119,13 +118,13 @@ This widget must be a decendant of DayViewEssentials.
   Widget _buildDaySeparation({
     @required int daySeparationNumber,
   }) {
-    return new Container(
+    return Container(
       width: _horizontalPositioner.daySeparationAreaWidth(daySeparationNumber),
     );
   }
 
   Widget _buildEndingOffset() {
-    return new Container(
+    return Container(
       width: _endingOffsetWidth,
     );
   }

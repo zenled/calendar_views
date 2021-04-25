@@ -22,7 +22,7 @@ class DayViewEssentials extends StatefulWidget {
   final Widget child;
 
   @override
-  State createState() => new DayViewEssentialsState();
+  State createState() => DayViewEssentialsState();
 
   static DayViewEssentialsState of(BuildContext context) {
     _DayViewEssentialsInherited inherited =
@@ -46,7 +46,7 @@ class DayViewEssentialsState extends State<DayViewEssentials> {
 
   void _throwExceptionIfInvalidBoxConstraints(BoxConstraints constraints) {
     if (constraints.maxWidth.isInfinite) {
-      throw new FlutterError("""
+      throw FlutterError("""
 DayViewEssentials must have a bounded width.
 
 This error probably happened because DayViewEssentials is child of an widget with unbounded width (eg. a Row).
@@ -56,17 +56,17 @@ This error probably happened because DayViewEssentials is child of an widget wit
 
   @override
   Widget build(BuildContext context) {
-    return new LayoutBuilder(
+    return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         _throwExceptionIfInvalidBoxConstraints(constraints);
 
-        _horizontalPositioner = new HorizontalPositioner(
+        _horizontalPositioner = HorizontalPositioner(
           properties: properties,
           widths: widths,
           totalWidth: constraints.maxWidth,
         );
 
-        return new _DayViewEssentialsInherited(
+        return _DayViewEssentialsInherited(
           dayViewEssentialsState: this,
           child: widget.child,
         );
@@ -90,6 +90,6 @@ class _DayViewEssentialsInherited extends InheritedWidget {
   }
 
   static _DayViewEssentialsInherited of(BuildContext context) {
-    return context.inheritFromWidgetOfExactType(_DayViewEssentialsInherited);
+    return context.dependOnInheritedWidgetOfExactType();
   }
 }

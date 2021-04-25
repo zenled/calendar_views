@@ -1,6 +1,5 @@
-import 'package:meta/meta.dart';
-
 import 'package:calendar_views/day_view.dart';
+import 'package:meta/meta.dart';
 
 /// [EventViewArranger] that arranges events into columns.
 @immutable
@@ -44,14 +43,14 @@ void _sortEvents(List<StartDurationItem> events) {
 }
 
 List<_Column> _makeColumns(List<StartDurationItem> events) {
-  List<_Column> columns = new List();
+  List<_Column> columns = [];
 
   columns.add(
-    new _Column(),
+    _Column(),
   );
 
   for (StartDurationItem event in events) {
-    _Reservation reservation = new _Reservation(event);
+    _Reservation reservation = _Reservation(event);
 
     bool foundColumn = false;
     for (_Column column in columns) {
@@ -62,10 +61,10 @@ List<_Column> _makeColumns(List<StartDurationItem> events) {
       }
     }
 
-    // event could not be placed in any of the columns, so create new column and add event into it
+    // event could not be placed in any of the columns, so create column and add event into it
     if (!foundColumn) {
       columns.add(
-        new _Column(),
+        _Column(),
       );
       columns.last.addReservation(reservation);
     }
@@ -111,7 +110,7 @@ List<ArrangedEvent> _columnsToArrangedEvents({
       );
 
       arrangedEvents.add(
-        new ArrangedEvent(
+        ArrangedEvent(
           top: constraints.minuteOfDayFromTop(
             reservationInColumn.event.startMinuteOfDay,
           ),
@@ -142,7 +141,7 @@ class _Reservation {
 }
 
 class _Column {
-  List<_Reservation> reservations = new List();
+  List<_Reservation> reservations = [];
 
   bool isReservationAvailable(_Reservation reservation) {
     for (_Reservation alreadyPlacedReservation in reservations) {

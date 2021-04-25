@@ -52,7 +52,7 @@ class HorizontalPositioner {
       case DayViewArea.eventArea:
         return eventAreaWidth;
       default:
-        throw new Exception(
+        throw Exception(
           "$area is not a non-numbered area, try using getNumberedAreaWidth",
         );
     }
@@ -81,7 +81,7 @@ class HorizontalPositioner {
       case DayViewArea.eventArea:
         return eventAreaLeft;
       default:
-        throw new Exception(
+        throw Exception(
           "$area is not a non-numbered area, try using getNumberedAreaLeft",
         );
     }
@@ -110,7 +110,7 @@ class HorizontalPositioner {
       case DayViewArea.eventArea:
         return eventAreaRight;
       default:
-        throw new Exception(
+        throw Exception(
           "$area is not a non-numbered area, try using getNumberedAreaRight",
         );
     }
@@ -123,7 +123,7 @@ class HorizontalPositioner {
       case DayViewArea.separationArea:
         return daySeparationAreaWidth(areaNumber);
       default:
-        throw new Exception(
+        throw Exception(
           "$area is a non-numbered area, try usin getNonNumberedAreaWidth",
         );
     }
@@ -136,7 +136,7 @@ class HorizontalPositioner {
       case DayViewArea.separationArea:
         return daySeparationAreaLeft(areaNumber);
       default:
-        throw new Exception(
+        throw Exception(
           "$area is a non-numbered area, try usin getNonNumberedAreaLeft",
         );
     }
@@ -149,7 +149,7 @@ class HorizontalPositioner {
       case DayViewArea.separationArea:
         return daySeparationAreaRight(areaNumber);
       default:
-        throw new Exception(
+        throw Exception(
           "$area is a non-numbered area, try usin getNonNumberedAreaRight",
         );
     }
@@ -365,7 +365,7 @@ class HorizontalPositioner {
   @protected
   void throwArgumentErrorIfInvalidDayNumber(int dayNumber) {
     if (dayNumber < 0 || dayNumber >= properties.numberOfDays) {
-      throw new ArgumentError.value(
+      throw ArgumentError.value(
         dayNumber,
         "dayNumber",
         "Invalid dayNumber",
@@ -378,11 +378,11 @@ class HorizontalPositioner {
     int daySeparationNumber,
   ) {
     if (properties.numberOfDaySeparations == 0) {
-      throw new ArgumentError("There are no day separations (only one day)");
+      throw ArgumentError("There are no day separations (only one day)");
     } else {
       if (daySeparationNumber < 0 ||
           daySeparationNumber >= properties.numberOfDaySeparations) {
-        throw new ArgumentError.value(
+        throw ArgumentError.value(
           daySeparationNumber,
           "daySeparationNumber",
           "invalid daySeparationNumber",
