@@ -9,7 +9,7 @@ import 'validation.dart';
 /// This class is intended only for use by this library only.
 @immutable
 class Date {
-  /// Creates a Date.
+  /// Creates a new Date.
   Date(
     this.year,
     this.month,
