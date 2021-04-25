@@ -1,20 +1,16 @@
-import 'package:meta/meta.dart';
-
 import 'package:calendar_views/src/_internal_date_time/all.dart';
+import 'package:meta/meta.dart';
 
 /// Class with information that applies to day view widgets.
 @immutable
 class DayViewProperties {
   DayViewProperties({
-    @required List<DateTime> days,
+    required List<DateTime> days,
     this.minimumMinuteOfDay = 0,
     this.maximumMinuteOfDay = 1440,
-  })  : assert(days != null),
-        this.days = days.map((day) => stripDateInformation(day)).toList(),
-        assert(minimumMinuteOfDay != null &&
-            isMinuteOfDayValid(minimumMinuteOfDay)),
-        assert(maximumMinuteOfDay != null &&
-            isMinuteOfDayValid(maximumMinuteOfDay)),
+  })  : this.days = days.map((day) => stripDateInformation(day)).toList(),
+        assert(isMinuteOfDayValid(minimumMinuteOfDay)),
+        assert(isMinuteOfDayValid(maximumMinuteOfDay)),
         assert(minimumMinuteOfDay < maximumMinuteOfDay);
 
   /// List of days for day view widgets.

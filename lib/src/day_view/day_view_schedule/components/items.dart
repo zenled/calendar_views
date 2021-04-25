@@ -1,8 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
-
 import 'package:calendar_views/day_view.dart';
 import 'package:calendar_views/src/_internal_date_time/all.dart';
+import 'package:flutter/material.dart';
 
 /// Signature for a function that builds a [StartDurationItem] to be displayed as child of [DayViewSchedule].
 typedef Positioned StartDurationItemBuilder(
@@ -14,13 +12,11 @@ typedef Positioned StartDurationItemBuilder(
 /// Item with [startMinuteOfDay] and [duration] that can be provided to some implementations of [ScheduleComponent].
 class StartDurationItem {
   StartDurationItem({
-    @required this.startMinuteOfDay,
-    @required this.duration,
-    @required this.builder,
-  })  : assert(
-            startMinuteOfDay != null && isMinuteOfDayValid(startMinuteOfDay)),
-        assert(duration != null && duration >= 0),
-        assert(builder != null);
+    required this.startMinuteOfDay,
+    required this.duration,
+    required this.builder,
+  })   : assert(isMinuteOfDayValid(startMinuteOfDay)),
+        assert(duration >= 0);
 
   /// Minute of day at which this item starts.
   final int startMinuteOfDay;
@@ -42,10 +38,9 @@ typedef Positioned TimeItemBuilder(
 /// Item with [minuteOfDay]  that can be provided to some implementations of [ScheduleComponent].
 class TimeItem {
   TimeItem({
-    @required this.minuteOfDay,
-    @required this.builder,
-  })  : assert(minuteOfDay != null && isMinuteOfDayValid(minuteOfDay)),
-        assert(builder != null);
+    required this.minuteOfDay,
+    required this.builder,
+  }) : assert(isMinuteOfDayValid(minuteOfDay));
 
   /// Minuter of day at which this item happens.
   final int minuteOfDay;

@@ -1,9 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
-
 import 'package:calendar_views/src/calendar_page_view/all.dart';
+import 'package:flutter/material.dart';
 
 import 'days_page_link.dart';
 import 'days_page_view.dart';
@@ -14,12 +12,10 @@ class DaysPageController extends CalendarPageController {
   ///
   /// If [firstDayOnInitialPage] is null, it is set to whatever day is today.
   DaysPageController({
-    DateTime firstDayOnInitialPage,
+    DateTime? firstDayOnInitialPage,
     this.daysPerPage = DateTime.daysPerWeek,
-  })  : this.firstDayOfInitialPage =
-            firstDayOnInitialPage ?? new DateTime.now(),
-        assert(firstDayOnInitialPage != null),
-        assert(daysPerPage != null && daysPerPage > 0);
+  })  : this.firstDayOfInitialPage = firstDayOnInitialPage ?? DateTime.now(),
+        assert(daysPerPage > 0);
 
   /// Day to display as first day on initial page when first creating [DaysPageView].
   final DateTime firstDayOfInitialPage;
@@ -30,10 +26,10 @@ class DaysPageController extends CalendarPageController {
   /// the number of days displayed per page will not change.
   final int daysPerPage;
 
-  DaysPageLink _attachedItem;
+  DaysPageLink? _attachedItem;
 
   @override
-  DaysPageLink get attachedItem => _attachedItem;
+  DaysPageLink? get attachedItem => _attachedItem;
 
   void attach(DaysPageLink communicator) {
     _attachedItem = communicator;
@@ -51,7 +47,7 @@ class DaysPageController extends CalendarPageController {
   List<DateTime> currentDays() {
     throwExceptionIfNoItemAttached();
 
-    return attachedItem.currentDays();
+    return attachedItem!.currentDays();
   }
 
   /// Tels the controlled [DaysPageView] to jump to the given [day].
@@ -62,7 +58,7 @@ class DaysPageController extends CalendarPageController {
   void jumpToDay(DateTime day) {
     throwExceptionIfNoItemAttached();
 
-    attachedItem.jumpToDay(day);
+    attachedItem!.jumpToDay(day);
   }
 
   /// Tels the controlled [DaysPageView] to animate to the given [day].
@@ -72,12 +68,12 @@ class DaysPageController extends CalendarPageController {
   /// If nothing is attached to this controller it throws an exception.
   Future<void> animateToDay(
     DateTime day, {
-    @required Duration duration,
-    @required Curve curve,
+    required Duration duration,
+    required Curve curve,
   }) {
     throwExceptionIfNoItemAttached();
 
-    return _attachedItem.animateToDay(
+    return _attachedItem!.animateToDay(
       day,
       duration: duration,
       curve: curve,

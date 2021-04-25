@@ -1,17 +1,16 @@
-import 'package:flutter_test/flutter_test.dart';
-
 import 'package:calendar_views/src/day_view/day_view_essentials/all.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group("HorizontalPositioner test", () {
-    DayViewProperties dayViewProperties = new DayViewProperties(
+    DayViewProperties dayViewProperties = DayViewProperties(
       days: <DateTime>[
-        new DateTime(2018, 9, 21),
-        new DateTime(2018, 9, 22),
+        DateTime(2018, 9, 21),
+        DateTime(2018, 9, 22),
       ],
     );
 
-    DayViewWidths dayViewWidths = new DayViewWidths(
+    DayViewWidths dayViewWidths = DayViewWidths(
         totalAreaStartPadding: 1.0,
         totalAreaEndPadding: 2.0,
         timeIndicationAreaWidth: 3.0,
@@ -22,10 +21,10 @@ void main() {
 
     double totalWidth = 100.0;
 
-    HorizontalPositioner horizontalPositioner;
+    late HorizontalPositioner horizontalPositioner;
 
     setUp(() {
-      horizontalPositioner = new HorizontalPositioner(
+      horizontalPositioner = HorizontalPositioner(
         properties: dayViewProperties,
         widths: dayViewWidths,
         totalWidth: totalWidth,

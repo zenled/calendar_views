@@ -5,8 +5,8 @@ DateTime stripDateInformation(DateTime dateTime) {
   int day = dateTime.day;
 
   if (dateTime.isUtc) {
-    return new DateTime.utc(year, month, day);
+    return DateTime.utc(year, month, day);
   } else {
-    return new DateTime(year, month, day);
+    return DateTime(year, month, day);
   }
 }

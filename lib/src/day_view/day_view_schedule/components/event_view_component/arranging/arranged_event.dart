@@ -1,6 +1,5 @@
-import 'package:meta/meta.dart';
-
 import 'package:calendar_views/day_view.dart';
+import 'package:meta/meta.dart';
 
 /// Item returned by [EventViewArranger].
 ///
@@ -8,16 +7,12 @@ import 'package:calendar_views/day_view.dart';
 @immutable
 class ArrangedEvent {
   ArrangedEvent({
-    @required this.top,
-    @required this.left,
-    @required this.width,
-    @required this.height,
-    @required this.event,
-  })  : assert(top != null),
-        assert(left != null),
-        assert(width != null),
-        assert(height != null),
-        assert(event != null);
+    required this.top,
+    required this.left,
+    required this.width,
+    required this.height,
+    required this.event,
+  });
 
   final double top;
 

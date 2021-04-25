@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
-
 import 'package:calendar_views/day_view.dart';
+import 'package:flutter/material.dart';
 
 /// Widget for display a day view schedule with the given [components].
 class DayViewSchedule extends StatefulWidget {
@@ -9,16 +7,15 @@ class DayViewSchedule extends StatefulWidget {
     this.heightPerMinute,
     this.topExtensionHeight = 16.0,
     this.bottomExtensionHeight = 16.0,
-    @required this.components,
-  })  : assert(heightPerMinute == null || heightPerMinute > 0.0),
-        assert(topExtensionHeight != null && topExtensionHeight >= 0.0),
-        assert(bottomExtensionHeight != null && bottomExtensionHeight >= 0.0),
-        assert(components != null);
+    required this.components,
+  })   : assert(heightPerMinute == null || heightPerMinute > 0.0),
+        assert(topExtensionHeight >= 0.0),
+        assert(bottomExtensionHeight >= 0.0);
 
   /// Height that a minute inside a [DayViewSchedule] will take.
   ///
   /// If null the [DayViewSchedule] will be as big as possible.
-  final double heightPerMinute;
+  final double? heightPerMinute;
 
   /// Height of extension above minimum minute of day.
   final double topExtensionHeight;
@@ -32,16 +29,16 @@ class DayViewSchedule extends StatefulWidget {
   final List<ScheduleComponent> components;
 
   @override
-  State createState() => new _DayViewScheduleState();
+  State createState() => _DayViewScheduleState();
 }
 
 class _DayViewScheduleState extends State<DayViewSchedule> {
-  DayViewEssentialsState _dayViewEssentials;
+  DayViewEssentialsState? _dayViewEssentials;
 
-  DayViewProperties get _dayViewProperties => _dayViewEssentials.properties;
+  DayViewProperties get _dayViewProperties => _dayViewEssentials!.properties;
 
-  HorizontalPositioner get _horizontalPositioner =>
-      _dayViewEssentials.horizontalPositioner;
+  HorizontalPositioner? get _horizontalPositioner =>
+      _dayViewEssentials!.horizontalPositioner;
 
   @override
   void didChangeDependencies() {
@@ -54,14 +51,14 @@ class _DayViewScheduleState extends State<DayViewSchedule> {
   }
 
   void _throwNoDayViewEssentialsError() {
-    throw new FlutterError("""
+    throw FlutterError("""
 Could not inherit DayViewEssentials.
 
 This widget must be a decendant of DayViewEssentials.
 """);
   }
 
-  double _determineHeightPerMinute(double availableHeight) {
+  double? _determineHeightPerMinute(double availableHeight) {
     _throwErrorIfCannotDetermineHeightPerMinute(availableHeight);
 
     if (widget.heightPerMinute != null) {
@@ -79,7 +76,7 @@ This widget must be a decendant of DayViewEssentials.
 
   void _throwErrorIfCannotDetermineHeightPerMinute(double availableHeight) {
     if (widget.heightPerMinute == null && availableHeight.isInfinite) {
-      throw new FlutterError("""
+      throw FlutterError("""
 Could not determine heightPerMinute.
 
 Eather heightPerMinute must be provider or this widget placed as a child of a widget with constrained height.
@@ -87,9 +84,9 @@ Eather heightPerMinute must be provider or this widget placed as a child of a wi
     }
   }
 
-  SchedulePositioner _createSchedulePositioner(double heightPerMinute) {
-    return new SchedulePositioner(
-      horizontalPositioner: _horizontalPositioner,
+  SchedulePositioner _createSchedulePositioner(double? heightPerMinute) {
+    return SchedulePositioner(
+      horizontalPositioner: _horizontalPositioner!,
       heightPerMinute: heightPerMinute,
       topExtensionHeight: widget.topExtensionHeight,
       bottomExtensionHeight: widget.bottomExtensionHeight,
@@ -98,18 +95,18 @@ Eather heightPerMinute must be provider or this widget placed as a child of a wi
 
   @override
   Widget build(BuildContext context) {
-    return new LayoutBuilder(
+    return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
-        double heightPerMinute =
+        double? heightPerMinute =
             _determineHeightPerMinute(constraints.maxHeight);
 
         SchedulePositioner positioner =
             _createSchedulePositioner(heightPerMinute);
 
-        return new Container(
+        return Container(
           width: positioner.totalWidth,
           height: positioner.totalHeight,
-          child: new Stack(
+          child: Stack(
             children: _buildComponentItems(
               context: context,
               positioner: positioner,
@@ -121,8 +118,8 @@ Eather heightPerMinute must be provider or this widget placed as a child of a wi
   }
 
   List<Positioned> _buildComponentItems({
-    @required BuildContext context,
-    @required SchedulePositioner positioner,
+    required BuildContext context,
+    required SchedulePositioner positioner,
   }) {
     List<Positioned> items = <Positioned>[];
 

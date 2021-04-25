@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 import 'date.dart';
 import 'validation.dart';
 
-/// Internal representation of a month (year, month).
+/// Internal representation of a new Month (year, month).
 ///
 /// This class is intended for use by this library only.
 @immutable
@@ -12,12 +12,11 @@ class Month {
   Month(
     this.year,
     this.month,
-  )   : assert(year != null),
-        assert(month != null && isMonthValid(month));
+  ) : assert(isMonthValid(month));
 
   /// Creates a new Month from [DateTime].
   factory Month.fromDateTime(DateTime dateTime) {
-    return new Month(
+    return Month(
       dateTime.year,
       dateTime.month,
     );
@@ -25,8 +24,8 @@ class Month {
 
   /// Creates a new Month set to whatever month is today.
   factory Month.now() {
-    DateTime now = new DateTime.now();
-    return new Month.fromDateTime(now);
+    DateTime now = DateTime.now();
+    return Month.fromDateTime(now);
   }
 
   /// Year of this Month.
@@ -83,7 +82,7 @@ class Month {
     return r;
   }
 
-  /// Returns a new [Month] with [numOfMonths] added to it.
+  /// Returns a [Month] with [numOfMonths] added to it.
   Month addMonths(int numOfMonths) {
     int yearChange = numOfMonths ~/ 12;
     int monthChange = (numOfMonths.abs() % 12) * numOfMonths.sign;
@@ -94,7 +93,7 @@ class Month {
     if (newMonthBase0 < 0) newYear--;
     newMonthBase0 = newMonthBase0 % 12;
 
-    return new Month(
+    return Month(
       newYear,
       newMonthBase0 + 1,
     );
@@ -102,16 +101,15 @@ class Month {
 
   /// Returns [Date] that is the first day of this month.
   Date toDateAsFirstDayOfMonth() {
-    return new Date(year, month, 1);
+    return Date(year, month, 1);
   }
 
   /// Returns [Date] that is the last day of this month.
   Date toDateAsLastDayOfMonth() {
-    DateTime lastDayOfMonth = month < 12
-        ? new DateTime(year, month + 1, 0)
-        : new DateTime(year + 1, 1, 0);
+    DateTime lastDayOfMonth =
+        month < 12 ? DateTime(year, month + 1, 0) : DateTime(year + 1, 1, 0);
 
-    return new Date.fromDateTime(lastDayOfMonth);
+    return Date.fromDateTime(lastDayOfMonth);
   }
 
   /// Returns a list of [Date]s one for every day of month.
@@ -131,7 +129,7 @@ class Month {
   ///
   /// Values except year and month are set to default values.
   DateTime toDateTime() {
-    return new DateTime(year, month);
+    return DateTime(year, month);
   }
 
   @override

@@ -1,22 +1,17 @@
+import 'package:calendar_views/day_view.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
-
-import 'package:calendar_views/day_view.dart';
 
 /// Class that builds events of a day displayed by [EventViewComponent].
 @immutable
 class DayBuilder {
   DayBuilder({
-    @required this.context,
-    @required this.dayNumber,
-    @required this.events,
-    @required this.eventArranger,
-    @required this.positioner,
-  })  : assert(context != null),
-        assert(dayNumber != null),
-        assert(events != null),
-        assert(eventArranger != null),
-        assert(positioner != null);
+    required this.context,
+    required this.dayNumber,
+    required this.events,
+    required this.eventArranger,
+    required this.positioner,
+  });
 
   final BuildContext context;
 
@@ -39,7 +34,7 @@ class DayBuilder {
   }
 
   ArrangerConstraints _makeArrangerConstraints() {
-    return new ArrangerConstraints(
+    return ArrangerConstraints(
       areaWidth: positioner.dayAreaWidth(dayNumber),
       areaHeight: positioner.totalHeight,
       minuteOfDayFromTop: positioner.minuteOfDayFromTop,
@@ -60,14 +55,14 @@ class DayBuilder {
   }
 
   ItemPosition _makeItemPosition(ArrangedEvent arrangedEvent) {
-    return new ItemPosition(
+    return ItemPosition(
       top: arrangedEvent.top,
       left: positioner.dayAreaLeft(dayNumber) + arrangedEvent.left,
     );
   }
 
   ItemSize _makeItemSize(ArrangedEvent arrangedEvent) {
-    return new ItemSize(
+    return ItemSize(
       width: arrangedEvent.width,
       height: arrangedEvent.height,
     );

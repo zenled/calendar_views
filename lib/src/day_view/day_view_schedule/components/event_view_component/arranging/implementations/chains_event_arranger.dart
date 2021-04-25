@@ -1,6 +1,5 @@
-import 'package:meta/meta.dart';
-
 import 'package:calendar_views/day_view.dart';
+import 'package:meta/meta.dart';
 
 /// [EventViewArranger] that tries to equally separate overlapping events.
 @immutable
@@ -44,13 +43,13 @@ class ChainsEventArranger implements EventViewArranger {
     // converts items to [ArrangedEvent]s
     return items
         .map(
-          (item) => new ArrangedEvent(
-                top: constraints.minuteOfDayFromTop(item.start),
-                left: item.leftPercentage * constraints.areaWidth,
-                width: item.widthPercentage * constraints.areaWidth,
-                height: constraints.heightOfDuration(item.duration),
-                event: item.event,
-              ),
+          (item) => ArrangedEvent(
+            top: constraints.minuteOfDayFromTop(item.start),
+            left: item.leftPercentage * constraints.areaWidth,
+            width: item.widthPercentage * constraints.areaWidth,
+            height: constraints.heightOfDuration(item.duration),
+            event: item.event,
+          ),
         )
         .toList();
   }
@@ -68,13 +67,13 @@ void _sortEvents(List<StartDurationItem> events) {
   );
 }
 
-/// Creates a list of [_Item]s from [events].
+/// Creates a new list of [_Item]s from [events].
 List<_Item> _makeItems(List<StartDurationItem> events) {
   List<_Item> items = <_Item>[];
 
   for (int i = 0; i < events.length; i++) {
     items.add(
-      new _Item(
+      _Item(
         id: i,
         event: events[i],
       ),
@@ -147,7 +146,7 @@ void setAbstractWidthAndLeft(_Item item) {
   if (item.earlyOverlaps.isEmpty) {
     beforeWidth = 0.0;
   } else {
-    _Item itemBeforeTheItem;
+    _Item? itemBeforeTheItem;
 
     for (_Item earlyOverlap in item.earlyOverlaps) {
       if (itemBeforeTheItem == null ||
@@ -157,7 +156,7 @@ void setAbstractWidthAndLeft(_Item item) {
     }
 
     beforeWidth =
-        itemBeforeTheItem.abstractLeft + itemBeforeTheItem.abstractWidth;
+        itemBeforeTheItem!.abstractLeft + itemBeforeTheItem.abstractWidth;
   }
 
   item.abstractWidth = (100 - beforeWidth) / (1 + item.maxRight);
@@ -172,20 +171,19 @@ void setAbstractWidthAndLeft(_Item item) {
 
 class _Item {
   _Item({
-    @required this.id,
-    @required this.event,
-  })  : assert(id != null),
-        assert(event != null);
+    required this.id,
+    required this.event,
+  });
 
   final int id;
 
   final StartDurationItem event;
 
-  List<_Item> earlyOverlaps;
+  late List<_Item> earlyOverlaps;
 
-  List<_Item> lateOverlaps;
+  late List<_Item> lateOverlaps;
 
-  int maxRight;
+  late int maxRight;
 
   /// between 0 - 100
   double abstractLeft = 0.0;

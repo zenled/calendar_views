@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'days_page_view_example.dart';
 import 'day_view_example.dart';
+import 'days_page_view_example.dart';
 import 'month_page_view_example.dart';
 import 'month_view_example.dart';
 
-void main() => runApp(new MyApp());
+void main() => runApp(MyApp());
 
 /// Screen for picking different examples of this library.
 ///
@@ -17,59 +17,59 @@ void main() => runApp(new MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
+    return MaterialApp(
       title: "calendar_views example",
-      home: new Scaffold(
-        appBar: new AppBar(
-          title: new Text("calendar_views example"),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text("calendar_views example"),
         ),
-        body: new Builder(builder: (BuildContext context) {
-          return new ListView(
+        body: Builder(builder: (BuildContext context) {
+          return ListView(
             children: <Widget>[
-              new ListTile(
-                title: new Text("Day View"),
-                subtitle: new Text("DayView Example"),
+              ListTile(
+                title: Text("Day View"),
+                subtitle: Text("DayView Example"),
                 onTap: () {
                   _showWidgetInFullScreenDialog(
                     context,
-                    new DayViewExample(),
+                    DayViewExample(),
                   );
                 },
               ),
-              new Divider(height: 0.0),
-              new ListTile(
-                title: new Text("Days Page View"),
-                subtitle: new Text("DaysPageView Example"),
+              Divider(height: 0.0),
+              ListTile(
+                title: Text("Days Page View"),
+                subtitle: Text("DaysPageView Example"),
                 onTap: () {
                   _showWidgetInFullScreenDialog(
                     context,
-                    new DaysPageViewExample(),
+                    DaysPageViewExample(),
                   );
                 },
               ),
-              new Divider(height: 0.0),
-              new ListTile(
-                title: new Text("Month Page View"),
-                subtitle: new Text("MonthPageView Example"),
+              Divider(height: 0.0),
+              ListTile(
+                title: Text("Month Page View"),
+                subtitle: Text("MonthPageView Example"),
                 onTap: () {
                   _showWidgetInFullScreenDialog(
                     context,
-                    new MonthPageViewExample(),
+                    MonthPageViewExample(),
                   );
                 },
               ),
-              new Divider(height: 0.0),
-              new ListTile(
-                title: new Text("Month View"),
-                subtitle: new Text("MonthView Example"),
+              Divider(height: 0.0),
+              ListTile(
+                title: Text("Month View"),
+                subtitle: Text("MonthView Example"),
                 onTap: () {
                   _showWidgetInFullScreenDialog(
                     context,
-                    new MonthViewExample(),
+                    MonthViewExample(),
                   );
                 },
               ),
-              new Divider(height: 0.0),
+              Divider(height: 0.0),
             ],
           );
         }),
@@ -79,7 +79,7 @@ class MyApp extends StatelessWidget {
 
   void _showWidgetInFullScreenDialog(BuildContext context, Widget widget) {
     Navigator.of(context).push(
-      new MaterialPageRoute(
+      MaterialPageRoute(
         fullscreenDialog: true,
         builder: (BuildContext context) {
           return widget;
