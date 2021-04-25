@@ -8,7 +8,7 @@ import 'days_page_view.dart';
 
 /// Controller for [DaysPageView].
 class DaysPageController extends CalendarPageController {
-  /// Creates a [DaysPageController].
+  /// Creates a new [DaysPageController].
   ///
   /// If [firstDayOnInitialPage] is null, it is set to whatever day is today.
   DaysPageController({

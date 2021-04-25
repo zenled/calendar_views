@@ -17,7 +17,7 @@ class Date {
   )   : assert(isMonthValid(month)),
         assert(day >= 1 && day <= 31);
 
-  /// Creates a Date from [DateTime].
+  /// Creates a new Date from [DateTime].
   factory Date.fromDateTime(DateTime dateTime) {
     return Date(
       dateTime.year,
@@ -26,7 +26,7 @@ class Date {
     );
   }
 
-  /// Creates a Date set to today.
+  /// Creates a new Date set to today.
   factory Date.today() {
     DateTime now = DateTime.now();
 
@@ -85,14 +85,14 @@ class Date {
     return date;
   }
 
-  /// Returns a Date with some days added.
+  /// Returns a new Date with some days added.
   Date addDays(int days) {
     DateTime dateTimeUTC = toDateTimeUTC();
     dateTimeUTC = dateTimeUTC.add(Duration(days: days));
     return Date.fromDateTime(dateTimeUTC);
   }
 
-  /// Creates a Date with some values changed.
+  /// Creates a new Date with some values changed.
   Date copyWith({
     int? year,
     int? month,

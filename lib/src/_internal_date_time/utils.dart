@@ -1,4 +1,4 @@
-/// Returns a [DateTime] with year, month and day the same as [dateTime] and other properties set to default.
+/// Returns a new [DateTime] with year, month and day the same as [dateTime] and other properties set to default.
 DateTime stripDateInformation(DateTime dateTime) {
   int year = dateTime.year;
   int month = dateTime.month;

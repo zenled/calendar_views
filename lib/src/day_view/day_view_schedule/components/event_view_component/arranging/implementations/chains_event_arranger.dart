@@ -11,7 +11,7 @@ class ChainsEventArranger implements EventViewArranger {
     Iterable<StartDurationItem> events,
     ArrangerConstraints constraints,
   ) {
-    // creates a list with sortedEvents
+    // creates a new list with sortedEvents
     List<StartDurationItem> sortedEvents = <StartDurationItem>[];
     sortedEvents.addAll(events);
     _sortEvents(sortedEvents);
@@ -67,7 +67,7 @@ void _sortEvents(List<StartDurationItem> events) {
   );
 }
 
-/// Creates a list of [_Item]s from [events].
+/// Creates a new list of [_Item]s from [events].
 List<_Item> _makeItems(List<StartDurationItem> events) {
   List<_Item> items = <_Item>[];
 

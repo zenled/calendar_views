@@ -61,7 +61,7 @@ List<_Column> _makeColumns(List<StartDurationItem> events) {
       }
     }
 
-    // event could not be placed in any of the columns, so create column and add event into it
+    // event could not be placed in any of the columns, so create new column and add event into it
     if (!foundColumn) {
       columns.add(
         _Column(),

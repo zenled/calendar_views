@@ -3,18 +3,18 @@ import 'package:meta/meta.dart';
 import 'date.dart';
 import 'validation.dart';
 
-/// Internal representation of a month (year, month).
+/// Internal representation of a new Month (year, month).
 ///
 /// This class is intended for use by this library only.
 @immutable
 class Month {
-  /// Creates a Month.
+  /// Creates a new Month.
   Month(
     this.year,
     this.month,
   ) : assert(isMonthValid(month));
 
-  /// Creates a Month from [DateTime].
+  /// Creates a new Month from [DateTime].
   factory Month.fromDateTime(DateTime dateTime) {
     return Month(
       dateTime.year,
@@ -22,7 +22,7 @@ class Month {
     );
   }
 
-  /// Creates a Month set to whatever month is today.
+  /// Creates a new Month set to whatever month is today.
   factory Month.now() {
     DateTime now = DateTime.now();
     return Month.fromDateTime(now);

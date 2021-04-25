@@ -8,7 +8,7 @@ import 'month_page_view.dart';
 
 /// Controller for [MonthPageView].
 class MonthPageController extends CalendarPageController {
-  /// Creates a [MonthPageController].
+  /// Creates a new [MonthPageController].
   ///
   /// If [initialMonth] is null, it is set to whatever month is today.
   MonthPageController({
