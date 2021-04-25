@@ -146,7 +146,7 @@ void setAbstractWidthAndLeft(_Item item) {
   if (item.earlyOverlaps.isEmpty) {
     beforeWidth = 0.0;
   } else {
-    _Item itemBeforeTheItem;
+    _Item? itemBeforeTheItem;
 
     for (_Item earlyOverlap in item.earlyOverlaps) {
       if (itemBeforeTheItem == null ||
@@ -156,7 +156,7 @@ void setAbstractWidthAndLeft(_Item item) {
     }
 
     beforeWidth =
-        itemBeforeTheItem.abstractLeft + itemBeforeTheItem.abstractWidth;
+        itemBeforeTheItem!.abstractLeft + itemBeforeTheItem.abstractWidth;
   }
 
   item.abstractWidth = (100 - beforeWidth) / (1 + item.maxRight);
@@ -171,20 +171,19 @@ void setAbstractWidthAndLeft(_Item item) {
 
 class _Item {
   _Item({
-    @required this.id,
-    @required this.event,
-  })  : assert(id != null),
-        assert(event != null);
+    required this.id,
+    required this.event,
+  });
 
   final int id;
 
   final StartDurationItem event;
 
-  List<_Item> earlyOverlaps;
+  late List<_Item> earlyOverlaps;
 
-  List<_Item> lateOverlaps;
+  late List<_Item> lateOverlaps;
 
-  int maxRight;
+  late int maxRight;
 
   /// between 0 - 100
   double abstractLeft = 0.0;

@@ -7,9 +7,9 @@ import 'utils/all.dart';
 @immutable
 class Event {
   Event({
-    @required this.startMinuteOfDay,
-    @required this.duration,
-    @required this.title,
+    required this.startMinuteOfDay,
+    required this.duration,
+    required this.title,
   });
 
   final int startMinuteOfDay;
@@ -43,15 +43,15 @@ class DayViewExample extends StatefulWidget {
 }
 
 class _DayViewExampleState extends State<DayViewExample> {
-  DateTime _day0;
-  DateTime _day1;
+  DateTime? _day0;
+  DateTime? _day1;
 
   @override
   void initState() {
     super.initState();
 
     _day0 = DateTime.now();
-    _day1 = _day0.toUtc().add(Duration(days: 1)).toLocal();
+    _day1 = _day0!.toUtc().add(Duration(days: 1)).toLocal();
   }
 
   String _minuteOfDayToHourMinuteString(int minuteOfDay) {
@@ -62,9 +62,9 @@ class _DayViewExampleState extends State<DayViewExample> {
 
   List<StartDurationItem> _getEventsOfDay(DateTime day) {
     List<Event> events;
-    if (day.year == _day0.year &&
-        day.month == _day0.month &&
-        day.day == _day0.day) {
+    if (day.year == _day0!.year &&
+        day.month == _day0!.month &&
+        day.day == _day0!.day) {
       events = eventsOfDay0;
     } else {
       events = eventsOfDay1;
@@ -94,10 +94,10 @@ class _DayViewExampleState extends State<DayViewExample> {
       ),
       body: DayViewEssentials(
         properties: DayViewProperties(
-          days: <DateTime>[
+          days: <DateTime?>[
             _day0,
             _day1,
-          ],
+          ] as List<DateTime>,
         ),
         child: Column(
           children: <Widget>[

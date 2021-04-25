@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 void showAlertDialog({
-  @required BuildContext context,
+  required BuildContext context,
   String title = "Alert",
-  @required String message,
+  required String message,
 }) {
-  assert(title != null);
-  assert(message != null);
-
   showDialog(
     context: context,
     builder: (context) => AlertDialog(

@@ -9,13 +9,13 @@ class MonthPageViewExample extends StatefulWidget {
 }
 
 class _MonthPageViewExampleState extends State<MonthPageViewExample> {
-  MonthPageController _monthPageController;
+  late MonthPageController _monthPageController;
 
-  Axis _scrollDirection;
-  bool _pageSnapping;
-  bool _reverse;
+  Axis? _scrollDirection;
+  bool? _pageSnapping;
+  bool? _reverse;
 
-  String _displayedMonthText;
+  String? _displayedMonthText;
 
   @override
   void initState() {
@@ -52,9 +52,9 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
             child: Container(
               color: Colors.green.shade200,
               child: MonthPageView(
-                scrollDirection: _scrollDirection,
-                pageSnapping: _pageSnapping,
-                reverse: _reverse,
+                scrollDirection: _scrollDirection!,
+                pageSnapping: _pageSnapping!,
+                reverse: _reverse!,
                 controller: _monthPageController,
                 pageBuilder: _monthPageBuilder,
                 onMonthChanged: _onMonthChanged,
@@ -97,7 +97,7 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
                             ),
                           )
                           .toList(),
-                      onChanged: (Axis value) {
+                      onChanged: (Axis? value) {
                         setState(() {
                           this._scrollDirection = value;
                         });

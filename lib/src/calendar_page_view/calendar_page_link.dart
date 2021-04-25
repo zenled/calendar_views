@@ -18,20 +18,18 @@ typedef void JumpToPageCallback(
 /// Works similar as [PageController.animateToPage].
 typedef Future<void> AnimateToPageCallback(
   int page, {
-  @required Duration duration,
-  @required Curve curve,
+  required Duration duration,
+  required Curve curve,
 });
 
 /// Base class for a communicator between [CalendarPageView] and [CalendarPageController].
 @immutable
 abstract class CalendarPageLink {
   const CalendarPageLink({
-    @required this.currentPage,
-    @required this.jumpToPage,
-    @required this.animateToPage,
-  })  : assert(currentPage != null),
-        assert(jumpToPage != null),
-        assert(animateToPage != null);
+    required this.currentPage,
+    required this.jumpToPage,
+    required this.animateToPage,
+  });
 
   final ValueGetter<int> currentPage;
 

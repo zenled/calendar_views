@@ -7,11 +7,11 @@ import 'date_time_to_string.dart';
 /// This widget uses [AutomaticKeepAliveClientMixin].
 class DatePage extends StatefulWidget {
   DatePage.forDays({
-    @required this.days,
+    required this.days,
   }) : showDayOfMonth = true;
 
   DatePage.forMonth({
-    @required DateTime month,
+    required DateTime month,
   })  : showDayOfMonth = false,
         days = <DateTime>[month];
 
@@ -24,7 +24,7 @@ class DatePage extends StatefulWidget {
 
 class _DatePageState extends State<DatePage>
     with AutomaticKeepAliveClientMixin<DatePage> {
-  bool _isChecked;
+  bool? _isChecked;
 
   @override
   bool get wantKeepAlive => true;

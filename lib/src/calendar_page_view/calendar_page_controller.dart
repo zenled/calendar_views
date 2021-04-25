@@ -12,7 +12,7 @@ abstract class CalendarPageController {
 
   /// Returns the item attached to this controller.
   @protected
-  CalendarPageLink get attachedItem;
+  CalendarPageLink? get attachedItem;
 
   /// Returns true if [CalendarPageLink] is attached to this controller.
   @protected
@@ -24,7 +24,7 @@ abstract class CalendarPageController {
   int get currentPage {
     throwExceptionIfNoItemAttached();
 
-    return attachedItem.currentPage();
+    return attachedItem!.currentPage();
   }
 
   /// Tels the controlled [CalendarPageView] to jump to the given [page].
@@ -35,7 +35,7 @@ abstract class CalendarPageController {
   void jumpToPage(int page) {
     throwExceptionIfNoItemAttached();
 
-    attachedItem.jumpToPage(page);
+    attachedItem!.jumpToPage(page);
   }
 
   /// Tels the controlled [CalendarPageView] to animate to the given [page].
@@ -45,12 +45,12 @@ abstract class CalendarPageController {
   /// If nothing is attached to this controller it throws an exception.
   Future<void> animateToPage(
     int page, {
-    @required Duration duration,
-    @required Curve curve,
+    required Duration duration,
+    required Curve curve,
   }) {
     throwExceptionIfNoItemAttached();
 
-    return attachedItem.animateToPage(
+    return attachedItem!.animateToPage(
       page,
       duration: duration,
       curve: curve,

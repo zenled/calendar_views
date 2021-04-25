@@ -9,13 +9,13 @@ class MonthViewExample extends StatefulWidget {
 }
 
 class _MonthViewExampleState extends State<MonthViewExample> {
-  DateTime _month;
-  int _firstWeekday;
+  late DateTime _month;
+  late int _firstWeekday;
 
-  bool _shouldShowHeader;
+  bool? _shouldShowHeader;
 
-  bool _showExtendedDaysBefore;
-  bool _showExtendedDaysAfter;
+  bool? _showExtendedDaysBefore;
+  bool? _showExtendedDaysAfter;
 
   @override
   void initState() {
@@ -46,9 +46,9 @@ class _MonthViewExampleState extends State<MonthViewExample> {
                 firstWeekday: _firstWeekday,
                 dayOfMonthBuilder: _dayOfMonthBuilder,
                 headerItemBuilder:
-                    _shouldShowHeader ? _monthViewHeaderItemBuilder : null,
-                showExtendedDaysBefore: _showExtendedDaysBefore,
-                showExtendedDaysAfter: _showExtendedDaysAfter,
+                    _shouldShowHeader! ? _monthViewHeaderItemBuilder : null,
+                showExtendedDaysBefore: _showExtendedDaysBefore!,
+                showExtendedDaysAfter: _showExtendedDaysAfter!,
               ),
             ),
           ),
@@ -82,7 +82,9 @@ class _MonthViewExampleState extends State<MonthViewExample> {
                         value: _firstWeekday,
                         onChanged: (value) {
                           setState(() {
-                            _firstWeekday = value;
+                            if (value != null) {
+                              _firstWeekday = value;
+                            }
                           });
                         }),
                   ),

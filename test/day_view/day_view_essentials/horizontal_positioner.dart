@@ -21,7 +21,7 @@ void main() {
 
     double totalWidth = 100.0;
 
-    HorizontalPositioner horizontalPositioner;
+    late HorizontalPositioner horizontalPositioner;
 
     setUp(() {
       horizontalPositioner = HorizontalPositioner(

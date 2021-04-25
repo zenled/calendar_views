@@ -14,9 +14,8 @@ class Date {
     this.year,
     this.month,
     this.day,
-  )   : assert(year != null),
-        assert(month != null && isMonthValid(month)),
-        assert(day != null && day >= 1 && day <= 31);
+  )   : assert(isMonthValid(month)),
+        assert(day >= 1 && day <= 31);
 
   /// Creates a Date from [DateTime].
   factory Date.fromDateTime(DateTime dateTime) {
@@ -95,9 +94,9 @@ class Date {
 
   /// Creates a Date with some values changed.
   Date copyWith({
-    int year,
-    int month,
-    int day,
+    int? year,
+    int? month,
+    int? day,
   }) {
     return Date(
       year ?? this.year,

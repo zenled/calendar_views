@@ -6,16 +6,12 @@ import 'package:meta/meta.dart';
 @immutable
 class DayBuilder {
   DayBuilder({
-    @required this.context,
-    @required this.dayNumber,
-    @required this.events,
-    @required this.eventArranger,
-    @required this.positioner,
-  })  : assert(context != null),
-        assert(dayNumber != null),
-        assert(events != null),
-        assert(eventArranger != null),
-        assert(positioner != null);
+    required this.context,
+    required this.dayNumber,
+    required this.events,
+    required this.eventArranger,
+    required this.positioner,
+  });
 
   final BuildContext context;
 

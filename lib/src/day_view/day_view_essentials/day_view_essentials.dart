@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 import 'day_view_properties.dart';
 import 'day_view_widths.dart';
@@ -8,9 +7,9 @@ import 'horizontal_positioner.dart';
 /// Widget that propagates essential information for other day-view widgets.
 class DayViewEssentials extends StatefulWidget {
   DayViewEssentials({
-    @required this.properties,
+    required this.properties,
     this.widths = const DayViewWidths(),
-    @required this.child,
+    required this.child,
   });
 
   /// Properties to propagate to other day-view widgets.
@@ -24,8 +23,8 @@ class DayViewEssentials extends StatefulWidget {
   @override
   State createState() => DayViewEssentialsState();
 
-  static DayViewEssentialsState of(BuildContext context) {
-    _DayViewEssentialsInherited inherited =
+  static DayViewEssentialsState? of(BuildContext context) {
+    _DayViewEssentialsInherited? inherited =
         _DayViewEssentialsInherited.of(context);
 
     return inherited?.dayViewEssentialsState;
@@ -33,7 +32,7 @@ class DayViewEssentials extends StatefulWidget {
 }
 
 class DayViewEssentialsState extends State<DayViewEssentials> {
-  HorizontalPositioner _horizontalPositioner;
+  HorizontalPositioner? _horizontalPositioner;
 
   /// Properties for day-view widgets.
   DayViewProperties get properties => widget.properties;
@@ -42,7 +41,7 @@ class DayViewEssentialsState extends State<DayViewEssentials> {
   DayViewWidths get widths => widget.widths;
 
   /// Positioner for day-view widgets.
-  HorizontalPositioner get horizontalPositioner => _horizontalPositioner;
+  HorizontalPositioner? get horizontalPositioner => _horizontalPositioner;
 
   void _throwExceptionIfInvalidBoxConstraints(BoxConstraints constraints) {
     if (constraints.maxWidth.isInfinite) {
@@ -77,10 +76,9 @@ This error probably happened because DayViewEssentials is child of an widget wit
 
 class _DayViewEssentialsInherited extends InheritedWidget {
   _DayViewEssentialsInherited({
-    @required this.dayViewEssentialsState,
-    @required Widget child,
-  })  : assert(dayViewEssentialsState != null),
-        super(child: child);
+    required this.dayViewEssentialsState,
+    required Widget child,
+  }) : super(child: child);
 
   final DayViewEssentialsState dayViewEssentialsState;
 
@@ -89,7 +87,7 @@ class _DayViewEssentialsInherited extends InheritedWidget {
     return true;
   }
 
-  static _DayViewEssentialsInherited of(BuildContext context) {
+  static _DayViewEssentialsInherited? of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType();
   }
 }

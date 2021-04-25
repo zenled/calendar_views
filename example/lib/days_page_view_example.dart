@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:calendar_views/days_page_view.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 import 'utils/all.dart';
 
@@ -12,13 +11,13 @@ class DaysPageViewExample extends StatefulWidget {
 }
 
 class _DaysPageViewExampleState extends State<DaysPageViewExample> {
-  DaysPageController _daysPageController;
+  DaysPageController? _daysPageController;
 
-  Axis _scrollDirection;
-  bool _pageSnapping;
-  bool _reverse;
+  Axis? _scrollDirection;
+  bool? _pageSnapping;
+  bool? _reverse;
 
-  bool _isInitialisingDaysPageController;
+  late bool _isInitialisingDaysPageController;
 
   @override
   void initState() {
@@ -33,7 +32,7 @@ class _DaysPageViewExampleState extends State<DaysPageViewExample> {
 
   Future<void> _startInitialisationOfDaysPageController() async {
     if (_isInitialisingDaysPageController) {
-      return false;
+      return;
     }
 
     _isInitialisingDaysPageController = true;
@@ -75,10 +74,10 @@ class _DaysPageViewExampleState extends State<DaysPageViewExample> {
               child: _daysPageController == null
                   ? null
                   : DaysPageView(
-                      scrollDirection: _scrollDirection,
-                      pageSnapping: _pageSnapping,
-                      reverse: _reverse,
-                      controller: _daysPageController,
+                      scrollDirection: _scrollDirection!,
+                      pageSnapping: _pageSnapping!,
+                      reverse: _reverse!,
+                      controller: _daysPageController!,
                       pageBuilder: _daysPageBuilder,
                     ),
             ),
@@ -101,7 +100,7 @@ class _DaysPageViewExampleState extends State<DaysPageViewExample> {
                       child: ElevatedButton(
                         child: Text("Jump To Today"),
                         onPressed: () {
-                          _daysPageController.jumpToDay(DateTime.now());
+                          _daysPageController!.jumpToDay(DateTime.now());
                         },
                       ),
                     ),
@@ -119,7 +118,7 @@ class _DaysPageViewExampleState extends State<DaysPageViewExample> {
                             ),
                           )
                           .toList(),
-                      onChanged: (Axis value) {
+                      onChanged: (Axis? value) {
                         setState(() {
                           this._scrollDirection = value;
                         });
@@ -168,8 +167,8 @@ class _DaysPageViewExampleState extends State<DaysPageViewExample> {
 
 class _DaysPageControllerInitialisationDialog extends StatefulWidget {
   _DaysPageControllerInitialisationDialog({
-    @required this.onConfirm,
-  }) : assert(onConfirm != null);
+    required this.onConfirm,
+  });
 
   final ValueChanged<DaysPageController> onConfirm;
 
@@ -179,8 +178,8 @@ class _DaysPageControllerInitialisationDialog extends StatefulWidget {
 
 class _DaysPageControllerInitialisationDialogState
     extends State<_DaysPageControllerInitialisationDialog> {
-  DateTime _firstDayOfInitialPage;
-  int _daysPerPage;
+  late DateTime _firstDayOfInitialPage;
+  late int _daysPerPage;
 
   @override
   void initState() {
@@ -191,7 +190,7 @@ class _DaysPageControllerInitialisationDialogState
   }
 
   Future<void> _changeFirstDayOfInitialPage() async {
-    DateTime newFirstDayOfInitialPage = await showDatePicker(
+    DateTime? newFirstDayOfInitialPage = await showDatePicker(
       context: context,
       initialDate: _firstDayOfInitialPage,
       firstDate: DateTime(2000),

@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 import 'weekday_to_string.dart';
 
 class WeekdayDropDownButton extends StatelessWidget {
   WeekdayDropDownButton({
-    @required this.value,
-    @required this.onChanged,
-  })  : assert(value != null),
-        assert(onChanged != null);
+    required this.value,
+    required this.onChanged,
+  });
 
   final int value;
 
-  final ValueChanged<int> onChanged;
+  final ValueChanged<int?> onChanged;
 
   @override
   Widget build(BuildContext context) {

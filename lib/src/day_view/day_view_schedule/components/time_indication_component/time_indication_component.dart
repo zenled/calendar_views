@@ -20,9 +20,8 @@ class TimeIndicationComponent implements ScheduleComponent {
   /// *[StartDurationItem.startMinuteOfDay] - ([StartDurationItem.duration] / 2)*.
   /// (Center of the item will be at the position of [StartDurationItem.startMinuteOfDay])
   TimeIndicationComponent({
-    @required this.timeIndicators,
-  })  : assert(timeIndicators != null),
-        minuteOfDayOfFirstTimeIndicator = null,
+    required List<StartDurationItem> this.timeIndicators,
+  })   : minuteOfDayOfFirstTimeIndicator = null,
         timeIndicatorDuration = null,
         generatedTimeIndicatorBuilder = null;
 
@@ -35,8 +34,8 @@ class TimeIndicationComponent implements ScheduleComponent {
   TimeIndicationComponent.intervalGenerated({
     this.minuteOfDayOfFirstTimeIndicator = 0,
     this.timeIndicatorDuration = 60,
-    @required this.generatedTimeIndicatorBuilder,
-  })  : assert(minuteOfDayOfFirstTimeIndicator != null &&
+    required this.generatedTimeIndicatorBuilder,
+  })   : assert(minuteOfDayOfFirstTimeIndicator != null &&
             isMinuteOfDayValid(minuteOfDayOfFirstTimeIndicator)),
         assert(timeIndicatorDuration != null && timeIndicatorDuration > 0),
         assert(generatedTimeIndicatorBuilder != null),
@@ -44,24 +43,24 @@ class TimeIndicationComponent implements ScheduleComponent {
 
   // provided time indicators --------------------------------------------------
   /// List of time indicators to be displayed by this component.
-  final List<StartDurationItem> timeIndicators;
+  final List<StartDurationItem>? timeIndicators;
 
   // generated time indicators -------------------------------------------------
   /// Minute of day which the first generated time indicator will represent.
-  final int minuteOfDayOfFirstTimeIndicator;
+  final int? minuteOfDayOfFirstTimeIndicator;
 
   /// Number of minutes between generated time indicators.
-  final int timeIndicatorDuration;
+  final int? timeIndicatorDuration;
 
   /// Function that builds a generated time indicator.
-  final GeneratedTimeIndicatorBuilder generatedTimeIndicatorBuilder;
+  final GeneratedTimeIndicatorBuilder? generatedTimeIndicatorBuilder;
 
   bool get _shouldGenerateTimeIndicators => timeIndicators == null;
 
   ItemPosition _makeItemPosition({
-    @required SchedulePositioner positioner,
-    @required int minuteOfDay,
-    @required int duration,
+    required SchedulePositioner positioner,
+    required int minuteOfDay,
+    required int duration,
   }) {
     int halfDuration = duration ~/ 2;
     int adjustedMinuteOfDay = minuteOfDay - halfDuration;
@@ -73,8 +72,8 @@ class TimeIndicationComponent implements ScheduleComponent {
   }
 
   ItemSize _makeItemSize({
-    @required SchedulePositioner positioner,
-    @required int duration,
+    required SchedulePositioner positioner,
+    required int duration,
   }) {
     return ItemSize(
       width: positioner.timeIndicationAreaWidth,
@@ -102,26 +101,26 @@ class TimeIndicationComponent implements ScheduleComponent {
   }
 
   List<Positioned> _buildGeneratedTimeIndicators({
-    @required BuildContext context,
-    @required SchedulePositioner positioner,
+    required BuildContext context,
+    required SchedulePositioner positioner,
   }) {
     List<Positioned> items = <Positioned>[];
 
-    for (int minuteOfDay = minuteOfDayOfFirstTimeIndicator;
+    for (int minuteOfDay = minuteOfDayOfFirstTimeIndicator!;
         minuteOfDay <= maximum_minute_of_day;
-        minuteOfDay += timeIndicatorDuration) {
+        minuteOfDay += timeIndicatorDuration!) {
       ItemPosition itemPosition = _makeItemPosition(
         positioner: positioner,
         minuteOfDay: minuteOfDay,
-        duration: timeIndicatorDuration,
+        duration: timeIndicatorDuration!,
       );
 
       ItemSize itemSize = _makeItemSize(
         positioner: positioner,
-        duration: timeIndicatorDuration,
+        duration: timeIndicatorDuration!,
       );
 
-      Positioned item = generatedTimeIndicatorBuilder(
+      Positioned item = generatedTimeIndicatorBuilder!(
         context,
         itemPosition,
         itemSize,
@@ -135,12 +134,12 @@ class TimeIndicationComponent implements ScheduleComponent {
   }
 
   List<Positioned> _buildProvidedTimeIndicators({
-    @required BuildContext context,
-    @required SchedulePositioner positioner,
+    required BuildContext context,
+    required SchedulePositioner positioner,
   }) {
     List<Positioned> items = <Positioned>[];
 
-    for (StartDurationItem timeIndicator in timeIndicators) {
+    for (StartDurationItem timeIndicator in timeIndicators!) {
       ItemPosition itemPosition = _makeItemPosition(
         positioner: positioner,
         minuteOfDay: timeIndicator.startMinuteOfDay,

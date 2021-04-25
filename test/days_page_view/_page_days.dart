@@ -11,7 +11,7 @@ void main() {
 
 void testDaysOfPage() {
   group(".daysOfPage, daysPerPage is 4", () {
-    PageDays pageDays;
+    late PageDays pageDays;
     List<Date> actual;
     List<Date> matcher;
 
@@ -87,7 +87,7 @@ void testDaysOfPage() {
   });
 
   group(".daysOfPage, daysPerPage is 1", () {
-    PageDays pageDays;
+    late PageDays pageDays;
     List<Date> actual;
     List<Date> matcher;
 
@@ -150,7 +150,7 @@ void testDaysOfPage() {
 
 void testPageOfDay() {
   group(".pageOfDay, daysPerPage is 4", () {
-    PageDays pageDays;
+    late PageDays pageDays;
     int actual;
     int matcher;
 
@@ -215,7 +215,7 @@ void testPageOfDay() {
   });
 
   group(".pageOfDay, daysPerPage is 1", () {
-    PageDays pageDays;
+    late PageDays pageDays;
     int actual;
     int matcher;
 
