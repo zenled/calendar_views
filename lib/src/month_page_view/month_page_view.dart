@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 import 'package:calendar_views/src/_internal_date_time/all.dart';
 import 'package:calendar_views/src/calendar_page_view/all.dart';
@@ -20,12 +19,10 @@ class MonthPageView extends CalendarPageView {
     bool pageSnapping = CalendarPageView.default_page_snapping,
     bool reverse = CalendarPageView.default_reverse,
     ScrollPhysics physics = CalendarPageView.default_physics,
-    MonthPageController controller,
-    @required this.pageBuilder,
-    this.onMonthChanged,
+    MonthPageController? controller,
+    required this.pageBuilder,
+    required this.onMonthChanged,
   })  : this.controller = controller ?? new MonthPageController(),
-        assert(controller != null),
-        assert(pageBuilder != null),
         super(
           scrollDirection: scrollDirection,
           pageSnapping: pageSnapping,
@@ -49,7 +46,7 @@ class MonthPageView extends CalendarPageView {
 }
 
 class _MonthPageViewState extends CalendarPageViewState<MonthPageView> {
-  PageMonth _pageMonth;
+  PageMonth? _pageMonth;
 
   @override
   void initState() {
@@ -93,25 +90,25 @@ class _MonthPageViewState extends CalendarPageViewState<MonthPageView> {
 
   DateTime _getCurrentMonth() {
     int currentPage = getCurrentPage();
-    Month currentMonth = _pageMonth.monthOfPage(currentPage);
+    Month currentMonth = _pageMonth!.monthOfPage(currentPage);
 
     return currentMonth.toDateTime();
   }
 
   void _jumpToMonth(DateTime month) {
     Month m = new Month.fromDateTime(month);
-    int page = _pageMonth.pageOfMonth(m);
+    int page = _pageMonth!.pageOfMonth(m);
 
     jumpToPage(page);
   }
 
   Future<void> _animateToMonth(
     DateTime month, {
-    @required Duration duration,
-    @required Curve curve,
+    required Duration duration,
+    required Curve curve,
   }) {
     Month m = new Month.fromDateTime(month);
-    int page = _pageMonth.pageOfMonth(m);
+    int page = _pageMonth!.pageOfMonth(m);
 
     return animateToPage(
       page,
@@ -122,17 +119,15 @@ class _MonthPageViewState extends CalendarPageViewState<MonthPageView> {
 
   @override
   void onPageChanged(int page) {
-    if (widget.onMonthChanged != null) {
-      Month m = _pageMonth.monthOfPage(page);
-      DateTime month = m.toDateTime();
+    Month m = _pageMonth!.monthOfPage(page);
+    DateTime month = m.toDateTime();
 
-      widget.onMonthChanged(month);
-    }
+    widget.onMonthChanged(month);
   }
 
   @override
   Widget itemBuilder(BuildContext context, int page) {
-    Month m = _pageMonth.monthOfPage(page);
+    Month m = _pageMonth!.monthOfPage(page);
     DateTime month = m.toDateTime();
 
     return widget.pageBuilder(context, month);

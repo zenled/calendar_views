@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 class MonthPickerDialog extends StatefulWidget {
   MonthPickerDialog({
-    @required this.initialMonth,
-    @required this.onConfirm,
-  })  : assert(initialMonth != null),
-        assert(onConfirm != null);
+    required this.initialMonth,
+    required this.onConfirm,
+  });
 
   final DateTime initialMonth;
 
@@ -17,11 +15,11 @@ class MonthPickerDialog extends StatefulWidget {
 }
 
 class _MonthPickerDialogState extends State<MonthPickerDialog> {
-  int _year;
-  int _month;
+  int? _year;
+  int? _month;
 
-  List<int> _years = <int>[];
-  List<int> _months = <int>[];
+  List<int> _years = [];
+  List<int> _months = [];
 
   @override
   void initState() {
@@ -57,10 +55,10 @@ class _MonthPickerDialogState extends State<MonthPickerDialog> {
         ],
       ),
       actions: <Widget>[
-        new FlatButton(
+        new TextButton(
           child: new Text("OK"),
           onPressed: () {
-            DateTime month = new DateTime(_year, _month);
+            DateTime month = new DateTime(_year!, _month!);
             widget.onConfirm(month);
           },
         )

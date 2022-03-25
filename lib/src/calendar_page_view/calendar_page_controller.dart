@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 import 'calendar_page_link.dart';
 import 'calendar_page_view.dart';
@@ -14,15 +13,12 @@ abstract class CalendarPageController {
   @protected
   CalendarPageLink get attachedItem;
 
-  /// Returns true if [CalendarPageLink] is attached to this controller.
-  @protected
-  bool get isItemAttached => attachedItem != null;
+
 
   /// Returns the current page displayed in the attached [CalendarPageView].
   ///
   /// If nothing is attached to this controller it throws an exception.
   int get currentPage {
-    throwExceptionIfNoItemAttached();
 
     return attachedItem.currentPage();
   }
@@ -33,7 +29,6 @@ abstract class CalendarPageController {
   ///
   /// If nothing is attached to this controller it throws an exception.
   void jumpToPage(int page) {
-    throwExceptionIfNoItemAttached();
 
     attachedItem.jumpToPage(page);
   }
@@ -45,10 +40,9 @@ abstract class CalendarPageController {
   /// If nothing is attached to this controller it throws an exception.
   Future<void> animateToPage(
     int page, {
-    @required Duration duration,
-    @required Curve curve,
+    required Duration duration,
+    required Curve curve,
   }) {
-    throwExceptionIfNoItemAttached();
 
     return attachedItem.animateToPage(
       page,
@@ -57,13 +51,4 @@ abstract class CalendarPageController {
     );
   }
 
-  /// Throws an exception in no [CalendarPageLink] is attached to this controller.
-  @protected
-  void throwExceptionIfNoItemAttached() {
-    if (!isItemAttached) {
-      throw new Exception(
-        "Could not perform action, no item is attached to this controller",
-      );
-    }
-  }
 }

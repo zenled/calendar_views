@@ -21,7 +21,7 @@ bool areListsOfDatesTheSame(List<DateTime> list1, List<DateTime> list2) {
       DateTime date1 = list1[i];
       DateTime date2 = list2[i];
 
-      if (date1 == null || date2 == null || !isSameDate(date1, date2)) {
+      if (!isSameDate(date1, date2)) {
         return false;
       }
     }

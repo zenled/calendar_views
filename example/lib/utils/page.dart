@@ -6,12 +6,9 @@ import 'date_time_to_string.dart';
 ///
 /// This widget uses [AutomaticKeepAliveClientMixin].
 class Page extends StatefulWidget {
-  Page.forDays({
-    @required this.days,
-  }) : showDayOfMonth = true;
 
   Page.forMonth({
-    @required DateTime month,
+    required DateTime month,
   })  : showDayOfMonth = false,
         days = <DateTime>[month];
 
@@ -23,7 +20,7 @@ class Page extends StatefulWidget {
 }
 
 class _PageState extends State<Page> with AutomaticKeepAliveClientMixin<Page> {
-  bool _isChecked;
+  bool _isChecked = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -58,7 +55,7 @@ class _PageState extends State<Page> with AutomaticKeepAliveClientMixin<Page> {
                 value: _isChecked,
                 onChanged: (value) {
                   setState(() {
-                    _isChecked = value;
+                    _isChecked = value!;
                   });
                 }),
           ),

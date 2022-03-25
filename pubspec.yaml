@@ -1,12 +1,7 @@
 name: calendar_views
-version: 0.5.3
-
+version: 0.5.4
 description: Collection of customisable calendar related widgets for Flutter.
-
-author: ZedTheLed<zedtheled@gmail.com>
-
-homepage: https://github.com/ZedTheLed/calendar_views
-documentation:
+homepage: https://github.com/cenkingunlugu/calendar_views
 
 dependencies:
   flutter:
@@ -19,4 +14,4 @@ dev_dependencies:
     sdk: flutter
 
 environment:
-  sdk: '>=2.0.0 <3.0.0'
+  sdk: ">=2.16.0 <3.0.0"

@@ -10,13 +10,13 @@ class MonthViewExample extends StatefulWidget {
 }
 
 class _MonthViewExampleState extends State<MonthViewExample> {
-  DateTime _month;
-  int _firstWeekday;
+  DateTime? _month;
+  int? _firstWeekday;
 
-  bool _shouldShowHeader;
+  bool? _shouldShowHeader;
 
-  bool _showExtendedDaysBefore;
-  bool _showExtendedDaysAfter;
+  bool? _showExtendedDaysBefore;
+  bool? _showExtendedDaysAfter;
 
   @override
   void initState() {
@@ -43,13 +43,13 @@ class _MonthViewExampleState extends State<MonthViewExample> {
             child: new Container(
               color: Colors.green.shade200,
               child: new MonthView(
-                month: _month,
-                firstWeekday: _firstWeekday,
+                month: _month!,
+                firstWeekday: _firstWeekday!,
                 dayOfMonthBuilder: _dayOfMonthBuilder,
                 headerItemBuilder:
-                    _shouldShowHeader ? _monthViewHeaderItemBuilder : null,
-                showExtendedDaysBefore: _showExtendedDaysBefore,
-                showExtendedDaysAfter: _showExtendedDaysAfter,
+                    _monthViewHeaderItemBuilder,
+                showExtendedDaysBefore: _showExtendedDaysBefore!,
+                showExtendedDaysAfter: _showExtendedDaysAfter!,
               ),
             ),
           ),
@@ -59,13 +59,13 @@ class _MonthViewExampleState extends State<MonthViewExample> {
                 children: <Widget>[
                   new ListTile(
                     title: new Center(
-                      child: new Text("Month: ${yearAndMonthToString(_month)}"),
+                      child: new Text("Month: ${yearAndMonthToString(_month!)}"),
                     ),
                     onTap: () {
                       showDialog(
                         context: context,
                         builder: (context) => new MonthPickerDialog(
-                              initialMonth: _month,
+                              initialMonth: _month!,
                               onConfirm: (month) {
                                 Navigator.of(context).pop();
                                 setState(() {
@@ -80,7 +80,7 @@ class _MonthViewExampleState extends State<MonthViewExample> {
                   new ListTile(
                     title: new Text("First Weekday"),
                     trailing: new WeekdayDropDownButton(
-                        value: _firstWeekday,
+                        value: _firstWeekday!,
                         onChanged: (value) {
                           setState(() {
                             _firstWeekday = value;
