@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 import 'package:calendar_views/src/calendar_page_view/all.dart';
 
@@ -20,24 +19,21 @@ typedef void JumpToMonthCallback(
 /// Works similar as [PageController.animateToPage].
 typedef Future<void> AnimateToMonthCallback(
   DateTime month, {
-  @required Duration duration,
-  @required Curve curve,
+  required Duration duration,
+  required Curve curve,
 });
 
 /// Communicator between [MonthPageView] and [MonthPageController].
 @immutable
 class MonthPageLink extends CalendarPageLink {
   MonthPageLink({
-    @required this.currentMonth,
-    @required this.jumpToMonth,
-    @required this.animateToMonth,
-    @required ValueGetter<int> currentPage,
-    @required JumpToPageCallback jumpToPage,
-    @required AnimateToPageCallback animateToPage,
-  })  : assert(currentMonth != null),
-        assert(jumpToMonth != null),
-        assert(animateToMonth != null),
-        super(
+    required this.currentMonth,
+    required this.jumpToMonth,
+    required this.animateToMonth,
+    required ValueGetter<int> currentPage,
+    required JumpToPageCallback jumpToPage,
+    required AnimateToPageCallback animateToPage,
+  })  : super(
           currentPage: currentPage,
           jumpToPage: jumpToPage,
           animateToPage: animateToPage,

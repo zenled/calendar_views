@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'days_page_view_example.dart';
-import 'day_view_example.dart';
 import 'month_page_view_example.dart';
 import 'month_view_example.dart';
 
@@ -26,28 +24,6 @@ class MyApp extends StatelessWidget {
         body: new Builder(builder: (BuildContext context) {
           return new ListView(
             children: <Widget>[
-              new ListTile(
-                title: new Text("Day View"),
-                subtitle: new Text("DayView Example"),
-                onTap: () {
-                  _showWidgetInFullScreenDialog(
-                    context,
-                    new DayViewExample(),
-                  );
-                },
-              ),
-              new Divider(height: 0.0),
-              new ListTile(
-                title: new Text("Days Page View"),
-                subtitle: new Text("DaysPageView Example"),
-                onTap: () {
-                  _showWidgetInFullScreenDialog(
-                    context,
-                    new DaysPageViewExample(),
-                  );
-                },
-              ),
-              new Divider(height: 0.0),
               new ListTile(
                 title: new Text("Month Page View"),
                 subtitle: new Text("MonthPageView Example"),

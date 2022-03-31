@@ -2,7 +2,6 @@ import 'package:meta/meta.dart';
 import 'package:quiver/core.dart';
 
 import 'month.dart';
-import 'validation.dart';
 
 /// Internal representation of a date (year, month, day).
 ///
@@ -14,9 +13,7 @@ class Date {
     this.year,
     this.month,
     this.day,
-  )   : assert(year != null),
-        assert(month != null && isMonthValid(month)),
-        assert(day != null && day >= 1 && day <= 31);
+  )   : assert(day >= 1 && day <= 31);
 
   /// Creates a new Date from [DateTime].
   factory Date.fromDateTime(DateTime dateTime) {
@@ -95,9 +92,9 @@ class Date {
 
   /// Creates a new Date with some values changed.
   Date copyWith({
-    int year,
-    int month,
-    int day,
+    int? year,
+    int? month,
+    int? day,
   }) {
     return new Date(
       year ?? this.year,

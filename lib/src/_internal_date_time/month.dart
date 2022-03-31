@@ -12,8 +12,8 @@ class Month {
   Month(
     this.year,
     this.month,
-  )   : assert(year != null),
-        assert(month != null && isMonthValid(month));
+  )   :
+        assert(isMonthValid(month));
 
   /// Creates a new Month from [DateTime].
   factory Month.fromDateTime(DateTime dateTime) {

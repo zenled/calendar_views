@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 import 'show_alert_dialog.dart';
 
 void showScrollDirectionChangeMightNotWorkDialog({
-  @required BuildContext context,
+  required BuildContext context,
 }) {
-  assert(context != null);
 
   showAlertDialog(
     context: context,

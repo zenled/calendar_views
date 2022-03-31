@@ -1,8 +1,7 @@
+import 'package:calendar_views/calendar_views.dart';
 import 'package:flutter/material.dart';
 
-import 'package:calendar_views/month_page_view.dart';
-
-import 'utils/all.dart';
+import 'utils/all.dart' as all;
 
 class MonthPageViewExample extends StatefulWidget {
   @override
@@ -10,13 +9,13 @@ class MonthPageViewExample extends StatefulWidget {
 }
 
 class _MonthPageViewExampleState extends State<MonthPageViewExample> {
-  MonthPageController _monthPageController;
+  MonthPageController? _monthPageController;
 
-  Axis _scrollDirection;
-  bool _pageSnapping;
-  bool _reverse;
+  Axis? _scrollDirection;
+  bool _pageSnapping = false;
+  bool _reverse = false;
 
-  String _displayedMonthText;
+  String _displayedMonthText = '';
 
   @override
   void initState() {
@@ -32,12 +31,12 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
     _pageSnapping = true;
     _reverse = false;
 
-    _displayedMonthText = yearAndMonthToString(initialMonth);
+    _displayedMonthText = all.yearAndMonthToString(initialMonth);
   }
 
   void _onMonthChanged(DateTime month) {
     setState(() {
-      _displayedMonthText = yearAndMonthToString(month);
+      _displayedMonthText = all.yearAndMonthToString(month);
     });
   }
 
@@ -53,7 +52,7 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
             child: new Container(
               color: Colors.green.shade200,
               child: new MonthPageView(
-                scrollDirection: _scrollDirection,
+                scrollDirection: _scrollDirection!,
                 pageSnapping: _pageSnapping,
                 reverse: _reverse,
                 controller: _monthPageController,
@@ -75,10 +74,10 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
                   new Container(
                     padding: new EdgeInsets.all(4.0),
                     child: new Center(
-                      child: new RaisedButton(
+                      child: new ElevatedButton(
                         child: new Text("Jump To Today-Month"),
                         onPressed: () {
-                          _monthPageController.jumpToMonth(
+                          _monthPageController!.jumpToMonth(
                             new DateTime.now(),
                           );
                         },
@@ -94,16 +93,16 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
                           .map(
                             (axis) => new DropdownMenuItem<Axis>(
                                   value: axis,
-                                  child: new Text("${axisToString(axis)}"),
+                                  child: new Text("${all.axisToString(axis)}"),
                                 ),
                           )
                           .toList(),
-                      onChanged: (Axis value) {
+                      onChanged: (Axis? value) {
                         setState(() {
                           this._scrollDirection = value;
                         });
 
-                        showScrollDirectionChangeMightNotWorkDialog(
+                        all.showScrollDirectionChangeMightNotWorkDialog(
                           context: context,
                         );
                       },
@@ -115,7 +114,7 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
                     value: _pageSnapping,
                     onChanged: (value) {
                       setState(() {
-                        _pageSnapping = value;
+                        _pageSnapping = value!;
                       });
                     },
                   ),
@@ -125,7 +124,7 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
                     value: _reverse,
                     onChanged: (value) {
                       setState(() {
-                        _reverse = value;
+                        _reverse = value!;
                       });
                     },
                   ),
@@ -139,7 +138,7 @@ class _MonthPageViewExampleState extends State<MonthPageViewExample> {
   }
 
   Widget _monthPageBuilder(BuildContext context, DateTime month) {
-    return new Page.forMonth(
+    return all.Page.forMonth(
       month: month,
     );
   }

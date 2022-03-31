@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 import 'calendar_page_controller.dart';
 import 'calendar_page_view.dart';
@@ -26,12 +25,10 @@ typedef Future<void> AnimateToPageCallback(
 @immutable
 abstract class CalendarPageLink {
   const CalendarPageLink({
-    @required this.currentPage,
-    @required this.jumpToPage,
-    @required this.animateToPage,
-  })  : assert(currentPage != null),
-        assert(jumpToPage != null),
-        assert(animateToPage != null);
+    required this.currentPage,
+    required this.jumpToPage,
+    required this.animateToPage,
+  });
 
   final ValueGetter<int> currentPage;
 
